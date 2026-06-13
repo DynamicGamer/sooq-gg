@@ -9,6 +9,8 @@ import Listings from './pages/Listings'
 import ListingDetail from './pages/ListingDetail'
 import Auth from './pages/Auth'
 import Cart from './pages/Cart'
+import Checkout from './pages/Checkout'
+import Orders from './pages/Orders'
 import Dashboard from './pages/Dashboard'
 
 export default function App() {
@@ -19,11 +21,13 @@ export default function App() {
           <Navbar />
           <main>
             <Routes>
-              <Route path="/"                  element={<Home />} />
+              <Route path="/"                   element={<Home />} />
               <Route path="/listings/:category" element={<Listings />} />
               <Route path="/listing/:id"        element={<ListingDetail />} />
               <Route path="/auth"               element={<Auth />} />
               <Route path="/cart"               element={<Cart />} />
+              <Route path="/checkout"           element={<Checkout />} />
+              <Route path="/orders"             element={<Orders />} />
               <Route path="/dashboard"          element={<Dashboard />} />
             </Routes>
           </main>

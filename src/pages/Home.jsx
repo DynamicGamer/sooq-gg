@@ -4,6 +4,24 @@ import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
 import { GAMES, LISTINGS } from '../lib/supabase'
 
+// Using wsrv.nl as image proxy — works cross-origin everywhere
+const img = (url) => `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=300&h=200&fit=cover&output=webp`
+
+const GAME_IMAGES = {
+  'PUBG Mobile':         img('https://cdn.cloudflare.steamstatic.com/steam/apps/578080/header.jpg'),
+  'Free Fire':           img('https://play-lh.googleusercontent.com/HIUapBg9JYMIWBbNaFRHNlS0aqAN8l-TM7XQtGl5y7_1PqPVAqzKRZ7dYP8ZjcHHdg'),
+  'Fortnite':            img('https://cdn2.unrealengine.com/social-image-chapter4-s3-3840x2160-d35912cc25ad.jpg'),
+  'Clash of Clans':      img('https://play-lh.googleusercontent.com/LByrur1mTCfaIdCcJCTXdMU0P5-O3HMo5rSGPDl2z5h7dBdZ6xhzUl2q5V77bWL0Yg'),
+  'Mobile Legends':      img('https://play-lh.googleusercontent.com/qd2ooAWo_Liz6MicFxbH4VaCCqJOLJQmJXqRQXHiNFQmGPJhU7EvELxXn9kefW-Rea4'),
+  'Valorant':            img('https://cmsassets.rgpub.io/sanity/images/dsfx7636/news/66bf2fdd14f7fcad41487eca45d6ba3db89fd0b8-1920x1080.jpg'),
+  'FIFA Mobile':         img('https://play-lh.googleusercontent.com/zQwHQZ4rjgUK52JTcU6APLZrFxBNcCzC1l7nLovf6JhS4EJZPUHwUaIEDKhV9rOMp80'),
+  'Genshin Impact':      img('https://play-lh.googleusercontent.com/N-E_5XcmHv47v9c4DMnFWH1g8Y44UFaIgVpkiScGCqFnX8LIaW6vVFbPMlM9USulWA'),
+  'Call of Duty Mobile': img('https://play-lh.googleusercontent.com/ikP5VGPKkqKBiSHlpfLJF8rCxIHPFsB3CjvzqYZEfhZ8VVlq0W_7QYHSWrIz7y9R_aJ'),
+  'League of Legends':   img('https://cdn.cloudflare.steamstatic.com/steam/apps/2801580/header.jpg'),
+  'Steam Wallet':        img('https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg'),
+  'PlayStation':         img('https://upload.wikimedia.org/wikipedia/commons/4/4e/Playstation_logo_colour.svg'),
+}
+
 export default function Home() {
   const { t, isAr } = useLang()
   const { addItem } = useCart()
@@ -212,11 +230,15 @@ export default function Home() {
                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.borderColor = c1 + 'aa'; e.currentTarget.style.boxShadow = `0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px ${c1}55` }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)'; e.currentTarget.style.boxShadow = 'none' }}
               >
-                {/* Gradient banner with big emoji */}
-                <div style={{ height: '120px', background: `linear-gradient(145deg, ${c1}55, ${c2}88, #0d0e1a)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '52px', position: 'relative' }}>
-                  {/* Glow behind emoji */}
-                  <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(circle at 50% 60%, ${c1}33, transparent 70%)` }} />
-                  <span style={{ position: 'relative', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.5))' }}>{game.img}</span>
+                {/* Real game image */}
+                <div style={{ height: '120px', position: 'relative', overflow: 'hidden', background: `linear-gradient(145deg, ${c1}55, ${c2}88)` }}>
+                  <img
+                    src={GAME_IMAGES[game.name]}
+                    alt={game.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }}
+                    onError={e => { e.target.style.display = 'none' }}
+                  />
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(13,14,26,0.95) 0%, transparent 60%)' }} />
                   {game.hot && (
                     <div style={{ position: 'absolute', top: '10px', left: '10px', background: 'linear-gradient(135deg, #ef4444, #dc2626)', borderRadius: '6px', fontSize: '9px', color: '#fff', padding: '3px 9px', fontWeight: '800', letterSpacing: '1px', boxShadow: '0 2px 8px rgba(239,68,68,0.6)' }}>HOT</div>
                   )}

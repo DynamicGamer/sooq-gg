@@ -19,20 +19,20 @@ const GAME_GRADIENTS = {
   'PlayStation':         ['#1d4ed8', '#1e3a8a'],
 }
 
-// Reliable image URLs via wsrv.nl proxy
+// Game images — stored locally in /public/games/
 const GAME_IMAGES = {
-  'PUBG Mobile':         'https://wsrv.nl/?url=https%3A%2F%2Fcdn.cloudflare.steamstatic.com%2Fsteam%2Fapps%2F578080%2Fheader.jpg&w=300&h=200&fit=cover',
-  'Free Fire':           'https://wsrv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fen%2F8%2F8e%2FFree_Fire_Logo.png&w=300&h=200&fit=contain&bg=1a5c40',
-  'Fortnite':            'https://wsrv.nl/?url=https%3A%2F%2Fcdn2.unrealengine.com%2Fsocial-image-chapter4-s3-3840x2160-d35912cc25ad.jpg&w=300&h=200&fit=cover',
-  'Clash of Clans':      'https://wsrv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fen%2F2%2F20%2FClash_of_Clans_2012_Logo.png&w=300&h=200&fit=contain&bg=c45e12',
-  'Mobile Legends':      'https://wsrv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fen%2F9%2F9d%2FMobile_Legends_Bang_Bang.png&w=300&h=200&fit=contain&bg=2d0d5e',
-  'Valorant':            'https://wsrv.nl/?url=https%3A%2F%2Fcmsassets.rgpub.io%2Fsanity%2Fimages%2Fdsfx7636%2Fnews%2F66bf2fdd14f7fcad41487eca45d6ba3db89fd0b8-1920x1080.jpg&w=300&h=200&fit=cover',
-  'FIFA Mobile':         'https://wsrv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fen%2Fe%2Fe0%2FFIFA_Mobile_cover.jpg&w=300&h=200&fit=cover',
-  'Genshin Impact':      'https://wsrv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fen%2F2%2F2d%2FGenshin_Impact_cover.jpg&w=300&h=200&fit=cover',
-  'Call of Duty Mobile': 'https://wsrv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fen%2F1%2F19%2FCall_of_Duty_Mobile_cover_art.png&w=300&h=200&fit=cover',
-  'League of Legends':   'https://wsrv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fen%2F1%2F13%2FLeague_of_legends_s10_key_art.jpg&w=300&h=200&fit=cover',
-  'Steam Wallet':        'https://wsrv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2F8%2F83%2FSteam_icon_logo.svg&w=300&h=200&fit=contain&bg=1b2838',
-  'PlayStation':         'https://wsrv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2F4%2F4e%2FPlaystation_logo_colour.svg&w=300&h=200&fit=contain&bg=003087',
+  'PUBG Mobile':         '/games/pubg.jpg',
+  'Free Fire':           '/games/freefire.jpg',
+  'Fortnite':            '/games/fortnite.jpg',
+  'Clash of Clans':      '/games/coc.jpg',
+  'Mobile Legends':      '/games/mlbb.jpg',
+  'Valorant':            '/games/valorant.jpg',
+  'FIFA Mobile':         '/games/fifa.jpg',
+  'Genshin Impact':      '/games/genshin.jpg',
+  'Call of Duty Mobile': '/games/codm.jpg',
+  'League of Legends':   '/games/lol.jpg',
+  'Steam Wallet':        '/games/steam.jpg',
+  'PlayStation':         '/games/psn.jpg',
 }
 
 export default function Home() {

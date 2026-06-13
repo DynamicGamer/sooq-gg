@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
@@ -11,94 +11,83 @@ export default function Navbar() {
   const { user, signOut } = useAuth()
   const { count } = useCart()
   const navigate = useNavigate()
-  const [menuOpen, setMenuOpen] = useState(false)
+  const location = useLocation()
 
   const handleLogout = async () => { await signOut(); navigate('/') }
 
   return (
     <nav style={{
-      background: 'var(--bg-secondary)',
-      borderBottom: '1px solid var(--border)',
-      padding: '0 20px',
+      background: 'rgba(10,11,15,0.95)',
+      backdropFilter: 'blur(20px)',
+      borderBottom: '1px solid rgba(255,255,255,0.06)',
+      padding: '0 24px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      height: '58px',
+      height: '62px',
       position: 'sticky',
       top: 0,
       zIndex: 100,
     }}>
-      {/* Left: logo + cats */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-          <div style={{
-            width: '30px', height: '30px',
-            background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
-            borderRadius: '7px', display: 'flex', alignItems: 'center',
-            justifyContent: 'center', fontSize: '14px',
-          }}>⚡</div>
-          <span style={{ fontSize: '18px', fontWeight: '800', color: '#fff' }}>
-            {t.logo}<span style={{ color: 'var(--accent)' }}>.gg</span>
+      {/* Logo + Nav */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
+          <div style={{ width: '32px', height: '32px', background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', boxShadow: '0 4px 12px rgba(124,58,237,0.4)' }}>⚡</div>
+          <span style={{ fontSize: '20px', fontWeight: '900', color: '#fff', letterSpacing: '-0.5px' }}>
+            {t.logo}<span style={{ color: '#7c3aed' }}>.gg</span>
           </span>
         </Link>
 
         <div className="hide-mobile" style={{ display: 'flex', gap: '2px' }}>
           {CATS.map(c => (
             <Link key={c} to={`/listings/${c}`} style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'var(--text-secondary)',
-              padding: '5px 10px',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: '12px',
+              color: location.pathname === `/listings/${c}` ? '#a78bfa' : '#64748b',
+              padding: '5px 11px',
+              borderRadius: '8px',
+              fontSize: '13px',
               fontWeight: '600',
-              transition: 'color 0.15s',
+              background: location.pathname === `/listings/${c}` ? 'rgba(124,58,237,0.12)' : 'transparent',
+              transition: 'all 0.15s',
+              textDecoration: 'none',
             }}
-              onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
-              onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+              onMouseEnter={e => { if (location.pathname !== `/listings/${c}`) { e.currentTarget.style.color = '#94a3b8'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)' } }}
+              onMouseLeave={e => { if (location.pathname !== `/listings/${c}`) { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.background = 'transparent' } }}
             >{t.nav[c]}</Link>
           ))}
         </div>
       </div>
 
-      {/* Right: actions */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-        {/* Lang toggle */}
-        <button onClick={toggle} style={{
-          background: 'var(--accent-soft)', border: '1px solid var(--accent-border)',
-          color: '#a78bfa', padding: '5px 12px', borderRadius: 'var(--radius-md)',
-          fontSize: '12px', fontWeight: '700',
-        }}>🌐 {t.langToggle}</button>
+      {/* Right actions */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <button onClick={toggle} style={{ background: 'rgba(124,58,237,0.12)', border: '1px solid rgba(124,58,237,0.3)', color: '#a78bfa', padding: '6px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>
+          🌐 {t.langToggle}
+        </button>
 
-        {/* Cart */}
-        <Link to="/cart" style={{ position: 'relative', padding: '5px 10px' }}>
-          <span style={{ fontSize: '18px' }}>🛒</span>
+        <Link to="/cart" style={{ position: 'relative', padding: '6px 10px', display: 'flex', alignItems: 'center' }}>
+          <span style={{ fontSize: '20px' }}>🛒</span>
           {count > 0 && (
-            <span style={{
-              position: 'absolute', top: '0', [isAr ? 'left' : 'right']: '0',
-              background: 'var(--accent)', color: '#fff',
-              width: '16px', height: '16px', borderRadius: '50%',
-              fontSize: '9px', fontWeight: '700',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>{count}</span>
+            <span style={{ position: 'absolute', top: '0', [isAr ? 'left' : 'right']: '0', background: 'linear-gradient(135deg, #7c3aed, #ec4899)', color: '#fff', width: '17px', height: '17px', borderRadius: '50%', fontSize: '9px', fontWeight: '800', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{count}</span>
           )}
         </Link>
 
         {user ? (
           <>
-            <Link to="/dashboard" className="btn-outline" style={{ padding: '5px 12px', fontSize: '12px' }}>
+            <Link to="/orders" style={{ color: '#64748b', padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: '600', border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.03)' }}>
+              {isAr ? 'طلباتي' : 'Orders'}
+            </Link>
+            <Link to="/dashboard" className="btn-outline" style={{ padding: '6px 14px', fontSize: '13px' }}>
               {t.nav.dashboard}
             </Link>
-            <button onClick={handleLogout} className="btn-outline" style={{ padding: '5px 12px', fontSize: '12px' }}>
+            <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#475569', fontSize: '13px', cursor: 'pointer', padding: '6px' }}>
               {t.nav.logout}
             </button>
           </>
         ) : (
           <>
-            <Link to="/auth" className="btn-outline" style={{ padding: '5px 12px', fontSize: '12px' }}>
+            <Link to="/auth" className="btn-outline" style={{ padding: '7px 16px', fontSize: '13px' }}>
               {t.nav.login}
             </Link>
-            <Link to="/auth?mode=register" className="btn-primary" style={{ padding: '5px 12px', fontSize: '12px' }}>
+            <Link to="/auth?mode=register" className="btn-primary" style={{ padding: '7px 16px', fontSize: '13px' }}>
               {t.nav.startSelling}
             </Link>
           </>

@@ -81,25 +81,27 @@ export default function Home() {
       </div>
 
       {/* TRUST BAR */}
-      <div style={{ background: 'rgba(201,168,76,0.05)', borderTop: '1px solid rgba(201,168,76,0.15)', borderBottom: '1px solid rgba(201,168,76,0.15)', padding: '28px 24px', display: 'flex', justifyContent: 'center', gap: '32px', flexWrap: 'wrap' }}>
+      <div style={{ background: "rgba(201,168,76,0.05)", borderTop: "1px solid rgba(201,168,76,0.15)", borderBottom: "1px solid rgba(201,168,76,0.15)", padding: "28px 24px", display: "flex", justifyContent: "center", gap: "32px", flexWrap: "wrap" }}>
         {[
-          { icon: '???', title: isAr ? '???? ??????? ???????' : 'Money-back Guarantee', desc: isAr ? '???????? ????? ??????' : 'Your purchases are always protected' },
-          { icon: '?', title: isAr ? '????? ????' : 'Instant Delivery', desc: isAr ? '???? ??????? ?? ?????' : 'Most orders delivered in minutes' },
-          { icon: '?', title: isAr ? '?????? ??????' : 'Verified Sellers', desc: isAr ? '?? ???? ?? ?????? ???' : 'Every seller is verified by us' },
-          { icon: '??', title: isAr ? '??? ???' : 'Secure Payments', desc: isAr ? '?????? ?? ???? ??????' : 'Crypto escrow keeps funds safe' },
+          { icon: "shield", title: isAr ? "???? ??????? ???????" : "Money-back Guarantee", desc: isAr ? "???????? ????? ?????" : "Your purchases are always protected" },
+          { icon: "bolt", title: isAr ? "????? ????" : "Instant Delivery", desc: isAr ? "???? ??????? ?? ?????" : "Most orders delivered in minutes" },
+          { icon: "check", title: isAr ? "?????? ??????" : "Verified Sellers", desc: isAr ? "?? ???? ?? ?????? ???" : "Every seller is verified by us" },
+          { icon: "lock", title: isAr ? "??? ???" : "Secure Payments", desc: isAr ? "?????? ?? ???? ??????" : "Crypto escrow keeps funds safe" },
         ].map(b => (
-          <div key={b.title} style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: '200px' }}>
-            <div style={{ width: '44px', height: '44px', background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', flexShrink: 0 }}>{b.icon}</div>
+          <div key={b.title} style={{ display: "flex", alignItems: "center", gap: "14px", minWidth: "200px" }}>
+            <div style={{ width: "44px", height: "44px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.25)", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              {b.icon === "shield" && <svg width="20" height="20" fill="none" stroke="#c9a84c" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>}
+              {b.icon === "bolt" && <svg width="20" height="20" fill="none" stroke="#c9a84c" strokeWidth="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>}
+              {b.icon === "check" && <svg width="20" height="20" fill="none" stroke="#c9a84c" strokeWidth="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>}
+              {b.icon === "lock" && <svg width="20" height="20" fill="none" stroke="#c9a84c" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>}
+            </div>
             <div>
-              <div style={{ fontSize: '14px', fontWeight: '700', color: '#ffffff', marginBottom: '2px' }}>{b.title}</div>
-              <div style={{ fontSize: '12px', color: '#9a8570' }}>{b.desc}</div>
+              <div style={{ fontSize: "14px", fontWeight: "700", color: "#ffffff", marginBottom: "2px" }}>{b.title}</div>
+              <div style={{ fontSize: "12px", color: "#9a8570" }}>{b.desc}</div>
             </div>
           </div>
         ))}
       </div>
-
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
-
 
         {/* POPULAR GAMES */}
         <div style={{ marginBottom: '48px' }}>

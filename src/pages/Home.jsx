@@ -89,7 +89,7 @@ useEffect(() => {
             {isAr ? 'السوق الرقمي الأول للألعاب في المنطقة العربية' : '#1 Arabic Gaming Marketplace in MENA'}
           </div>
 
-          <h1 style={{ fontSize: 'clamp(44px, 8vw, 90px)', fontWeight: '700', color: '#fff', lineHeight: '1.0', margin: '0 auto 22px', letterSpacing: isAr ? '0' : '-1px', fontFamily: isAr ? "'Cairo', sans-serif" : "'Rajdhani', sans-serif", textShadow: '0 2px 40px rgba(0,0,0,0.8)' }}>
+          <h1 style={{ fontSize: isAr ? 'clamp(28px, 5vw, 52px)' : 'clamp(44px, 8vw, 90px)', fontWeight: '700', color: '#fff', lineHeight: isAr ? '1.4' : '1.0', margin: '0 auto 22px', letterSpacing: isAr ? '0' : '-1px', fontFamily: isAr ? "'Cairo', sans-serif" : "'Rajdhani', sans-serif", textShadow: '0 2px 40px rgba(0,0,0,0.8)' }}>
             {isAr ? <>اشتري وبع{' '}<span style={{ background: 'linear-gradient(135deg, #a78bfa 0%, #ec4899 50%, #60a5fa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>أي شيء</span>{' '}في الألعاب</> : <>BUY & SELL{' '}<span style={{ background: 'linear-gradient(135deg, #a78bfa 0%, #ec4899 50%, #60a5fa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>ANYTHING</span>{' '}IN GAMING</>}
           </h1>
 
@@ -271,5 +271,7 @@ useEffect(() => {
     </div>
   )
 }
+
+
 
 

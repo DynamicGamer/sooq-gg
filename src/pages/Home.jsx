@@ -83,10 +83,6 @@ useEffect(() => {
           <div style={{ position: 'absolute', top: '10%', left: '-100px', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
         </div>
 
-        <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '900px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(124,58,237,0.18)', border: '1px solid rgba(124,58,237,0.45)', borderRadius: '100px', padding: '6px 20px', fontSize: '13px', color: '#c4b5fd', marginBottom: '28px', fontWeight: '600' }}>
-            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10b981', display: 'inline-block', boxShadow: '0 0 8px #10b981' }} />
-            {isAr ? 'السوق الرقمي الأول للألعاب في المنطقة العربية' : '#1 Arabic Gaming Marketplace in MENA'}
           </div>
 
           <h1 style={{ fontSize: isAr ? 'clamp(28px, 5vw, 52px)' : 'clamp(44px, 8vw, 90px)', fontWeight: '700', color: '#fff', lineHeight: isAr ? '1.4' : '1.0', margin: '0 auto 22px', letterSpacing: isAr ? '0' : '-1px', fontFamily: isAr ? "'Cairo', sans-serif" : "'Rajdhani', sans-serif", textShadow: '0 2px 40px rgba(0,0,0,0.8)' }}>

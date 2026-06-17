@@ -4,22 +4,6 @@ import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
 import { GAMES, fetchListings } from '../lib/supabase'
 
-const GAME_GRADIENTS = {
-  'PUBG Mobile':         ['#f59e0b', '#92400e'],
-  'Free Fire':           ['#10b981', '#065f46'],
-  'Fortnite':            ['#6366f1', '#312e81'],
-  'Clash of Clans':      ['#f97316', '#9a3412'],
-  'Mobile Legends':      ['#8b5cf6', '#4c1d95'],
-  'Valorant':            ['#ef4444', '#7f1d1d'],
-  'FIFA Mobile':         ['#3b82f6', '#1e3a8a'],
-  'Genshin Impact':      ['#06b6d4', '#164e63'],
-  'Call of Duty Mobile': ['#84cc16', '#3f6212'],
-  'League of Legends':   ['#c084fc', '#581c87'],
-  'Steam Wallet':        ['#64748b', '#1e293b'],
-  'PlayStation':         ['#1d4ed8', '#1e3a8a'],
-}
-
-// Game images — stored locally in /public/games/
 const GAME_IMAGES = {
   'PUBG Mobile':         '/games/pubg.jpg',
   'Free Fire':           '/games/freefire.jpg',
@@ -35,26 +19,25 @@ const GAME_IMAGES = {
   'PlayStation':         '/games/psn.jpg',
 }
 
+const CATEGORIES = [
+  { id: 'topups',    icon: '⚡', label: 'Top-Ups',    labelAr: 'شحن رصيد' },
+  { id: 'accounts',  icon: '🎮', label: 'Accounts',   labelAr: 'حسابات' },
+  { id: 'currency',  icon: '💰', label: 'Currency',   labelAr: 'عملات' },
+  { id: 'items',     icon: '⚔️', label: 'Items',      labelAr: 'آيتمز' },
+  { id: 'boosting',  icon: '🚀', label: 'Boosting',   labelAr: 'بوستنق' },
+  { id: 'giftcards', icon: '🎁', label: 'Gift Cards', labelAr: 'بطاقات هدايا' },
+]
+
 export default function Home() {
   const { t, isAr } = useLang()
   const { addItem } = useCart()
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
-  const [activeCat, setActiveCat] = useState('topups')
   const [listings, setListings] = useState([])
 
-useEffect(() => {
-  fetchListings().then(data => setListings(data))
-}, [])
-
-  const cats = [
-    { id: 'topups',    label: t.nav.topups,    icon: '⚡' },
-    { id: 'accounts',  label: t.nav.accounts,  icon: '🎮' },
-    { id: 'currency',  label: t.nav.currency,  icon: '💰' },
-    { id: 'items',     label: t.nav.items,     icon: '⚔️' },
-    { id: 'boosting',  label: t.nav.boosting,  icon: '🚀' },
-    { id: 'giftcards', label: t.nav.giftcards, icon: '🎁' },
-  ]
+  useEffect(() => {
+    fetchListings().then(data => setListings(data))
+  }, [])
 
   const filteredGames = GAMES.filter(g =>
     !search ||
@@ -65,224 +48,194 @@ useEffect(() => {
   const getBadge = (key) => key === 'trusted' ? t.trusted : key === 'vip' ? t.vipSeller : null
 
   return (
-    <div style={{ background: '#08090f', fontFamily: isAr ? "'Cairo', sans-serif" : "'Rajdhani', 'Cairo', sans-serif" }}>
+    <div style={{ background: '#0c0a08', minHeight: '100vh', fontFamily: isAr ? "'Cairo', sans-serif" : "'Rajdhani', 'Cairo', sans-serif", direction: isAr ? 'rtl' : 'ltr' }}>
 
-      {/* ═══════════ HERO ═══════════ */}
-      <div style={{ position: 'relative', minHeight: '580px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 24px 80px', textAlign: 'center', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-          <div style={{ position: 'absolute', inset: 0, background: '#08090f' }} />
-          <div style={{ position: 'absolute', inset: 0, display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', opacity: 0.4 }}>
-            {['linear-gradient(160deg,#f59e0b44,#92400e88)','linear-gradient(160deg,#10b98144,#06564488)','linear-gradient(160deg,#6366f144,#312e8188)','linear-gradient(160deg,#ef444444,#7f1d1d88)','linear-gradient(160deg,#8b5cf644,#4c1d9588)','linear-gradient(160deg,#3b82f644,#1e3a8a88)'].map((bg, i) => (
-              <div key={i} style={{ background: bg, borderRight: '1px solid rgba(255,255,255,0.04)' }} />
-            ))}
-          </div>
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(8,9,15,0.6) 0%, rgba(8,9,15,0.1) 30%, rgba(8,9,15,0.2) 60%, rgba(8,9,15,1) 100%)' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(8,9,15,0.8) 0%, transparent 15%, transparent 85%, rgba(8,9,15,0.8) 100%)' }} />
-          <div style={{ position: 'absolute', top: '-120px', left: '50%', transform: 'translateX(-50%)', width: '900px', height: '600px', background: 'radial-gradient(ellipse, rgba(124,58,237,0.35) 0%, rgba(124,58,237,0.1) 40%, transparent 70%)', pointerEvents: 'none' }} />
-          <div style={{ position: 'absolute', top: '20%', right: '-100px', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(236,72,153,0.15) 0%, transparent 70%)', pointerEvents: 'none' }} />
-          <div style={{ position: 'absolute', top: '10%', left: '-100px', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
-        </div>
+      {/* HERO */}
+      <div style={{ position: 'relative', overflow: 'hidden', padding: '60px 24px 50px', textAlign: 'center' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, #0c0a08 0%, #1a1205 40%, #0f0c06 70%, #0c0a08 100%)' }} />
+        <div style={{ position: 'absolute', top: '-100px', left: '50%', transform: 'translateX(-50%)', width: '800px', height: '400px', background: 'radial-gradient(ellipse, rgba(201,168,76,0.15) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }} />
 
-        <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '900px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(124,58,237,0.18)', border: '1px solid rgba(124,58,237,0.45)', borderRadius: '100px', padding: '6px 20px', fontSize: '13px', color: '#c4b5fd', marginBottom: '28px', fontWeight: '600', display: 'none' }}>
-            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10b981', display: 'inline-block', boxShadow: '0 0 8px #10b981' }} />
-            {isAr ? 'السوق الرقمي الأول للألعاب في المنطقة العربية' : '#1 Arabic Gaming Marketplace in MENA'}
-          </div>
-
-          <h1 style={{ fontSize: 'clamp(44px, 8vw, 90px)', fontWeight: '700', color: '#fff', lineHeight: '1.0', margin: '0 auto 22px', letterSpacing: isAr ? '0' : '-1px', fontFamily: isAr ? "'Cairo', sans-serif" : "'Rajdhani', sans-serif", textShadow: '0 2px 40px rgba(0,0,0,0.8)' }}>
-            {isAr ? <>اشتري وبع{' '}<span style={{ background: 'linear-gradient(135deg, #a78bfa 0%, #ec4899 50%, #60a5fa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>أي شيء</span>{' '}في الألعاب</> : <>BUY & SELL{' '}<span style={{ background: 'linear-gradient(135deg, #a78bfa 0%, #ec4899 50%, #60a5fa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>ANYTHING</span>{' '}IN GAMING</>}
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: '800px', margin: '0 auto' }}>
+          <h1 style={{ fontSize: isAr ? 'clamp(32px, 5vw, 60px)' : 'clamp(40px, 6vw, 72px)', fontWeight: '800', color: '#f5f0e8', lineHeight: isAr ? '1.4' : '1.1', marginBottom: '16px', fontFamily: isAr ? "'Cairo', sans-serif" : "'Rajdhani', sans-serif", letterSpacing: isAr ? '0' : '-1px' }}>
+            {isAr ? (<>اشتري وبع{' '}<span style={{ background: 'linear-gradient(135deg, #c9a84c, #f5d485, #c9a84c)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>أي شيء</span>{' '}في الألعاب</>) : (<>BUY & SELL{' '}<span style={{ background: 'linear-gradient(135deg, #c9a84c, #f5d485, #c9a84c)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>ANYTHING</span>{' '}IN GAMING</>)}
           </h1>
-
-          <p style={{ color: '#94a3b8', fontSize: '18px', maxWidth: '540px', margin: '0 auto 44px', lineHeight: '1.7' }}>
+          <p style={{ color: '#a89880', fontSize: '17px', marginBottom: '36px', lineHeight: '1.7' }}>
             {isAr ? 'شحن رصيد، حسابات، آيتمز، وبوستنق — مع حماية كاملة بنظام الضمان' : 'Top-ups, accounts, items & boosting — with full escrow buyer protection'}
           </p>
 
-          <div style={{ maxWidth: '640px', margin: '0 auto 20px' }}>
-            <div style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.16)', borderRadius: '18px', display: 'flex', alignItems: 'center', padding: '7px 7px 7px 22px', backdropFilter: 'blur(20px)', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
-              <span style={{ fontSize: '18px', opacity: '0.5', flexShrink: 0, marginRight: '10px' }}>🔍</span>
-              <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && navigate(`/listings/topups?q=${search}`)} placeholder={isAr ? 'ابحث عن لعبة...' : 'Search for a game... PUBG, Free Fire, Valorant'} style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', color: '#fff', fontSize: '16px', padding: '10px 0', fontFamily: 'inherit' }} />
-              <button onClick={() => navigate(`/listings/topups?q=${search}`)} style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)', border: 'none', borderRadius: '13px', color: '#fff', padding: '14px 32px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap', boxShadow: '0 4px 20px rgba(124,58,237,0.55)', flexShrink: 0 }}>
-                {isAr ? 'بحث' : 'Search'}
-              </button>
-            </div>
-            <div style={{ display: 'flex', gap: '8px', marginTop: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
-              {['PUBG Mobile','Free Fire','Valorant','Mobile Legends','Fortnite'].map(g => (
-                <button key={g} onClick={() => navigate(`/listings/topups?q=${g}`)} style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '100px', padding: '5px 16px', fontSize: '13px', color: '#94a3b8', cursor: 'pointer', fontFamily: 'inherit' }}>{g}</button>
-              ))}
-            </div>
+          <div style={{ maxWidth: '600px', margin: '0 auto', background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '14px', display: 'flex', alignItems: 'center', padding: '6px 6px 6px 18px', backdropFilter: 'blur(20px)' }}>
+            <span style={{ fontSize: '18px', opacity: 0.5, marginRight: '10px' }}>🔍</span>
+            <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && navigate(`/listings/topups?q=${search}`)} placeholder={isAr ? 'ابحث عن لعبة...' : 'Search for a game... PUBG, Free Fire, Valorant'} style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', color: '#f5f0e8', fontSize: '15px', padding: '10px 0', fontFamily: 'inherit' }} />
+            <button onClick={() => navigate(`/listings/topups?q=${search}`)} style={{ background: 'linear-gradient(135deg, #c9a84c, #a07830)', border: 'none', borderRadius: '10px', color: '#0c0a08', padding: '12px 28px', fontSize: '15px', fontWeight: '800', cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap', boxShadow: '0 4px 16px rgba(201,168,76,0.4)' }}>
+              {isAr ? 'بحث' : 'Search'}
+            </button>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', maxWidth: '640px', margin: '28px auto 0', display: 'none', background: 'rgba(0,0,0,0.35)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.07)', backdropFilter: 'blur(20px)', overflow: 'hidden' }}>
-            {[{value:'240K+',label:isAr?'صفقة مكتملة':'Deals Done',color:'#a78bfa'},{value:'8K+',label:isAr?'بائع موثوق':'Trusted Sellers',color:'#34d399'},{value:'120+',label:isAr?'لعبة':'Games',color:'#60a5fa'},{value:'22',label:isAr?'دولة':'Countries',color:'#f472b6'}].map((s,i) => (
-              <div key={s.label} style={{ flex:'1', minWidth:'100px', padding:'20px 8px', borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.06)' : 'none', textAlign:'center' }}>
-                <div style={{ fontSize:'28px', fontWeight:'700', color:s.color, fontFamily:isAr?"'Cairo'":"'Rajdhani'", lineHeight:'1', marginBottom:'5px' }}>{s.value}</div>
-                <div style={{ fontSize:'11px', color:'#64748b' }}>{s.label}</div>
-              </div>
+          <div style={{ display: 'flex', gap: '8px', marginTop: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            {['PUBG Mobile', 'Free Fire', 'Valorant', 'Mobile Legends', 'Fortnite'].map(g => (
+              <button key={g} onClick={() => navigate(`/listings/topups?q=${g}`)} style={{ background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '100px', padding: '5px 16px', fontSize: '13px', color: '#a89880', cursor: 'pointer', fontFamily: 'inherit' }}>{g}</button>
             ))}
           </div>
         </div>
       </div>
 
       {/* TRUST BAR */}
-      <div style={{ background:'rgba(255,255,255,0.02)', borderTop:'1px solid rgba(255,255,255,0.05)', borderBottom:'1px solid rgba(255,255,255,0.05)', padding:'16px 24px', display:'flex', justifyContent:'center', gap:'48px', flexWrap:'wrap' }}>
-        {[{icon:'🛡️',text:isAr?'ضمان استرداد الأموال':'Money-back guarantee'},{icon:'⚡',text:isAr?'تسليم فوري':'Instant delivery'},{icon:'💎',text:isAr?'بائعون موثقون':'Verified sellers'},{icon:'🔒',text:isAr?'دفع آمن بالكريبتو':'Secure crypto escrow'}].map(b => (
-          <div key={b.text} style={{ display:'flex', alignItems:'center', gap:'8px', fontSize:'13px', color:'#64748b', fontWeight:'600' }}>
-            <span style={{ fontSize:'16px' }}>{b.icon}</span><span>{b.text}</span>
+      <div style={{ background: 'rgba(201,168,76,0.04)', borderTop: '1px solid rgba(201,168,76,0.1)', borderBottom: '1px solid rgba(201,168,76,0.1)', padding: '14px 24px', display: 'flex', justifyContent: 'center', gap: '48px', flexWrap: 'wrap' }}>
+        {[{ icon: '🛡️', text: isAr ? 'ضمان استرداد الأموال' : 'Money-back guarantee' }, { icon: '⚡', text: isAr ? 'تسليم فوري' : 'Instant delivery' }, { icon: '💎', text: isAr ? 'بائعون موثقون' : 'Verified sellers' }, { icon: '🔒', text: isAr ? 'دفع آمن بالكريبتو' : 'Secure crypto escrow' }].map(b => (
+          <div key={b.text} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#6b5a45', fontWeight: '600' }}>
+            <span>{b.icon}</span><span>{b.text}</span>
           </div>
         ))}
       </div>
 
-      <div style={{ maxWidth:'1200px', margin:'0 auto', padding:'48px 20px' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
 
-        {/* CATEGORY TABS */}
-        <div style={{ display:'flex', gap:'8px', marginBottom:'44px', overflowX:'auto', paddingBottom:'4px' }}>
-          {cats.map(c => (
-            <button key={c.id} onClick={() => setActiveCat(c.id)} style={{ background: activeCat===c.id ? 'linear-gradient(135deg,#7c3aed,#6d28d9)' : 'rgba(255,255,255,0.04)', border:`1px solid ${activeCat===c.id?'transparent':'rgba(255,255,255,0.08)'}`, color:activeCat===c.id?'#fff':'#94a3b8', padding:'12px 24px', borderRadius:'12px', fontSize:'15px', fontWeight:'700', whiteSpace:'nowrap', transition:'all 0.2s', cursor:'pointer', fontFamily:'inherit', boxShadow:activeCat===c.id?'0 4px 20px rgba(124,58,237,0.4)':'none' }}>{c.icon} {c.label}</button>
-          ))}
-        </div>
-
-        {/* GAMES SECTION HEADER */}
-        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'22px' }}>
-          <h2 style={{ fontSize:'28px', fontWeight:'700', color:'#fff', fontFamily:isAr?"'Cairo'":"'Rajdhani'", margin:0 }}>
-            {isAr ? '🎮 الألعاب الشائعة' : '🎮 POPULAR GAMES'}
+        {/* CATEGORIES */}
+        <div style={{ marginBottom: '48px' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#f5f0e8', marginBottom: '20px', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'", margin: '0 0 20px' }}>
+            {isAr ? '🛒 تصفح حسب الفئة' : '🛒 BROWSE BY CATEGORY'}
           </h2>
-          <Link to="/listings/topups" style={{ fontSize:'14px', color:'#7c3aed', fontWeight:'700', textDecoration:'none' }}>{isAr?'عرض الكل ←':'View All →'}</Link>
-        </div>
-
-        {/* GAMES GRID */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(170px,1fr))', gap:'14px', marginBottom:'56px' }}>
-          {filteredGames.map(game => {
-            const [c1, c2] = GAME_GRADIENTS[game.name] || ['#7c3aed','#4f46e5']
-            return (
-              <Link key={game.id} to={`/listings/topups?game=${game.id}`} style={{ display:'block', borderRadius:'16px', overflow:'hidden', border:'1px solid rgba(255,255,255,0.07)', background:'#0d0e1a', transition:'all 0.25s', textDecoration:'none' }}
-                onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-6px)';e.currentTarget.style.borderColor=c1+'aa';e.currentTarget.style.boxShadow=`0 20px 40px rgba(0,0,0,0.5),0 0 0 1px ${c1}55`}}
-                onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)';e.currentTarget.style.borderColor='rgba(255,255,255,0.07)';e.currentTarget.style.boxShadow='none'}}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '12px' }}>
+            {CATEGORIES.map(cat => (
+              <Link key={cat.id} to={`/listings/${cat.id}`} style={{ background: 'linear-gradient(145deg, #141009, #1c1610)', border: '1px solid rgba(201,168,76,0.12)', borderRadius: '14px', padding: '20px 16px', textAlign: 'center', textDecoration: 'none', transition: 'all 0.2s', display: 'block' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.45)'; e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(201,168,76,0.15)' }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.12)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
               >
-                {/* Game image with gradient fallback */}
-                <div style={{ height:'120px', position:'relative', overflow:'hidden', background:`linear-gradient(145deg,${c1}55,${c2}88)` }}>
-                  <img
-                    src={GAME_IMAGES[game.name]}
-                    alt={game.name}
-                    style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center top', display:'block' }}
-                    onError={e=>{
-                      e.target.style.display='none'
-                      e.target.parentNode.style.display='flex'
-                      e.target.parentNode.style.alignItems='center'
-                      e.target.parentNode.style.justifyContent='center'
-                      e.target.parentNode.style.fontSize='48px'
-                      e.target.parentNode.innerHTML = `<span style="filter:drop-shadow(0 4px 8px rgba(0,0,0,0.5))">${game.img}</span>`
-                    }}
-                  />
-                  <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top,rgba(13,14,26,0.95) 0%,transparent 60%)' }} />
-                  {game.hot && <div style={{ position:'absolute', top:'10px', left:'10px', background:'linear-gradient(135deg,#ef4444,#dc2626)', borderRadius:'6px', fontSize:'9px', color:'#fff', padding:'3px 9px', fontWeight:'800', letterSpacing:'1px', boxShadow:'0 2px 8px rgba(239,68,68,0.6)' }}>HOT</div>}
-                </div>
-                <div style={{ padding:'12px 14px 16px' }}>
-                  <div style={{ fontSize:'14px', fontWeight:'700', color:'#fff', marginBottom:'8px', fontFamily:isAr?"'Cairo'":"'Rajdhani'" }}>{isAr?game.nameAr:game.name}</div>
-                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-                    <div style={{ fontSize:'11px', color:c1, background:`${c1}18`, border:`1px solid ${c1}40`, borderRadius:'5px', padding:'2px 8px', fontWeight:'600' }}>{isAr?game.tagAr:game.tagEn}</div>
-                    <div style={{ fontSize:'11px', color:'#475569', display:'flex', alignItems:'center', gap:'4px' }}>
-                      <span style={{ width:'5px', height:'5px', borderRadius:'50%', background:'#10b981', display:'inline-block', boxShadow:'0 0 4px #10b981' }} />{game.sellers}
-                    </div>
-                  </div>
-                </div>
+                <div style={{ fontSize: '28px', marginBottom: '10px' }}>{cat.icon}</div>
+                <div style={{ fontSize: '14px', fontWeight: '700', color: '#f5f0e8', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'" }}>{isAr ? cat.labelAr : cat.label}</div>
               </Link>
-            )
-          })}
-        </div>
-
-        {/* BEST DEALS HEADER */}
-        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'22px' }}>
-          <h2 style={{ fontSize:'28px', fontWeight:'700', color:'#fff', fontFamily:isAr?"'Cairo'":"'Rajdhani'", margin:0 }}>{isAr?'⚡ أفضل العروض الآن':'⚡ BEST DEALS RIGHT NOW'}</h2>
-          <div style={{ display:'flex', gap:'6px' }}>
-            {(isAr?['الأرخص','الأعلى تقييماً','الأكثر مبيعاً']:['Cheapest','Top Rated','Best Selling']).map(f=>(
-              <button key={f} style={{ background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'#64748b', padding:'5px 12px', borderRadius:'8px', cursor:'pointer', fontSize:'12px', fontFamily:'inherit' }}>{f}</button>
             ))}
           </div>
         </div>
 
-        {/* listings */}
-        <div style={{ display:'flex', flexDirection:'column', gap:'10px', marginBottom:'56px' }}>
-          {listings.map(l=>{
-            const badge=getBadge(l.badge_key)
-            const delivery=l.delivery_key==='instant'?(isAr?'فوري':'Instant'):(isAr?'دقائق':'Minutes')
-            const game=GAMES.find(g=>g.name===l.game)
-            const [gc1]=GAME_GRADIENTS[l.game]||['#7c3aed']
-            return (
-              <div key={l.id}
-                style={{ background:'#0d0e1a', border:'1px solid rgba(255,255,255,0.07)', borderRadius:'16px', padding:'18px 22px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:'16px', flexWrap:'wrap', cursor:'pointer', transition:'all 0.2s' }}
-                onClick={()=>navigate(`/listing/${l.id}`)}
-                onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(124,58,237,0.45)';e.currentTarget.style.background='#10111f';e.currentTarget.style.transform='translateX(3px)'}}
-                onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(255,255,255,0.07)';e.currentTarget.style.background='#0d0e1a';e.currentTarget.style.transform='translateX(0)'}}
+        {/* POPULAR GAMES */}
+        <div style={{ marginBottom: '48px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#f5f0e8', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'", margin: 0 }}>{isAr ? '🎮 الألعاب الشائعة' : '🎮 POPULAR GAMES'}</h2>
+            <Link to="/listings/topups" style={{ fontSize: '13px', color: '#c9a84c', fontWeight: '700' }}>{isAr ? 'عرض الكل ←' : 'View All →'}</Link>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: '14px' }}>
+            {filteredGames.map(game => (
+              <Link key={game.id} to={`/listings/topups?game=${game.id}`} style={{ display: 'block', borderRadius: '14px', overflow: 'hidden', border: '1px solid rgba(201,168,76,0.1)', background: '#141009', transition: 'all 0.25s', textDecoration: 'none' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(201,168,76,0.4)'; e.currentTarget.style.boxShadow = '0 16px 32px rgba(0,0,0,0.5)' }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(201,168,76,0.1)'; e.currentTarget.style.boxShadow = 'none' }}
               >
-                <div style={{ display:'flex', alignItems:'center', gap:'14px', flex:1, minWidth:'180px' }}>
-                  <div style={{ width:'56px', height:'56px', borderRadius:'14px', overflow:'hidden', border:`1px solid ${gc1}40`, flexShrink:0, background:`linear-gradient(135deg,${gc1}44,${gc1}22)` }}>
-                    <img src={GAME_IMAGES[l.game]} alt={l.game} style={{ width:'100%', height:'100%', objectFit:'cover' }} onError={e=>{e.target.style.display='none';e.target.parentNode.style.display='flex';e.target.parentNode.style.alignItems='center';e.target.parentNode.style.justifyContent='center';e.target.parentNode.style.fontSize='24px';e.target.parentNode.innerHTML=game?.img||'🎮'}} />
-                  </div>
-                  <div>
-                    <div style={{ fontWeight:'700', fontSize:'17px', color:'#fff', marginBottom:'3px', fontFamily:isAr?"'Cairo'":"'Rajdhani'" }}>{isAr?l.type_ar:l.type_en}</div>
-                    <div style={{ fontSize:'12px', color:'#64748b' }}>{l.game}</div>
+                <div style={{ height: '120px', position: 'relative', overflow: 'hidden', background: `linear-gradient(145deg, ${game.color}55, ${game.color}22)` }}>
+                  <img src={GAME_IMAGES[game.name]} alt={game.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }} onError={e => { e.target.style.display = 'none' }} />
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(20,16,9,0.95) 0%, transparent 60%)' }} />
+                  {game.hot && <div style={{ position: 'absolute', top: '8px', left: '8px', background: 'linear-gradient(135deg, #c9a84c, #a07830)', borderRadius: '5px', fontSize: '9px', color: '#0c0a08', padding: '2px 8px', fontWeight: '800' }}>HOT</div>}
+                </div>
+                <div style={{ padding: '12px 14px 14px' }}>
+                  <div style={{ fontSize: '14px', fontWeight: '700', color: '#f5f0e8', marginBottom: '8px', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'" }}>{isAr ? game.nameAr : game.name}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ fontSize: '11px', color: '#c9a84c', background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '5px', padding: '2px 8px', fontWeight: '600' }}>{isAr ? game.tagAr : game.tagEn}</div>
+                    <div style={{ fontSize: '11px', color: '#6b5a45', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />{game.sellers}
+                    </div>
                   </div>
                 </div>
-                <div style={{ display:'flex', alignItems:'center', gap:'10px', flex:1, minWidth:'160px' }}>
-                  <div style={{ width:'38px', height:'38px', background:'linear-gradient(135deg,#7c3aed,#ec4899)', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'15px', color:'#fff', fontWeight:'800', flexShrink:0 }}>{(isAr?l.seller:l.seller_en)[0]}</div>
-                  <div>
-                    <div style={{ fontSize:'14px', color:'#e2e8f0', fontWeight:'700' }}>{isAr?l.seller:l.seller_en}</div>
-                    <div style={{ fontSize:'11px', color:'#64748b' }}>⭐ {l.rating} · {l.sales.toLocaleString()} {isAr?'صفقة':'deals'}</div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* BEST DEALS */}
+        <div style={{ marginBottom: '48px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#f5f0e8', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'", margin: 0 }}>{isAr ? '⚡ أفضل العروض الآن' : '⚡ BEST DEALS RIGHT NOW'}</h2>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {listings.map(l => {
+              const badge = getBadge(l.badge_key)
+              const delivery = l.delivery_key === 'instant' ? (isAr ? 'فوري' : 'Instant') : (isAr ? 'دقائق' : 'Minutes')
+              const game = GAMES.find(g => g.name === l.game)
+              return (
+                <div key={l.id} style={{ background: 'linear-gradient(145deg, #141009, #1c1610)', border: '1px solid rgba(201,168,76,0.1)', borderRadius: '14px', padding: '18px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap', cursor: 'pointer', transition: 'all 0.2s' }}
+                  onClick={() => navigate(`/listing/${l.id}`)}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.35)'; e.currentTarget.style.transform = 'translateX(3px)' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.1)'; e.currentTarget.style.transform = 'translateX(0)' }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1, minWidth: '180px' }}>
+                    <div style={{ width: '52px', height: '52px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(201,168,76,0.2)', flexShrink: 0 }}>
+                      <img src={GAME_IMAGES[l.game]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none' }} />
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: '700', fontSize: '16px', color: '#f5f0e8', marginBottom: '3px', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'" }}>{isAr ? l.type_ar : l.type_en}</div>
+                      <div style={{ fontSize: '12px', color: '#6b5a45' }}>{l.game}</div>
+                    </div>
                   </div>
-                  {badge&&<div style={{ background:l.badge_key==='vip'?'rgba(124,58,237,0.15)':'rgba(16,185,129,0.12)', border:`1px solid ${l.badge_key==='vip'?'rgba(124,58,237,0.4)':'rgba(16,185,129,0.3)'}`, borderRadius:'6px', fontSize:'10px', color:l.badge_key==='vip'?'#a78bfa':'#34d399', padding:'2px 8px', fontWeight:'700', whiteSpace:'nowrap' }}>{badge}</div>}
-                </div>
-                <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
-                  <div style={{ textAlign:isAr?'right':'left' }}>
-                    <div style={{ fontSize:'26px', fontWeight:'700', color:'#fff', lineHeight:'1', fontFamily:isAr?"'Cairo'":"'Rajdhani'" }}>${l.price}</div>
-                    <div style={{ fontSize:'11px', color:'#10b981', marginTop:'3px', fontWeight:'600' }}>⚡ {delivery}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: '160px' }}>
+                    <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg, #c9a84c, #a07830)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', color: '#0c0a08', fontWeight: '800', flexShrink: 0 }}>
+                      {(isAr ? l.seller : l.seller_en)?.[0] || '?'}
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '14px', color: '#f5f0e8', fontWeight: '700' }}>{isAr ? l.seller : l.seller_en}</div>
+                      <div style={{ fontSize: '11px', color: '#6b5a45' }}>⭐ {l.rating} · {l.sales?.toLocaleString()} {isAr ? 'صفقة' : 'deals'}</div>
+                    </div>
+                    {badge && <div style={{ background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.3)', borderRadius: '5px', fontSize: '10px', color: '#c9a84c', padding: '2px 8px', fontWeight: '700' }}>{badge}</div>}
                   </div>
-                  <button style={{ background:'linear-gradient(135deg,#7c3aed,#6d28d9)', border:'none', color:'#fff', padding:'12px 22px', borderRadius:'12px', cursor:'pointer', fontSize:'15px', fontWeight:'700', whiteSpace:'nowrap', fontFamily:'inherit', boxShadow:'0 4px 14px rgba(124,58,237,0.4)', transition:'all 0.2s' }}
-                    onClick={e=>{e.stopPropagation();addItem({...l,name:isAr?l.type_ar:l.type_en})}}
-                    onMouseEnter={e=>{e.currentTarget.style.transform='scale(1.05)';e.currentTarget.style.boxShadow='0 6px 22px rgba(124,58,237,0.6)'}}
-                    onMouseLeave={e=>{e.currentTarget.style.transform='scale(1)';e.currentTarget.style.boxShadow='0 4px 14px rgba(124,58,237,0.4)'}}
-                  >{isAr?'شراء الآن':'Buy Now'}</button>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div>
+                      <div style={{ fontSize: '24px', fontWeight: '800', color: '#f5f0e8', lineHeight: '1', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'" }}>${l.price}</div>
+                      <div style={{ fontSize: '11px', color: '#10b981', marginTop: '3px', fontWeight: '600' }}>⚡ {delivery}</div>
+                    </div>
+                    <button style={{ background: 'linear-gradient(135deg, #c9a84c, #a07830)', border: 'none', color: '#0c0a08', padding: '11px 20px', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: '800', whiteSpace: 'nowrap', fontFamily: 'inherit', boxShadow: '0 4px 12px rgba(201,168,76,0.35)', transition: 'all 0.2s' }}
+                      onClick={e => { e.stopPropagation(); addItem({ ...l, name: isAr ? l.type_ar : l.type_en }) }}
+                      onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)' }}
+                      onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)' }}
+                    >{isAr ? 'شراء الآن' : 'Buy Now'}</button>
+                  </div>
                 </div>
+              )
+            })}
+            {listings.length === 0 && (
+              <div style={{ background: 'linear-gradient(145deg, #141009, #1c1610)', border: '1px solid rgba(201,168,76,0.1)', borderRadius: '14px', padding: '48px', textAlign: 'center', color: '#6b5a45' }}>
+                {isAr ? 'لا توجد عروض حالياً' : 'No listings yet — be the first seller!'}
               </div>
-            )
-          })}
+            )}
+          </div>
         </div>
 
         {/* HOW IT WORKS */}
-        <div style={{ background:'#0d0e1a', border:'1px solid rgba(255,255,255,0.07)', borderRadius:'24px', padding:'52px 40px', marginBottom:'32px', textAlign:'center' }}>
-          <h2 style={{ fontSize:'34px', fontWeight:'700', color:'#fff', margin:'0 0 10px', fontFamily:isAr?"'Cairo'":"'Rajdhani'" }}>{isAr?'كيف يعمل سوق.gg؟':'HOW SOOQ.GG WORKS'}</h2>
-          <p style={{ color:'#64748b', fontSize:'16px', marginBottom:'44px' }}>{isAr?'آمن، سريع، وسهل':'Safe, fast, and simple'}</p>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))', gap:'28px' }}>
-            {(isAr?[{n:'١',title:'اختر ما تريد',desc:'ابحث من مئات الخيارات',icon:'🔍',color:'#7c3aed'},{n:'٢',title:'اختر البائع',desc:'قارن الأسعار والتقييمات',icon:'👤',color:'#ec4899'},{n:'٣',title:'ادفع بأمان',desc:'مبلغك محفوظ حتى تستلم',icon:'🛡️',color:'#3b82f6'},{n:'٤',title:'استلم فوراً',desc:'أغلب الطلبات في دقائق',icon:'⚡',color:'#10b981'}]:[{n:'01',title:'Choose',desc:'Browse hundreds of listings',icon:'🔍',color:'#7c3aed'},{n:'02',title:'Pick a Seller',desc:'Compare prices & ratings',icon:'👤',color:'#ec4899'},{n:'03',title:'Pay Safely',desc:'Funds held in escrow',icon:'🛡️',color:'#3b82f6'},{n:'04',title:'Receive',desc:'Most orders in minutes',icon:'⚡',color:'#10b981'}]).map(s=>(
+        <div style={{ background: 'linear-gradient(145deg, #141009, #1c1610)', border: '1px solid rgba(201,168,76,0.12)', borderRadius: '20px', padding: '48px 40px', marginBottom: '32px', textAlign: 'center' }}>
+          <h2 style={{ fontSize: '28px', fontWeight: '800', color: '#f5f0e8', margin: '0 0 8px', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'" }}>{isAr ? 'كيف يعمل سوق.gg؟' : 'HOW SOOQ.GG WORKS'}</h2>
+          <p style={{ color: '#6b5a45', fontSize: '15px', marginBottom: '40px' }}>{isAr ? 'آمن، سريع، وسهل' : 'Safe, fast, and simple'}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '24px' }}>
+            {(isAr ? [
+              { n: '١', title: 'اختر ما تريد', desc: 'ابحث من مئات الخيارات', icon: '🔍', color: '#c9a84c' },
+              { n: '٢', title: 'اختر البائع', desc: 'قارن الأسعار والتقييمات', icon: '👤', color: '#10b981' },
+              { n: '٣', title: 'ادفع بأمان', desc: 'مبلغك محفوظ حتى تستلم', icon: '🛡️', color: '#3b82f6' },
+              { n: '٤', title: 'استلم فوراً', desc: 'أغلب الطلبات في دقائق', icon: '⚡', color: '#c9a84c' },
+            ] : [
+              { n: '01', title: 'Choose', desc: 'Browse hundreds of listings', icon: '🔍', color: '#c9a84c' },
+              { n: '02', title: 'Pick a Seller', desc: 'Compare prices & ratings', icon: '👤', color: '#10b981' },
+              { n: '03', title: 'Pay Safely', desc: 'Funds held in escrow', icon: '🛡️', color: '#3b82f6' },
+              { n: '04', title: 'Receive', desc: 'Most orders in minutes', icon: '⚡', color: '#c9a84c' },
+            ]).map(s => (
               <div key={s.n}>
-                <div style={{ width:'70px', height:'70px', background:`${s.color}18`, border:`1px solid ${s.color}40`, borderRadius:'20px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'30px', margin:'0 auto 18px', boxShadow:`0 8px 28px ${s.color}25` }}>{s.icon}</div>
-                <div style={{ fontSize:isAr?'15px':'24px', fontWeight:'700', color:s.color, marginBottom:'6px', fontFamily:isAr?"'Cairo'":"'Rajdhani'" }}>{s.n}</div>
-                <div style={{ fontSize:'18px', fontWeight:'700', color:'#fff', marginBottom:'7px', fontFamily:isAr?"'Cairo'":"'Rajdhani'" }}>{s.title}</div>
-                <div style={{ fontSize:'13px', color:'#64748b', lineHeight:'1.6' }}>{s.desc}</div>
+                <div style={{ width: '60px', height: '60px', background: `${s.color}15`, border: `1px solid ${s.color}35`, borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '26px', margin: '0 auto 16px' }}>{s.icon}</div>
+                <div style={{ fontSize: isAr ? '14px' : '22px', fontWeight: '700', color: s.color, marginBottom: '5px', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'" }}>{s.n}</div>
+                <div style={{ fontSize: '16px', fontWeight: '700', color: '#f5f0e8', marginBottom: '6px', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'" }}>{s.title}</div>
+                <div style={{ fontSize: '13px', color: '#6b5a45', lineHeight: '1.6' }}>{s.desc}</div>
               </div>
             ))}
           </div>
         </div>
 
         {/* SELLER CTA */}
-        <div style={{ position:'relative', overflow:'hidden', background:'linear-gradient(135deg,#1a0d33 0%,#0d1a30 100%)', border:'1px solid rgba(124,58,237,0.35)', borderRadius:'24px', padding:'52px 44px', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:'28px' }}>
-          <div style={{ position:'absolute', top:'-80px', right:'-80px', width:'300px', height:'300px', background:'radial-gradient(circle,rgba(124,58,237,0.3) 0%,transparent 70%)', pointerEvents:'none' }} />
-          <div style={{ position:'absolute', bottom:'-60px', left:'25%', width:'250px', height:'250px', background:'radial-gradient(circle,rgba(236,72,153,0.2) 0%,transparent 70%)', pointerEvents:'none' }} />
-          <div style={{ position:'relative' }}>
-            <h3 style={{ fontSize:'34px', fontWeight:'700', color:'#fff', margin:'0 0 12px', fontFamily:isAr?"'Cairo'":"'Rajdhani'" }}>{isAr?'💰 ابدأ البيع على سوق.gg':'💰 START SELLING ON SOOQ.GG'}</h3>
-            <p style={{ color:'#94a3b8', fontSize:'16px', margin:0, maxWidth:'440px', lineHeight:'1.7' }}>{isAr?'انضم لآلاف البائعين وابدأ كسب المال — مجاني تماماً بدون رسوم مسبقة':'Join thousands of sellers and earn real money — free to start, no upfront fees'}</p>
+        <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(135deg, #1a1205 0%, #0f0c06 100%)', border: '1px solid rgba(201,168,76,0.3)', borderRadius: '20px', padding: '48px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '24px' }}>
+          <div style={{ position: 'absolute', top: '-60px', right: '-60px', width: '250px', height: '250px', background: 'radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 70%)', pointerEvents: 'none' }} />
+          <div style={{ position: 'relative' }}>
+            <h3 style={{ fontSize: '28px', fontWeight: '800', color: '#f5f0e8', margin: '0 0 10px', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'" }}>{isAr ? '💰 ابدأ البيع على سوق.gg' : '💰 START SELLING ON SOOQ.GG'}</h3>
+            <p style={{ color: '#a89880', fontSize: '15px', margin: 0, maxWidth: '400px', lineHeight: '1.7' }}>{isAr ? 'انضم لآلاف البائعين وابدأ كسب المال — مجاناً تماماً بدون رسوم مسبقة' : 'Join thousands of sellers and earn real money — free to start, no upfront fees'}</p>
           </div>
-          <div style={{ display:'flex', gap:'12px', flexWrap:'wrap', position:'relative' }}>
-            <button style={{ background:'transparent', border:'1px solid rgba(124,58,237,0.5)', color:'#a78bfa', padding:'15px 30px', borderRadius:'12px', cursor:'pointer', fontSize:'16px', fontWeight:'700', fontFamily:'inherit' }}>{isAr?'اعرف أكثر':'Learn More'}</button>
-            <Link to="/auth?mode=register" style={{ background:'linear-gradient(135deg,#7c3aed,#6d28d9)', color:'#fff', padding:'15px 30px', borderRadius:'12px', fontSize:'16px', fontWeight:'700', textDecoration:'none', display:'inline-block', boxShadow:'0 4px 24px rgba(124,58,237,0.5)', fontFamily:'inherit' }}>{isAr?'سجّل كبائع ←':'Register as Seller →'}</Link>
-          </div>
+          <Link to="/auth?mode=register" style={{ background: 'linear-gradient(135deg, #c9a84c, #a07830)', color: '#0c0a08', padding: '14px 28px', borderRadius: '10px', fontSize: '15px', fontWeight: '800', textDecoration: 'none', display: 'inline-block', boxShadow: '0 4px 20px rgba(201,168,76,0.4)', fontFamily: 'inherit' }}>
+            {isAr ? 'سجّل كبائع ←' : 'Register as Seller →'}
+          </Link>
         </div>
+
       </div>
     </div>
   )
 }
-
-
-
-
-
-

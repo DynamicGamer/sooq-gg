@@ -17,12 +17,12 @@ export default function listings() {
   const [sortBy, setSortBy] = useState('default')
   const [priceMin, setPriceMin] = useState('')
   const [priceMax, setPriceMax] = useState('')
-const [activeCat, setActiveCat] = useState(category || 'topups')
-const [listings, setListings] = useState([])
+  const [activeCat, setActiveCat] = useState(category || 'topups')
+  const [listings, setListings] = useState([])
 
-useEffect(() => {
-  fetchListings().then(data => setListings(data))
-}, [])
+  useEffect(() => {
+    fetchListings().then(data => setListings(data))
+  }, [])
 
   const cats = [
     { id: 'topups', label: t.nav.topups, icon: '⚡' },
@@ -194,3 +194,4 @@ useEffect(() => {
     </div>
   )
 }
+

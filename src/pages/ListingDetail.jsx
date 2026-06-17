@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
@@ -17,7 +17,7 @@ export default function ListingDetail() {
   const navigate = useNavigate()
   const tl = t.listing
 
-  const listing = LISTINGS.find(l => l.id === id)
+  const [listings, setListings] = useState([])`n  const [listing, setListing] = useState(null)`n`n  useEffect(() => {`n    fetchListings().then(data => {`n      setListings(data)`n      setListing(data.find(l => l.id === id))`n    })`n  }, [id])
   if (!listing) return (
     <div className="page-container" style={{ textAlign: 'center', paddingTop: '60px' }}>
       <div style={{ fontSize: '48px', marginBottom: '16px' }}>😕</div>
@@ -160,3 +160,5 @@ export default function ListingDetail() {
     </div>
   )
 }
+
+

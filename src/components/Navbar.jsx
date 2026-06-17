@@ -39,7 +39,7 @@ export default function Navbar() {
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
           <div style={{ width: '32px', height: '32px', background: 'linear-gradient(135deg, #c9a84c, #a07830)', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', boxShadow: '0 4px 12px rgba(201,168,76,0.4)' }}>⚡</div>
           <span style={{ fontSize: '20px', fontWeight: '900', color: '#ffffff', letterSpacing: '-0.5px' }}>
-            {t.logo}<span style={{ color: '#c9a84c' }}>.gg</span>
+            <span style={{ color: "#ffffff" }}>Sooq</span><span style={{ color: "#c9a84c" }}>GG</span>
           </span>
         </Link>
 

@@ -81,9 +81,15 @@ useEffect(() => {
           <div style={{ position: 'absolute', top: '-120px', left: '50%', transform: 'translateX(-50%)', width: '900px', height: '600px', background: 'radial-gradient(ellipse, rgba(124,58,237,0.35) 0%, rgba(124,58,237,0.1) 40%, transparent 70%)', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', top: '20%', right: '-100px', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(236,72,153,0.15) 0%, transparent 70%)', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', top: '10%', left: '-100px', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        </div>
+
+        <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '900px' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(124,58,237,0.18)', border: '1px solid rgba(124,58,237,0.45)', borderRadius: '100px', padding: '6px 20px', fontSize: '13px', color: '#c4b5fd', marginBottom: '28px', fontWeight: '600' }}>
+            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10b981', display: 'inline-block', boxShadow: '0 0 8px #10b981' }} />
+            {isAr ? 'السوق الرقمي الأول للألعاب في المنطقة العربية' : '#1 Arabic Gaming Marketplace in MENA'}
           </div>
 
-          <h1 style={{ fontSize: isAr ? 'clamp(28px, 5vw, 52px)' : 'clamp(44px, 8vw, 90px)', fontWeight: '700', color: '#fff', lineHeight: isAr ? '1.4' : '1.0', margin: '0 auto 22px', letterSpacing: isAr ? '0' : '-1px', fontFamily: isAr ? "'Cairo', sans-serif" : "'Rajdhani', sans-serif", textShadow: '0 2px 40px rgba(0,0,0,0.8)' }}>
+          <h1 style={{ fontSize: 'clamp(44px, 8vw, 90px)', fontWeight: '700', color: '#fff', lineHeight: '1.0', margin: '0 auto 22px', letterSpacing: isAr ? '0' : '-1px', fontFamily: isAr ? "'Cairo', sans-serif" : "'Rajdhani', sans-serif", textShadow: '0 2px 40px rgba(0,0,0,0.8)' }}>
             {isAr ? <>اشتري وبع{' '}<span style={{ background: 'linear-gradient(135deg, #a78bfa 0%, #ec4899 50%, #60a5fa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>أي شيء</span>{' '}في الألعاب</> : <>BUY & SELL{' '}<span style={{ background: 'linear-gradient(135deg, #a78bfa 0%, #ec4899 50%, #60a5fa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>ANYTHING</span>{' '}IN GAMING</>}
           </h1>
 
@@ -105,8 +111,16 @@ useEffect(() => {
               ))}
             </div>
           </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', maxWidth: '640px', margin: '28px auto 0', background: 'rgba(0,0,0,0.35)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.07)', backdropFilter: 'blur(20px)', overflow: 'hidden' }}>
+            {[{value:'240K+',label:isAr?'صفقة مكتملة':'Deals Done',color:'#a78bfa'},{value:'8K+',label:isAr?'بائع موثوق':'Trusted Sellers',color:'#34d399'},{value:'120+',label:isAr?'لعبة':'Games',color:'#60a5fa'},{value:'22',label:isAr?'دولة':'Countries',color:'#f472b6'}].map((s,i) => (
+              <div key={s.label} style={{ flex:'1', minWidth:'100px', padding:'20px 8px', borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.06)' : 'none', textAlign:'center' }}>
+                <div style={{ fontSize:'28px', fontWeight:'700', color:s.color, fontFamily:isAr?"'Cairo'":"'Rajdhani'", lineHeight:'1', marginBottom:'5px' }}>{s.value}</div>
+                <div style={{ fontSize:'11px', color:'#64748b' }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
       </div>
 
       {/* TRUST BAR */}
@@ -266,7 +280,5 @@ useEffect(() => {
     </div>
   )
 }
-
-
 
 

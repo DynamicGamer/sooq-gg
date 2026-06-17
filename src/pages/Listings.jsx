@@ -17,6 +17,7 @@ export default function listings() {
   const [sortBy, setSortBy] = useState('default')
   const [priceMin, setPriceMin] = useState('')
   const [priceMax, setPriceMax] = useState('')
+const [activeCat, setActiveCat] = useState(category || 'topups')
 const [listings, setListings] = useState([])
 
 useEffect(() => {

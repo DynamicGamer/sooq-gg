@@ -54,7 +54,7 @@ export default function Home() {
       <div style={{ position: 'relative', overflow: 'hidden', padding: '60px 24px 50px', textAlign: 'center' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, #0c0a08 0%, #1a1205 40%, #0f0c06 70%, #0c0a08 100%)' }} />
         <div style={{ position: 'absolute', top: '-100px', left: '50%', transform: 'translateX(-50%)', width: '800px', height: '400px', background: 'radial-gradient(ellipse, rgba(201,168,76,0.15) 0%, transparent 70%)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '200px', background: 'linear-gradient(to top, rgba(201,168,76,0.08) 0%, transparent 100%)', pointerEvents: 'none' }} />
 
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '800px', margin: '0 auto' }}>
           <h1 style={{ fontSize: isAr ? 'clamp(32px, 5vw, 60px)' : 'clamp(40px, 6vw, 72px)', fontWeight: '800', color: '#ffffff', lineHeight: isAr ? '1.4' : '1.1', marginBottom: '16px', fontFamily: isAr ? "'Cairo', sans-serif" : "'Rajdhani', sans-serif", letterSpacing: isAr ? '0' : '-1px' }}>
@@ -239,3 +239,4 @@ export default function Home() {
     </div>
   )
 }
+

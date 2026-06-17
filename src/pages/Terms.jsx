@@ -66,15 +66,6 @@ export default function Terms() {
           </div>
         ))}
 
-        <div style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '14px', padding: '24px', textAlign: 'center' }}>
-          <p style={{ color: '#9a8570', fontSize: '14px', marginBottom: '16px' }}>
-            {isAr ? 'هل لديك أسئلة حول شروطنا؟' : 'Have questions about our terms?'}
-          </p>
-          <a href="mailto:support@sooqgg.com" style={{ color: '#c9a84c', fontWeight: '700', fontSize: '14px' }}>
-            support@sooqgg.com
-          </a>
-        </div>
-      </div>
     </div>
   )
 }

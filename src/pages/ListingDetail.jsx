@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
-import { LISTINGS, GAMES } from '../lib/supabase'
+import { GAMES, fetchListings } from '../lib/supabase'
 
 const MOCK_REVIEWS = [
   { user: 'Ahmed_Jo', rating: 5, comment: 'سريع جداً وموثوق، أنصح بشدة', commentEn: 'Super fast and reliable, highly recommend', date: '2025-05-10' },

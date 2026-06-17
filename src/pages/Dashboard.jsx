@@ -6,10 +6,7 @@ import { supabase, fetchListings } from '../lib/supabase'
 import MessagesInbox from '../components/MessagesInbox'
 import { useState as useStateMsg, useEffect as useEffectMsg } from 'react'
 
-const MOCK_ORDERS = [
-  { id: 'o1', buyer: 'Ahmed_JO', item: '660 UC', qty: 2, total: '6.40', status: 'pending', date: '2025-06-10' },
-  { id: 'o2', buyer: 'KSA_Player', item: '520 Diamonds', qty: 1, total: '2.80', status: 'completed', date: '2025-06-09' },
-]
+const MOCK_ORDERS = []
 
 const GAMES_LIST = ['PUBG Mobile','Free Fire','Fortnite','Clash of Clans','Mobile Legends','Valorant','FIFA Mobile','Genshin Impact']
 
@@ -35,6 +32,14 @@ export default function Dashboard() {
   useEffect(() => {
     fetchListings().then(data => {
       setListings(data.map(l => ({ ...l, typeEn: l.type_en, typeAr: l.type_ar, earnings: '0.00', status: 'active' })))
+    })
+  }, [])
+
+  const [orders, setOrders] = useState([])
+
+  useEffect(() => {
+    supabase.from('escrow_orders').select('*').then(({ data }) => {
+      if (data) setOrders(data)
     })
   }, [])
 
@@ -72,7 +77,7 @@ export default function Dashboard() {
 
   const statsData = [
     { label: td.stats[0], value: `$${totalEarnings}`, icon: '💰' },
-    { label: td.stats[1], value: MOCK_ORDERS.filter(o => o.status === 'pending').length, icon: '📦' },
+    { label: td.stats[1], value: orders.filter(o => o.status === 'pending').length, icon: '📦' },
     { label: td.stats[2], value: '4.9 ⭐', icon: '⭐' },
     { label: td.stats[3], value: `$${(totalEarnings * 0.9).toFixed(2)}`, icon: '💳' },
   ]
@@ -183,7 +188,7 @@ export default function Dashboard() {
 
       {tab === 'orders' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {MOCK_ORDERS.map(o => (
+          {orders.map(o => (
             <div key={o.id} className="card" style={{ padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
               <div>
                 <div style={{ fontWeight: '700', fontSize: '13px' }}>{o.item} × {o.qty}</div>
@@ -217,6 +222,8 @@ export default function Dashboard() {
     </div>
   )
 }
+
+
 
 
 

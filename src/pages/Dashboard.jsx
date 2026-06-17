@@ -15,17 +15,20 @@ export default function Dashboard() {
   const { t, isAr } = useLang()
   const { user } = useAuth()
   const td = t.dashboard
-
-  if (!user) return <Navigate to="/auth" />
-
   const username = user?.user_metadata?.username || user?.email?.split('@')[0] || 'User'
 
-  if (!user) return <Navigate to="/auth" />
+
+
+
+
+
+
 
   const [tab, setTab] = useState('listings')
   const [listings, setListings] = useState([])
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState({ game: '', titleAr: '', titleEn: '', price: '', desc: '' })
+  if (!user) return <Navigate to="/auth" />
 
   useEffect(() => {
     fetchListings().then(data => {
@@ -214,5 +217,6 @@ export default function Dashboard() {
     </div>
   )
 }
+
 
 

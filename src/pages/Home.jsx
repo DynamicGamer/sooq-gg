@@ -203,8 +203,8 @@ useEffect(() => {
         {/* listings */}
         <div style={{ display:'flex', flexDirection:'column', gap:'10px', marginBottom:'56px' }}>
           {listings.map(l=>{
-            const badge=getBadge(l.badgeKey)
-            const delivery=l.deliveryKey==='instant'?(isAr?'فوري':'Instant'):(isAr?'دقائق':'Minutes')
+            const badge=getBadge(l.badge_key)
+            const delivery=l.delivery_key==='instant'?(isAr?'فوري':'Instant'):(isAr?'دقائق':'Minutes')
             const game=GAMES.find(g=>g.name===l.game)
             const [gc1]=GAME_GRADIENTS[l.game]||['#7c3aed']
             return (
@@ -219,17 +219,17 @@ useEffect(() => {
                     <img src={GAME_IMAGES[l.game]} alt={l.game} style={{ width:'100%', height:'100%', objectFit:'cover' }} onError={e=>{e.target.style.display='none';e.target.parentNode.style.display='flex';e.target.parentNode.style.alignItems='center';e.target.parentNode.style.justifyContent='center';e.target.parentNode.style.fontSize='24px';e.target.parentNode.innerHTML=game?.img||'🎮'}} />
                   </div>
                   <div>
-                    <div style={{ fontWeight:'700', fontSize:'17px', color:'#fff', marginBottom:'3px', fontFamily:isAr?"'Cairo'":"'Rajdhani'" }}>{isAr?l.typeAr:l.typeEn}</div>
+                    <div style={{ fontWeight:'700', fontSize:'17px', color:'#fff', marginBottom:'3px', fontFamily:isAr?"'Cairo'":"'Rajdhani'" }}>{isAr?l.type_ar:l.type_en}</div>
                     <div style={{ fontSize:'12px', color:'#64748b' }}>{l.game}</div>
                   </div>
                 </div>
                 <div style={{ display:'flex', alignItems:'center', gap:'10px', flex:1, minWidth:'160px' }}>
-                  <div style={{ width:'38px', height:'38px', background:'linear-gradient(135deg,#7c3aed,#ec4899)', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'15px', color:'#fff', fontWeight:'800', flexShrink:0 }}>{(isAr?l.seller:l.sellerEn)[0]}</div>
+                  <div style={{ width:'38px', height:'38px', background:'linear-gradient(135deg,#7c3aed,#ec4899)', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'15px', color:'#fff', fontWeight:'800', flexShrink:0 }}>{(isAr?l.seller:l.seller_en)[0]}</div>
                   <div>
-                    <div style={{ fontSize:'14px', color:'#e2e8f0', fontWeight:'700' }}>{isAr?l.seller:l.sellerEn}</div>
+                    <div style={{ fontSize:'14px', color:'#e2e8f0', fontWeight:'700' }}>{isAr?l.seller:l.seller_en}</div>
                     <div style={{ fontSize:'11px', color:'#64748b' }}>⭐ {l.rating} · {l.sales.toLocaleString()} {isAr?'صفقة':'deals'}</div>
                   </div>
-                  {badge&&<div style={{ background:l.badgeKey==='vip'?'rgba(124,58,237,0.15)':'rgba(16,185,129,0.12)', border:`1px solid ${l.badgeKey==='vip'?'rgba(124,58,237,0.4)':'rgba(16,185,129,0.3)'}`, borderRadius:'6px', fontSize:'10px', color:l.badgeKey==='vip'?'#a78bfa':'#34d399', padding:'2px 8px', fontWeight:'700', whiteSpace:'nowrap' }}>{badge}</div>}
+                  {badge&&<div style={{ background:l.badge_key==='vip'?'rgba(124,58,237,0.15)':'rgba(16,185,129,0.12)', border:`1px solid ${l.badge_key==='vip'?'rgba(124,58,237,0.4)':'rgba(16,185,129,0.3)'}`, borderRadius:'6px', fontSize:'10px', color:l.badge_key==='vip'?'#a78bfa':'#34d399', padding:'2px 8px', fontWeight:'700', whiteSpace:'nowrap' }}>{badge}</div>}
                 </div>
                 <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
                   <div style={{ textAlign:isAr?'right':'left' }}>
@@ -237,7 +237,7 @@ useEffect(() => {
                     <div style={{ fontSize:'11px', color:'#10b981', marginTop:'3px', fontWeight:'600' }}>⚡ {delivery}</div>
                   </div>
                   <button style={{ background:'linear-gradient(135deg,#7c3aed,#6d28d9)', border:'none', color:'#fff', padding:'12px 22px', borderRadius:'12px', cursor:'pointer', fontSize:'15px', fontWeight:'700', whiteSpace:'nowrap', fontFamily:'inherit', boxShadow:'0 4px 14px rgba(124,58,237,0.4)', transition:'all 0.2s' }}
-                    onClick={e=>{e.stopPropagation();addItem({...l,name:isAr?l.typeAr:l.typeEn})}}
+                    onClick={e=>{e.stopPropagation();addItem({...l,name:isAr?l.type_ar:l.type_en})}}
                     onMouseEnter={e=>{e.currentTarget.style.transform='scale(1.05)';e.currentTarget.style.boxShadow='0 6px 22px rgba(124,58,237,0.6)'}}
                     onMouseLeave={e=>{e.currentTarget.style.transform='scale(1)';e.currentTarget.style.boxShadow='0 4px 14px rgba(124,58,237,0.4)'}}
                   >{isAr?'شراء الآن':'Buy Now'}</button>
@@ -280,4 +280,5 @@ useEffect(() => {
     </div>
   )
 }
+
 

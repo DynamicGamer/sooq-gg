@@ -81,24 +81,16 @@ export default function Home() {
       </div>
 
       {/* TRUST BAR */}
-      <div style={{ background: "rgba(201,168,76,0.05)", borderTop: "1px solid rgba(201,168,76,0.15)", borderBottom: "1px solid rgba(201,168,76,0.15)", padding: "28px 24px", display: "flex", justifyContent: "center", gap: "32px", flexWrap: "wrap" }}>
-        {[
-          { icon: "shield", title: "Money-back Guarantee", desc: "Your purchases are always protected" },
-          { icon: "bolt", title: "Instant Delivery", desc: "Most orders delivered in minutes" },
-          { icon: "check", title: "Verified Sellers", desc: "Every seller is verified by us" },
-          { icon: "lock", title: "Secure Payments", desc: "Crypto escrow keeps funds safe" },
-        ].map(b => (
-          <div key={b.title} style={{ display: "flex", alignItems: "center", gap: "14px", minWidth: "200px" }}>
-            <div style={{ width: "44px", height: "44px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.25)", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              {b.icon === "shield" ? "?" : b.icon === "bolt" ? "Z" : b.icon === "check" ? "V" : "L"}
-            </div>
-            <div>
-              <div style={{ fontSize: "14px", fontWeight: "700", color: "#ffffff", marginBottom: "2px" }}>{b.title}</div>
-              <div style={{ fontSize: "12px", color: "#9a8570" }}>{b.desc}</div>
-            </div>
+      <div style={{ background: 'rgba(201,168,76,0.04)', borderTop: '1px solid rgba(201,168,76,0.1)', borderBottom: '1px solid rgba(201,168,76,0.1)', padding: '14px 24px', display: 'flex', justifyContent: 'center', gap: '48px', flexWrap: 'wrap' }}>
+        {[{ icon: '🛡️', text: isAr ? 'ضمان استرداد الأموال' : 'Money-back guarantee' }, { icon: '⚡', text: isAr ? 'تسليم فوري' : 'Instant delivery' }, { icon: '💎', text: isAr ? 'بائعون موثقون' : 'Verified sellers' }, { icon: '🔒', text: isAr ? 'دفع آمن بالكريبتو' : 'Secure crypto escrow' }].map(b => (
+          <div key={b.text} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#9a8570', fontWeight: '600' }}>
+            <span>{b.icon}</span><span>{b.text}</span>
           </div>
         ))}
       </div>
+
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
+
 
         {/* POPULAR GAMES */}
         <div style={{ marginBottom: '48px' }}>
@@ -149,7 +141,6 @@ export default function Home() {
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1, minWidth: '180px' }}>
                     <div style={{ width: '52px', height: '52px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(201,168,76,0.2)', flexShrink: 0 }}>
-              {b.icon === "shield" ? "?" : b.icon === "bolt" ? "Z" : b.icon === "check" ? "V" : "L"}
                       <img src={GAME_IMAGES[l.game]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none' }} />
                     </div>
                     <div>
@@ -159,7 +150,6 @@ export default function Home() {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: '160px' }}>
                     <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg, #c9a84c, #a07830)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', color: '#0f0f0f', fontWeight: '800', flexShrink: 0 }}>
-              {b.icon === "shield" ? "?" : b.icon === "bolt" ? "Z" : b.icon === "check" ? "V" : "L"}
                       {(isAr ? l.seller : l.seller_en)?.[0] || '?'}
                     </div>
                     <div>
@@ -224,7 +214,7 @@ export default function Home() {
             <p style={{ color: '#d4c5a9', fontSize: '15px', margin: 0, maxWidth: '400px', lineHeight: '1.7' }}>{isAr ? 'انضم لآلاف البائعين وابدأ كسب المال — مجاناً تماماً بدون رسوم مسبقة' : 'Join thousands of sellers and earn real money — free to start, no upfront fees'}</p>
           </div>
           <Link to="/auth?mode=register" style={{ background: 'linear-gradient(135deg, #c9a84c, #a07830)', color: '#0f0f0f', padding: '14px 28px', borderRadius: '10px', fontSize: '15px', fontWeight: '800', textDecoration: 'none', display: 'inline-block', boxShadow: '0 4px 20px rgba(201,168,76,0.4)', fontFamily: 'inherit' }}>
-            {isAr ? 'Register as Seller' : 'Register as Seller'}
+            {isAr ? 'سجّل كبائع ←' : 'Register as Seller →'}
           </Link>
         </div>
 
@@ -232,6 +222,5 @@ export default function Home() {
     </div>
   )
 }
-
 
 

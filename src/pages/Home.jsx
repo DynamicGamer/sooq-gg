@@ -84,7 +84,7 @@ useEffect(() => {
         </div>
 
         <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '900px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(124,58,237,0.18)', border: '1px solid rgba(124,58,237,0.45)', borderRadius: '100px', padding: '6px 20px', fontSize: '13px', color: '#c4b5fd', marginBottom: '28px', fontWeight: '600' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(124,58,237,0.18)', border: '1px solid rgba(124,58,237,0.45)', borderRadius: '100px', padding: '6px 20px', fontSize: '13px', color: '#c4b5fd', marginBottom: '28px', fontWeight: '600', display: 'none' }}>
             <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10b981', display: 'inline-block', boxShadow: '0 0 8px #10b981' }} />
             {isAr ? 'السوق الرقمي الأول للألعاب في المنطقة العربية' : '#1 Arabic Gaming Marketplace in MENA'}
           </div>
@@ -280,5 +280,7 @@ useEffect(() => {
     </div>
   )
 }
+
+
 
 

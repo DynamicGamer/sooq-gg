@@ -1,10 +1,10 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Link, useParams, useSearchParams, useNavigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
-import { GAMES, LISTINGS } from '../lib/supabase'
+import { GAMES, fetchListings } from '../lib/supabase'
 
-export default function Listings() {
+export default function listings() {
   const { category } = useParams()
   const [searchParams] = useSearchParams()
   const { t, isAr } = useLang()
@@ -17,6 +17,11 @@ export default function Listings() {
   const [sortBy, setSortBy] = useState('default')
   const [priceMin, setPriceMin] = useState('')
   const [priceMax, setPriceMax] = useState('')
+const [listings, setListings] = useState([])
+
+useEffect(() => {
+  fetchListings().then(data => setListings(data))
+}, [])
 
   const cats = [
     { id: 'topups', label: t.nav.topups, icon: '⚡' },
@@ -30,7 +35,7 @@ export default function Listings() {
   const getBadge = (key) => key === 'trusted' ? t.trusted : key === 'vip' ? t.vipSeller : null
 
   const filtered = useMemo(() => {
-    let list = [...LISTINGS]
+    let list = [...listings]
     if (search) list = list.filter(l => (isAr ? l.typeAr : l.typeEn).toLowerCase().includes(search.toLowerCase()) || l.game.toLowerCase().includes(search.toLowerCase()))
     if (selectedGame !== 'all') list = list.filter(l => l.gameId === parseInt(selectedGame))
     if (priceMin) list = list.filter(l => parseFloat(l.price) >= parseFloat(priceMin))
@@ -115,7 +120,7 @@ export default function Listings() {
           </div>
         </div>
 
-        {/* LISTINGS */}
+        {/* listings */}
         <div>
           {/* Search + count */}
           <div style={{ display: 'flex', gap: '10px', marginBottom: '16px', alignItems: 'center' }}>

@@ -37,8 +37,8 @@ export default function listings() {
 
   const filtered = useMemo(() => {
     let list = [...listings]
-    if (search) list = list.filter(l => (isAr ? l.typeAr : l.typeEn).toLowerCase().includes(search.toLowerCase()) || l.game.toLowerCase().includes(search.toLowerCase()))
-    if (selectedGame !== 'all') list = list.filter(l => l.gameId === parseInt(selectedGame))
+    if (search) list = list.filter(l => (isAr ? l.type_ar : l.type_en).toLowerCase().includes(search.toLowerCase()) || l.game.toLowerCase().includes(search.toLowerCase()))
+    if (selectedGame !== 'all') list = list.filter(l => l.game_id === parseInt(selectedGame))
     if (priceMin) list = list.filter(l => parseFloat(l.price) >= parseFloat(priceMin))
     if (priceMax) list = list.filter(l => parseFloat(l.price) <= parseFloat(priceMax))
     if (sortBy === 'price_asc') list.sort((a, b) => parseFloat(a.price) - parseFloat(b.price))
@@ -144,8 +144,8 @@ export default function listings() {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {filtered.map(l => {
-                const badge = getBadge(l.badgeKey)
-                const delivery = l.deliveryKey === 'instant' ? h.instant : h.minutes
+                const badge = getBadge(l.badge_key)
+                const delivery = l.delivery_key === 'instant' ? h.instant : h.minutes
                 return (
                   <div key={l.id} className="card" style={{
                     padding: '14px 18px', display: 'flex', alignItems: 'center',
@@ -161,19 +161,19 @@ export default function listings() {
                         {GAMES.find(g => g.name === l.game)?.img || '🎮'}
                       </div>
                       <div>
-                        <div style={{ fontWeight: '700', fontSize: '13px' }}>{isAr ? l.typeAr : l.typeEn}</div>
+                        <div style={{ fontWeight: '700', fontSize: '13px' }}>{isAr ? l.type_ar : l.type_en}</div>
                         <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{l.game}</div>
                       </div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '7px', flex: 1, minWidth: '150px' }}>
                       <div style={{ width: '30px', height: '30px', background: 'var(--accent-soft)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', color: '#a78bfa', fontWeight: '700' }}>
-                        {(isAr ? l.seller : l.sellerEn)[0]}
+                        {(isAr ? l.seller : l.seller_en)[0]}
                       </div>
                       <div>
-                        <div style={{ fontSize: '12px', fontWeight: '600' }}>{isAr ? l.seller : l.sellerEn}</div>
+                        <div style={{ fontSize: '12px', fontWeight: '600' }}>{isAr ? l.seller : l.seller_en}</div>
                         <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>⭐ {l.rating} · {l.sales.toLocaleString()} {h.deals}</div>
                       </div>
-                      {badge && <span className={`badge ${l.badgeKey === 'vip' ? 'badge-purple' : 'badge-green'}`}>{badge}</span>}
+                      {badge && <span className={`badge ${l.badge_key === 'vip' ? 'badge-purple' : 'badge-green'}`}>{badge}</span>}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                       <div>
@@ -181,7 +181,7 @@ export default function listings() {
                         <div style={{ fontSize: '10px', color: 'var(--green)' }}>⚡ {delivery}</div>
                       </div>
                       <button className="btn-primary" style={{ padding: '7px 14px', fontSize: '12px', whiteSpace: 'nowrap' }}
-                        onClick={e => { e.stopPropagation(); addItem({ ...l, name: isAr ? l.typeAr : l.typeEn }) }}
+                        onClick={e => { e.stopPropagation(); addItem({ ...l, name: isAr ? l.type_ar : l.type_en }) }}
                       >{h.buyNow}</button>
                     </div>
                   </div>
@@ -194,5 +194,6 @@ export default function listings() {
     </div>
   )
 }
+
 
 

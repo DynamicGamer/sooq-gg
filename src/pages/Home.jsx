@@ -111,14 +111,6 @@ useEffect(() => {
               ))}
             </div>
           </div>
-
-          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', maxWidth: '640px', margin: '28px auto 0', background: 'rgba(0,0,0,0.35)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.07)', backdropFilter: 'blur(20px)', overflow: 'hidden' }}>
-            {[{value:'240K+',label:isAr?'صفقة مكتملة':'Deals Done',color:'#a78bfa'},{value:'8K+',label:isAr?'بائع موثوق':'Trusted Sellers',color:'#34d399'},{value:'120+',label:isAr?'لعبة':'Games',color:'#60a5fa'},{value:'22',label:isAr?'دولة':'Countries',color:'#f472b6'}].map((s,i) => (
-              <div key={s.label} style={{ flex:'1', minWidth:'100px', padding:'20px 8px', borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.06)' : 'none', textAlign:'center' }}>
-                <div style={{ fontSize:'28px', fontWeight:'700', color:s.color, fontFamily:isAr?"'Cairo'":"'Rajdhani'", lineHeight:'1', marginBottom:'5px' }}>{s.value}</div>
-                <div style={{ fontSize:'11px', color:'#64748b' }}>{s.label}</div>
-              </div>
-            ))}
           </div>
         </div>
       </div>

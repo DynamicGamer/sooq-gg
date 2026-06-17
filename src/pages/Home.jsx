@@ -81,13 +81,13 @@ export default function Home() {
       </div>
 
       {/* TRUST BAR */}
-      <div style={{ background: 'rgba(201,168,76,0.04)', borderTop: '1px solid rgba(201,168,76,0.1)', borderBottom: '1px solid rgba(201,168,76,0.1)', padding: '14px 24px', display: 'flex', justifyContent: 'center', gap: '48px', flexWrap: 'wrap' }}>
-        {[{ icon: '🛡️', text: isAr ? 'ضمان استرداد الأموال' : 'Money-back guarantee' }, { icon: '⚡', text: isAr ? 'تسليم فوري' : 'Instant delivery' }, { icon: '💎', text: isAr ? 'بائعون موثقون' : 'Verified sellers' }, { icon: '🔒', text: isAr ? 'دفع آمن بالكريبتو' : 'Secure crypto escrow' }].map(b => (
-          <div key={b.text} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#9a8570', fontWeight: '600' }}>
-            <span>{b.icon}</span><span>{b.text}</span>
-          </div>
-        ))}
+      <div style={{ background: "rgba(201,168,76,0.05)", borderTop: "1px solid rgba(201,168,76,0.15)", borderBottom: "1px solid rgba(201,168,76,0.15)", padding: "28px 24px", display: "flex", justifyContent: "center", gap: "40px", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}><div style={{ width: "42px", height: "42px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.25)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>S</div><div><div style={{ fontSize: "14px", fontWeight: "700", color: "#fff" }}>Money-back Guarantee</div><div style={{ fontSize: "12px", color: "#9a8570" }}>Your purchases are always protected</div></div></div>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}><div style={{ width: "42px", height: "42px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.25)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>Z</div><div><div style={{ fontSize: "14px", fontWeight: "700", color: "#fff" }}>Instant Delivery</div><div style={{ fontSize: "12px", color: "#9a8570" }}>Most orders in minutes</div></div></div>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}><div style={{ width: "42px", height: "42px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.25)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>V</div><div><div style={{ fontSize: "14px", fontWeight: "700", color: "#fff" }}>Verified Sellers</div><div style={{ fontSize: "12px", color: "#9a8570" }}>Every seller is verified by us</div></div></div>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}><div style={{ width: "42px", height: "42px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.25)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>L</div><div><div style={{ fontSize: "14px", fontWeight: "700", color: "#fff" }}>Secure Payments</div><div style={{ fontSize: "12px", color: "#9a8570" }}>Crypto escrow keeps funds safe</div></div></div>
       </div>
+
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
 

@@ -17,7 +17,7 @@ export default function Chat({ listingId, sellerId, sellerName, onClose }) {
     fetchMessages()
 
     const channel = supabase
-      .channel('messages')
+      .channel(chat-\)
       .on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
@@ -122,4 +122,5 @@ export default function Chat({ listingId, sellerId, sellerName, onClose }) {
     </div>
   )
 }
+
 

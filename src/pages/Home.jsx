@@ -224,7 +224,7 @@ export default function Home() {
             <p style={{ color: '#d4c5a9', fontSize: '15px', margin: 0, maxWidth: '400px', lineHeight: '1.7' }}>{isAr ? 'انضم لآلاف البائعين وابدأ كسب المال — مجاناً تماماً بدون رسوم مسبقة' : 'Join thousands of sellers and earn real money — free to start, no upfront fees'}</p>
           </div>
           <Link to="/auth?mode=register" style={{ background: 'linear-gradient(135deg, #c9a84c, #a07830)', color: '#0f0f0f', padding: '14px 28px', borderRadius: '10px', fontSize: '15px', fontWeight: '800', textDecoration: 'none', display: 'inline-block', boxShadow: '0 4px 20px rgba(201,168,76,0.4)', fontFamily: 'inherit' }}>
-            {isAr ? 'سجّل كبائع ←' : 'Register as Seller →'}
+            {isAr ? 'Register as Seller' : 'Register as Seller'}
           </Link>
         </div>
 

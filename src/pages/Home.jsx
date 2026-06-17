@@ -40,6 +40,7 @@ export default function Home() {
   const { addItem } = useCart()
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
+  const [activeCat, setActiveCat] = useState('topups')
   const [listings, setListings] = useState([])
 
 useEffect(() => {
@@ -279,3 +280,4 @@ useEffect(() => {
     </div>
   )
 }
+

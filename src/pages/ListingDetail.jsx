@@ -17,7 +17,15 @@ export default function ListingDetail() {
   const navigate = useNavigate()
   const tl = t.listing
 
-  const [listings, setListings] = useState([])`n  const [listing, setListing] = useState(null)`n`n  useEffect(() => {`n    fetchListings().then(data => {`n      setListings(data)`n      setListing(data.find(l => l.id === id))`n    })`n  }, [id])
+  const [listing, setListing] = useState(null)
+  const [qty, setQty] = useState(1)
+
+  useEffect(() => {
+    fetchListings().then(data => {
+      setListing(data.find(l => l.id === id))
+    })
+  }, [id])
+
   if (!listing) return (
     <div className="page-container" style={{ textAlign: 'center', paddingTop: '60px' }}>
       <div style={{ fontSize: '48px', marginBottom: '16px' }}>😕</div>
@@ -29,25 +37,21 @@ export default function ListingDetail() {
   )
 
   const game = GAMES.find(g => g.name === listing.game)
-  const [qty, setQty] = useState(1)
 
   const handleBuy = () => {
-    addItem({ ...listing, name: isAr ? listing.typeAr : listing.typeEn, qty })
+    addItem({ ...listing, name: isAr ? listing.type_ar : listing.type_en, qty })
     navigate('/cart')
   }
 
   return (
     <div className="page-container">
-      {/* BACK */}
       <button onClick={() => navigate(-1)} className="btn-outline" style={{ marginBottom: '20px', padding: '6px 14px', fontSize: '12px' }}>
         {tl.allListings}
       </button>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '24px', alignItems: 'start' }}>
 
-        {/* LEFT: main info */}
         <div>
-          {/* Title card */}
           <div className="card" style={{ padding: '24px', marginBottom: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '16px' }}>
               <div style={{ width: '56px', height: '56px', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px' }}>
@@ -55,18 +59,17 @@ export default function ListingDetail() {
               </div>
               <div>
                 <h1 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '4px' }}>
-                  {isAr ? listing.typeAr : listing.typeEn}
+                  {isAr ? listing.type_ar : listing.type_en}
                 </h1>
                 <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{listing.game}</div>
               </div>
             </div>
 
-            {/* Stats row */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
               {[
                 { label: tl.rating, value: `⭐ ${listing.rating}/5` },
                 { label: tl.sales, value: listing.sales.toLocaleString() },
-                { label: tl.delivery, value: `⚡ ${listing.deliveryKey === 'instant' ? tl.instant : tl.minutes}` },
+                { label: tl.delivery, value: `⚡ ${listing.delivery_key === 'instant' ? tl.instant : tl.minutes}` },
               ].map(s => (
                 <div key={s.label} style={{ background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-md)', padding: '12px', textAlign: 'center' }}>
                   <div style={{ fontSize: '15px', fontWeight: '700', marginBottom: '3px' }}>{s.value}</div>
@@ -76,15 +79,13 @@ export default function ListingDetail() {
             </div>
           </div>
 
-          {/* Description */}
           <div className="card" style={{ padding: '20px', marginBottom: '16px' }}>
             <h3 style={{ fontSize: '14px', fontWeight: '700', marginBottom: '12px' }}>{tl.description}</h3>
             <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
-              {isAr ? listing.descAr : listing.descEn}
+              {isAr ? listing.desc_ar : listing.desc_en}
             </p>
           </div>
 
-          {/* Reviews */}
           <div className="card" style={{ padding: '20px' }}>
             <h3 style={{ fontSize: '14px', fontWeight: '700', marginBottom: '16px' }}>{tl.reviews}</h3>
             {MOCK_REVIEWS.map((r, i) => (
@@ -107,32 +108,28 @@ export default function ListingDetail() {
           </div>
         </div>
 
-        {/* RIGHT: buy box */}
         <div style={{ position: 'sticky', top: '74px' }}>
           <div className="card" style={{ padding: '20px' }}>
-            {/* Seller */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid var(--border)' }}>
               <div style={{ width: '40px', height: '40px', background: 'var(--accent-soft)', border: '1px solid var(--accent-border)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', color: '#a78bfa', fontWeight: '700' }}>
-                {(isAr ? listing.seller : listing.sellerEn)[0]}
+                {(isAr ? listing.seller : listing.seller_en)[0]}
               </div>
               <div>
-                <div style={{ fontWeight: '700', fontSize: '14px' }}>{isAr ? listing.seller : listing.sellerEn}</div>
+                <div style={{ fontWeight: '700', fontSize: '14px' }}>{isAr ? listing.seller : listing.seller_en}</div>
                 <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>⭐ {listing.rating} · {listing.sales.toLocaleString()} {tl.sales}</div>
               </div>
-              {listing.badgeKey && (
-                <span className={`badge ${listing.badgeKey === 'vip' ? 'badge-purple' : 'badge-green'}`}>
-                  {listing.badgeKey === 'vip' ? t.vipSeller : t.trusted}
+              {listing.badge_key && (
+                <span className={`badge ${listing.badge_key === 'vip' ? 'badge-purple' : 'badge-green'}`}>
+                  {listing.badge_key === 'vip' ? t.vipSeller : t.trusted}
                 </span>
               )}
             </div>
 
-            {/* Price */}
             <div style={{ marginBottom: '16px' }}>
               <div style={{ fontSize: '28px', fontWeight: '800', color: '#fff' }}>${listing.price}</div>
               <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{tl.perUnit}</div>
             </div>
 
-            {/* Qty */}
             <div style={{ marginBottom: '16px' }}>
               <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px' }}>{t.cart.qty}</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -147,7 +144,7 @@ export default function ListingDetail() {
               {tl.buyNow}
             </button>
             <button className="btn-outline" style={{ width: '100%', padding: '11px', fontSize: '14px' }}
-              onClick={() => addItem({ ...listing, name: isAr ? listing.typeAr : listing.typeEn })}>
+              onClick={() => addItem({ ...listing, name: isAr ? listing.type_ar : listing.type_en })}>
               {tl.addCart}
             </button>
 
@@ -160,6 +157,3 @@ export default function ListingDetail() {
     </div>
   )
 }
-
-
-

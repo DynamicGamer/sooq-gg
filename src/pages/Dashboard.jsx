@@ -31,9 +31,8 @@ export default function Dashboard() {
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState({ game: '', titleAr: '', titleEn: '', price: '', qty: '', desc: '' })
 
-  if (!user) return <Navigate to="/auth" />
-
   const username = user.user_metadata?.username || user.email?.split('@')[0] || 'User'
+  if (!user) return <Navigate to="/auth" />
   const totalEarnings = listings.reduce((s, l) => s + parseFloat(l.earnings), 0).toFixed(2)
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
@@ -225,6 +224,8 @@ export default function Dashboard() {
     </div>
   )
 }
+
+
 
 
 

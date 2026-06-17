@@ -1,22 +1,22 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg-primary: #0a0b0f;
-  --bg-secondary: #13151f;
-  --bg-tertiary: #1a1d2e;
-  --border: rgba(255,255,255,0.07);
-  --border-hover: rgba(255,255,255,0.14);
-  --accent: #7c3aed;
-  --accent-hover: #6d28d9;
-  --accent-soft: rgba(124,58,237,0.12);
-  --accent-border: rgba(124,58,237,0.35);
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-faint: #334155;
+  --bg-primary: #0c0a08;
+  --bg-secondary: #141009;
+  --bg-tertiary: #1c1610;
+  --border: rgba(201,168,76,0.1);
+  --border-hover: rgba(201,168,76,0.25);
+  --accent: #c9a84c;
+  --accent-hover: #b8962e;
+  --accent-soft: rgba(201,168,76,0.12);
+  --accent-border: rgba(201,168,76,0.35);
+  --text-primary: #f5f0e8;
+  --text-secondary: #a89880;
+  --text-muted: #6b5a45;
+  --text-faint: #3d2e1e;
   --green: #10b981;
   --red: #ef4444;
-  --gold: #f59e0b;
+  --gold: #c9a84c;
   --pink: #ec4899;
   --blue: #3b82f6;
   --radius-sm: 6px;
@@ -50,7 +50,7 @@ input, textarea, select {
 }
 input:focus, textarea:focus, select:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
 }
 input::placeholder, textarea::placeholder { color: var(--text-muted); }
 select option { background: #1a1d2e; }
@@ -61,7 +61,7 @@ select option { background: #1a1d2e; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
 .btn-primary {
-  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  background: linear-gradient(135deg, #c9a84c, #a07830);
   border: none;
   color: #fff;
   padding: 10px 22px;
@@ -70,9 +70,9 @@ select option { background: #1a1d2e; }
   font-size: 14px;
   transition: all 0.2s;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(124,58,237,0.3);
+  box-shadow: 0 4px 14px rgba(201,168,76,0.3);
 }
-.btn-primary:hover { background: linear-gradient(135deg, #6d28d9, #5b21b6); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.4); }
+.btn-primary:hover { background: linear-gradient(135deg, #b8962e, #8a6e20); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,168,76,0.4); }
 .btn-primary:active { transform: scale(0.98); }
 
 .btn-outline {
@@ -86,16 +86,16 @@ select option { background: #1a1d2e; }
   transition: all 0.2s;
   cursor: pointer;
 }
-.btn-outline:hover { border-color: var(--accent); color: #a78bfa; background: rgba(124,58,237,0.08); }
+.btn-outline:hover { border-color: var(--accent); color: #c9a84c; background: rgba(201,168,76,0.08); }
 
 .card {
-  background: linear-gradient(145deg, #13151f, #1a1d2e);
+  background: linear-gradient(145deg, #141009, #1c1610);
   border: 1px solid rgba(255,255,255,0.07);
   border-radius: var(--radius-lg);
 }
 
 .badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 5px; }
-.badge-purple { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.4); color: #a78bfa; }
+.badge-purple { background: rgba(124,58,237,0.15); border: 1px solid rgba(201,168,76,0.4); color: #c9a84c; }
 .badge-green  { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: #34d399; }
 .badge-gold   { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); color: #fbbf24; }
 
@@ -114,3 +114,5 @@ select option { background: #1a1d2e; }
   .page-container { padding: 16px 12px; }
   .hide-mobile { display: none !important; }
 }
+
+

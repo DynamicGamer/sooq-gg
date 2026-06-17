@@ -20,6 +20,8 @@ export default function Dashboard() {
 
   const username = user?.user_metadata?.username || user?.email?.split('@')[0] || 'User'
 
+  if (!user) return <Navigate to="/auth" />
+
   const [tab, setTab] = useState('listings')
   const [listings, setListings] = useState([])
   const [showForm, setShowForm] = useState(false)
@@ -212,3 +214,5 @@ export default function Dashboard() {
     </div>
   )
 }
+
+

@@ -149,11 +149,11 @@ export default function ListingDetail() {
               onClick={() => addItem({ ...listing, name: isAr ? listing.type_ar : listing.type_en })}>
               {tl.addCart}
             </button>
-
-            <div style={{ marginTop: '14px', padding: '10px', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-md)', fontSize: '11px', color: 'var(--text-muted)', textAlign: 'center' }}>
-              🔒 {t.cart.secure}
-            </div>
-          </div>
+            <button className="btn-outline" style={{ width: "100%", padding: "11px", fontSize: "14px", marginTop: "8px" }} onClick={() => setShowChat(true)}>
+              {isAr ? "???? ??????" : "Message Seller"}
+            </button>
+            {showChat && listing && <Chat listingId={listing.id} sellerId={listing.seller_id} sellerName={isAr ? listing.seller : listing.seller_en} onClose={() => setShowChat(false)} />}
+            <div style={{ marginTop: "14px", padding: "10px", background: "var(--bg-tertiary)", borderRadius: "var(--radius-md)", fontSize: "11px", color: "var(--text-muted)", textAlign: "center" }}>
         </div>
       </div>
     </div>

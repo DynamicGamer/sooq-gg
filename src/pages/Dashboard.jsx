@@ -144,7 +144,6 @@ export default function Dashboard() {
           { id: 'messages', label: isAr ? 'Messages' : 'Messages' },
         ].map(tab_item => (
           <button key={tab_item.id} onClick={() => setTab(tab_item.id)} style={{
-          <button key={tab_item.id} onClick={() => setTab(tab_item.id)} style={{
             color: tab === tab_item.id ? '#fff' : 'var(--text-muted)',
             fontSize: '13px', fontWeight: '700', transition: 'all 0.15s',
           }}>{tab_item.label}</button>

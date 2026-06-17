@@ -81,10 +81,19 @@ export default function Home() {
       </div>
 
       {/* TRUST BAR */}
-      <div style={{ background: 'rgba(201,168,76,0.04)', borderTop: '1px solid rgba(201,168,76,0.1)', borderBottom: '1px solid rgba(201,168,76,0.1)', padding: '14px 24px', display: 'flex', justifyContent: 'center', gap: '48px', flexWrap: 'wrap' }}>
-        {[{ icon: '🛡️', text: isAr ? 'ضمان استرداد الأموال' : 'Money-back guarantee' }, { icon: '⚡', text: isAr ? 'تسليم فوري' : 'Instant delivery' }, { icon: '💎', text: isAr ? 'بائعون موثقون' : 'Verified sellers' }, { icon: '🔒', text: isAr ? 'دفع آمن بالكريبتو' : 'Secure crypto escrow' }].map(b => (
-          <div key={b.text} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#9a8570', fontWeight: '600' }}>
-            <span>{b.icon}</span><span>{b.text}</span>
+      <div style={{ background: 'rgba(201,168,76,0.05)', borderTop: '1px solid rgba(201,168,76,0.15)', borderBottom: '1px solid rgba(201,168,76,0.15)', padding: '28px 24px', display: 'flex', justifyContent: 'center', gap: '32px', flexWrap: 'wrap' }}>
+        {[
+          { icon: '???', title: isAr ? '???? ??????? ???????' : 'Money-back Guarantee', desc: isAr ? '???????? ????? ??????' : 'Your purchases are always protected' },
+          { icon: '?', title: isAr ? '????? ????' : 'Instant Delivery', desc: isAr ? '???? ??????? ?? ?????' : 'Most orders delivered in minutes' },
+          { icon: '?', title: isAr ? '?????? ??????' : 'Verified Sellers', desc: isAr ? '?? ???? ?? ?????? ???' : 'Every seller is verified by us' },
+          { icon: '??', title: isAr ? '??? ???' : 'Secure Payments', desc: isAr ? '?????? ?? ???? ??????' : 'Crypto escrow keeps funds safe' },
+        ].map(b => (
+          <div key={b.title} style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: '200px' }}>
+            <div style={{ width: '44px', height: '44px', background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', flexShrink: 0 }}>{b.icon}</div>
+            <div>
+              <div style={{ fontSize: '14px', fontWeight: '700', color: '#ffffff', marginBottom: '2px' }}>{b.title}</div>
+              <div style={{ fontSize: '12px', color: '#9a8570' }}>{b.desc}</div>
+            </div>
           </div>
         ))}
       </div>

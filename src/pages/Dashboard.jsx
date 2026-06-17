@@ -3,6 +3,8 @@ import { Link, Navigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
 import { supabase, fetchListings } from '../lib/supabase'
+import MessagesInbox from '../components/MessagesInbox'
+import { useState as useStateMsg, useEffect as useEffectMsg } from 'react'
 
 const MOCK_ORDERS = [
   { id: 'o1', buyer: 'Ahmed_JO', item: '660 UC', qty: 2, total: '6.40', status: 'pending', date: '2025-06-10' },
@@ -139,7 +141,7 @@ export default function Dashboard() {
           { id: 'listings', label: td.tabListings },
           { id: 'orders', label: td.tabOrders },
           { id: 'earnings', label: td.tabEarnings },
-        ].map(tab_item => (
+          { id: 'messages', label: isAr ? '???????' : 'Messages' },
           <button key={tab_item.id} onClick={() => setTab(tab_item.id)} style={{
             padding: '7px 18px', borderRadius: 'calc(var(--radius-md) - 2px)', border: 'none',
             background: tab === tab_item.id ? 'var(--accent)' : 'transparent',
@@ -215,9 +217,14 @@ export default function Dashboard() {
           <button className="btn-primary" style={{ padding: '10px 28px' }}>{td.withdraw}</button>
         </div>
       )}
+      {tab === 'messages' && (
+        <MessagesInbox username={username} isAr={isAr} />
+      )}
     </div>
   )
 }
+
+
 
 
 

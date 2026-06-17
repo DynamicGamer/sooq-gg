@@ -76,7 +76,6 @@ export default function Navbar() {
                       <span style={{ fontSize: '18px' }}>{game.img}</span>
                       <div>
                         <div style={{ fontSize: '13px', fontWeight: '600' }}>{isAr ? game.nameAr : game.name}</div>
-                        <div style={{ fontSize: '10px', color: '#9a8570' }}>{isAr ? game.tagAr : game.tagEn}</div>
                       </div>
                     </Link>
                   ))}

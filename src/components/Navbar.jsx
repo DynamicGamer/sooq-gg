@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
@@ -17,9 +16,9 @@ export default function Navbar() {
 
   return (
     <nav style={{
-      background: 'rgba(10,11,15,0.95)',
+      background: 'rgba(12,10,8,0.97)',
       backdropFilter: 'blur(20px)',
-      borderBottom: '1px solid rgba(255,255,255,0.06)',
+      borderBottom: '1px solid rgba(201,168,76,0.12)',
       padding: '0 24px',
       display: 'flex',
       alignItems: 'center',
@@ -28,66 +27,65 @@ export default function Navbar() {
       position: 'sticky',
       top: 0,
       zIndex: 100,
+      direction: isAr ? 'rtl' : 'ltr',
     }}>
-      {/* Logo + Nav */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-          <div style={{ width: '32px', height: '32px', background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', boxShadow: '0 4px 12px rgba(124,58,237,0.4)' }}>⚡</div>
-          <span style={{ fontSize: '20px', fontWeight: '900', color: '#fff', letterSpacing: '-0.5px' }}>
-            {t.logo}<span style={{ color: '#7c3aed' }}>.gg</span>
+          <div style={{ width: '32px', height: '32px', background: 'linear-gradient(135deg, #c9a84c, #a07830)', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', boxShadow: '0 4px 12px rgba(201,168,76,0.4)' }}>⚡</div>
+          <span style={{ fontSize: '20px', fontWeight: '900', color: '#f5f0e8', letterSpacing: '-0.5px' }}>
+            {t.logo}<span style={{ color: '#c9a84c' }}>.gg</span>
           </span>
         </Link>
 
         <div className="hide-mobile" style={{ display: 'flex', gap: '2px' }}>
           {CATS.map(c => (
             <Link key={c} to={`/listings/${c}`} style={{
-              color: location.pathname === `/listings/${c}` ? '#a78bfa' : '#64748b',
+              color: location.pathname === `/listings/${c}` ? '#c9a84c' : '#6b5a45',
               padding: '5px 11px',
               borderRadius: '8px',
               fontSize: '13px',
               fontWeight: '600',
-              background: location.pathname === `/listings/${c}` ? 'rgba(124,58,237,0.12)' : 'transparent',
+              background: location.pathname === `/listings/${c}` ? 'rgba(201,168,76,0.1)' : 'transparent',
               transition: 'all 0.15s',
               textDecoration: 'none',
             }}
-              onMouseEnter={e => { if (location.pathname !== `/listings/${c}`) { e.currentTarget.style.color = '#94a3b8'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)' } }}
-              onMouseLeave={e => { if (location.pathname !== `/listings/${c}`) { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.background = 'transparent' } }}
+              onMouseEnter={e => { if (location.pathname !== `/listings/${c}`) { e.currentTarget.style.color = '#a89880'; e.currentTarget.style.background = 'rgba(201,168,76,0.06)' } }}
+              onMouseLeave={e => { if (location.pathname !== `/listings/${c}`) { e.currentTarget.style.color = '#6b5a45'; e.currentTarget.style.background = 'transparent' } }}
             >{t.nav[c]}</Link>
           ))}
         </div>
       </div>
 
-      {/* Right actions */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <button onClick={toggle} style={{ background: 'rgba(124,58,237,0.12)', border: '1px solid rgba(124,58,237,0.3)', color: '#a78bfa', padding: '6px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>
+        <button onClick={toggle} style={{ background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.2)', color: '#c9a84c', padding: '6px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>
           🌐 {t.langToggle}
         </button>
 
         <Link to="/cart" style={{ position: 'relative', padding: '6px 10px', display: 'flex', alignItems: 'center' }}>
           <span style={{ fontSize: '20px' }}>🛒</span>
           {count > 0 && (
-            <span style={{ position: 'absolute', top: '0', [isAr ? 'left' : 'right']: '0', background: 'linear-gradient(135deg, #7c3aed, #ec4899)', color: '#fff', width: '17px', height: '17px', borderRadius: '50%', fontSize: '9px', fontWeight: '800', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{count}</span>
+            <span style={{ position: 'absolute', top: '0', [isAr ? 'left' : 'right']: '0', background: 'linear-gradient(135deg, #c9a84c, #a07830)', color: '#0c0a08', width: '17px', height: '17px', borderRadius: '50%', fontSize: '9px', fontWeight: '800', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{count}</span>
           )}
         </Link>
 
         {user ? (
           <>
-            <Link to="/orders" style={{ color: '#64748b', padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: '600', border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.03)' }}>
+            <Link to="/orders" style={{ color: '#6b5a45', padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: '600', border: '1px solid rgba(201,168,76,0.12)', background: 'rgba(201,168,76,0.04)', textDecoration: 'none' }}>
               {isAr ? 'طلباتي' : 'Orders'}
             </Link>
-            <Link to="/dashboard" className="btn-outline" style={{ padding: '6px 14px', fontSize: '13px' }}>
+            <Link to="/dashboard" style={{ color: '#c9a84c', padding: '6px 14px', fontSize: '13px', fontWeight: '700', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '8px', background: 'rgba(201,168,76,0.08)', textDecoration: 'none' }}>
               {t.nav.dashboard}
             </Link>
-            <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#475569', fontSize: '13px', cursor: 'pointer', padding: '6px' }}>
+            <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#6b5a45', fontSize: '13px', cursor: 'pointer', padding: '6px' }}>
               {t.nav.logout}
             </button>
           </>
         ) : (
           <>
-            <Link to="/auth" className="btn-outline" style={{ padding: '7px 16px', fontSize: '13px' }}>
+            <Link to="/auth" style={{ color: '#a89880', padding: '7px 16px', fontSize: '13px', fontWeight: '600', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '8px', background: 'transparent', textDecoration: 'none' }}>
               {t.nav.login}
             </Link>
-            <Link to="/auth?mode=register" className="btn-primary" style={{ padding: '7px 16px', fontSize: '13px' }}>
+            <Link to="/auth?mode=register" style={{ background: 'linear-gradient(135deg, #c9a84c, #a07830)', color: '#0c0a08', padding: '7px 16px', fontSize: '13px', fontWeight: '800', borderRadius: '8px', textDecoration: 'none', boxShadow: '0 4px 12px rgba(201,168,76,0.3)' }}>
               {t.nav.startSelling}
             </Link>
           </>

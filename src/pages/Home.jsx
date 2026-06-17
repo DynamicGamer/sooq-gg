@@ -91,10 +91,6 @@ export default function Home() {
           <div key={b.title} style={{ display: "flex", alignItems: "center", gap: "14px", minWidth: "200px" }}>
             <div style={{ width: "44px", height: "44px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.25)", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               {b.icon === "shield" ? "?" : b.icon === "bolt" ? "Z" : b.icon === "check" ? "V" : "L"}
-              "?"
-              "?"
-              "?"
-              "?"
             </div>
             <div>
               <div style={{ fontSize: "14px", fontWeight: "700", color: "#ffffff", marginBottom: "2px" }}>{b.title}</div>

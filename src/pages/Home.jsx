@@ -52,7 +52,7 @@ export default function Home() {
 
       {/* HERO */}
       <div style={{ position: 'relative', overflow: 'hidden', padding: '60px 24px 50px', textAlign: 'center' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, #0c0a08 0%, #1a1205 40%, #0f0c06 70%, #0c0a08 100%)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.8)), url(/desert.jpg) center/cover no-repeat' }} />
         <div style={{ position: 'absolute', top: '-100px', left: '50%', transform: 'translateX(-50%)', width: '800px', height: '400px', background: 'radial-gradient(ellipse, rgba(201,168,76,0.15) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '200px', background: 'linear-gradient(to top, rgba(201,168,76,0.08) 0%, transparent 100%)', pointerEvents: 'none' }} />
 

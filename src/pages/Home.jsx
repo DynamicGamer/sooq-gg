@@ -91,23 +91,6 @@ export default function Home() {
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
 
-        {/* CATEGORIES */}
-        <div style={{ marginBottom: '48px' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#ffffff', marginBottom: '20px', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'", margin: '0 0 20px' }}>
-            {isAr ? '🛒 تصفح حسب الفئة' : '🛒 BROWSE BY CATEGORY'}
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '12px' }}>
-            {CATEGORIES.map(cat => (
-              <Link key={cat.id} to={`/listings/${cat.id}`} style={{ background: 'linear-gradient(145deg, #141009, #1c1610)', border: '1px solid rgba(201,168,76,0.12)', borderRadius: '14px', padding: '20px 16px', textAlign: 'center', textDecoration: 'none', transition: 'all 0.2s', display: 'block' }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.45)'; e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(201,168,76,0.15)' }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.12)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
-              >
-                <div style={{ fontSize: '28px', marginBottom: '10px' }}>{cat.icon}</div>
-                <div style={{ fontSize: '14px', fontWeight: '700', color: '#ffffff', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'" }}>{isAr ? cat.labelAr : cat.label}</div>
-              </Link>
-            ))}
-          </div>
-        </div>
 
         {/* POPULAR GAMES */}
         <div style={{ marginBottom: '48px' }}>

@@ -81,7 +81,6 @@ useEffect(() => {
           <div style={{ position: 'absolute', top: '-120px', left: '50%', transform: 'translateX(-50%)', width: '900px', height: '600px', background: 'radial-gradient(ellipse, rgba(124,58,237,0.35) 0%, rgba(124,58,237,0.1) 40%, transparent 70%)', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', top: '20%', right: '-100px', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(236,72,153,0.15) 0%, transparent 70%)', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', top: '10%', left: '-100px', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
-        </div>
           </div>
 
           <h1 style={{ fontSize: isAr ? 'clamp(28px, 5vw, 52px)' : 'clamp(44px, 8vw, 90px)', fontWeight: '700', color: '#fff', lineHeight: isAr ? '1.4' : '1.0', margin: '0 auto 22px', letterSpacing: isAr ? '0' : '-1px', fontFamily: isAr ? "'Cairo', sans-serif" : "'Rajdhani', sans-serif", textShadow: '0 2px 40px rgba(0,0,0,0.8)' }}>

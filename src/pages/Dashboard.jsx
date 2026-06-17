@@ -145,8 +145,7 @@ export default function Dashboard() {
         ].map(tab_item => (
           <button key={tab_item.id} onClick={() => setTab(tab_item.id)} style={{ padding: '7px 18px', borderRadius: 'calc(var(--radius-md) - 2px)', border: 'none', background: tab === tab_item.id ? 'var(--accent)' : 'transparent', color: tab === tab_item.id ? '#fff' : 'var(--text-muted)', fontSize: '13px', fontWeight: '700', transition: 'all 0.15s' }}>{tab_item.label}</button>
         ))}
-
-      {tab === 'listings' && (
+      </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {listings.length === 0 && <div className="card" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>No listings yet</div>}
           {listings.map(l => (

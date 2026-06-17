@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
+import { supabase, fetchListings } from '../lib/supabase'
 
 const MOCK_LISTINGS = [
   { id: 'ml1', game: 'PUBG Mobile', typeAr: '660 UC', typeEn: '660 UC', price: '3.20', status: 'active', sales: 12, earnings: '38.40' },
@@ -20,7 +21,13 @@ export default function Dashboard() {
   const td = t.dashboard
 
   const [tab, setTab] = useState('listings')
-  const [listings, setListings] = useState(MOCK_LISTINGS)
+  const [listings, setListings] = useState([])
+
+  useEffect(() => {
+    fetchListings().then(data => {
+      setListings(data.filter(l => l.seller_en === username).map(l => ({ ...l, typeEn: l.type_en, typeAr: l.type_ar, earnings: "0.00", status: "active" })))
+    })
+  }, [])
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState({ game: '', titleAr: '', titleEn: '', price: '', qty: '', desc: '' })
 
@@ -31,16 +38,32 @@ export default function Dashboard() {
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
-  const handleAddListing = () => {
+  const handleAddListing = async () => {
     if (!form.game || !form.price) return
-    setListings(prev => [...prev, {
-      id: `ml${Date.now()}`, game: form.game,
-      typeAr: form.titleAr || form.titleEn,
-      typeEn: form.titleEn || form.titleAr,
-      price: form.price, status: 'active', sales: 0, earnings: '0.00',
-    }])
-    setForm({ game: '', titleAr: '', titleEn: '', price: '', qty: '', desc: '' })
-    setShowForm(false)
+    const newListing = {
+      id: `l${Date.now()}`,
+      game_id: 0,
+      game: form.game,
+      type_en: form.titleEn || form.titleAr,
+      type_ar: form.titleAr || form.titleEn,
+      price: form.price,
+      seller: username,
+      seller_en: username,
+      rating: 5.0,
+      sales: 0,
+      badge_key: null,
+      delivery_key: "instant",
+      desc_ar: form.desc,
+      desc_en: form.desc,
+    }
+    const { error } = await supabase.from("listings").insert([newListing])
+    if (!error) {
+      setListings(prev => [...prev, { ...newListing, earnings: "0.00", status: "active" }])
+      setForm({ game: "", titleAr: "", titleEn: "", price: "", qty: "", desc: "" })
+      setShowForm(false)
+    } else {
+      alert("Error: " + error.message)
+    }
   }
 
   const statsData = [
@@ -202,3 +225,6 @@ export default function Dashboard() {
     </div>
   )
 }
+
+
+

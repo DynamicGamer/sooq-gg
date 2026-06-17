@@ -15,6 +15,7 @@ const LINK_MAP = {
   'Contact Us': '/terms',
   'Report a Problem': '/terms',
   'Terms of Service': '/terms',
+  'Privacy Policy': '/privacy',,
   'شحن رصيد': '/listings/topups',
   'بيع حسابات': '/listings/accounts',
   'عملات ألعاب': '/listings/currency',

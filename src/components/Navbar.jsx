@@ -88,7 +88,7 @@ export default function Navbar() {
                       onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,168,76,0.08)'; e.currentTarget.style.color = '#c9a84c' }}
                       onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#d4c5a9' }}
                     >
-                      <span style={{ fontSize: '18px' }}>{game.img}</span>
+                      <img src={GAME_IMAGES[game.name]} alt={game.name} style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover' }} />
                       <div>
                         <div style={{ fontSize: '13px', fontWeight: '600' }}>{isAr ? game.nameAr : game.name}</div>
                       </div>

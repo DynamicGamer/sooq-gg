@@ -9,6 +9,7 @@ export default function Chat({ listingId, sellerId, sellerName, onClose }) {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(true)
+  const [sending, setSending] = useState(false)
   const bottomRef = useRef(null)
 
   useEffect(() => {
@@ -54,6 +55,7 @@ export default function Chat({ listingId, sellerId, sellerName, onClose }) {
     }
     setInput('')
     await supabase.from('messages').insert([msg])
+    fetchMessages()
   }
 
   if (!user) return null
@@ -120,3 +122,4 @@ export default function Chat({ listingId, sellerId, sellerName, onClose }) {
     </div>
   )
 }
+

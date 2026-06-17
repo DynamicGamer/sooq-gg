@@ -141,8 +141,8 @@ export default function Dashboard() {
           { id: 'listings', label: td.tabListings },
           { id: 'orders', label: td.tabOrders },
           { id: 'earnings', label: td.tabEarnings },
-          { id: 'messages', label: isAr ? '???????' : 'Messages' },
-          <button key={tab_item.id} onClick={() => setTab(tab_item.id)} style={{
+          { id: 'messages', label: isAr ? 'Messages' : 'Messages' },
+        ].map(tab_item => (
             padding: '7px 18px', borderRadius: 'calc(var(--radius-md) - 2px)', border: 'none',
             background: tab === tab_item.id ? 'var(--accent)' : 'transparent',
             color: tab === tab_item.id ? '#fff' : 'var(--text-muted)',

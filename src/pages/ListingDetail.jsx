@@ -155,9 +155,12 @@ export default function ListingDetail() {
             {showChat && listing && <Chat listingId={listing.id} sellerId={listing.seller_id} sellerName={isAr ? listing.seller : listing.seller_en} onClose={() => setShowChat(false)} />}
             <div style={{ marginTop: "14px", padding: "10px", background: "var(--bg-tertiary)", borderRadius: "var(--radius-md)", fontSize: "11px", color: "var(--text-muted)", textAlign: "center" }}>
         </div>
+            <div style={{ marginTop: "14px", padding: "10px", background: "var(--bg-tertiary)", borderRadius: "var(--radius-md)", fontSize: "11px", color: "var(--text-muted)", textAlign: "center" }}>
+              {t.cart.secure}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )
 }
-
-

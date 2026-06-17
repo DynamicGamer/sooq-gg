@@ -90,6 +90,7 @@ export default function Home() {
         ].map(b => (
           <div key={b.title} style={{ display: "flex", alignItems: "center", gap: "14px", minWidth: "200px" }}>
             <div style={{ width: "44px", height: "44px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.25)", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              {b.icon === "shield" ? "?" : b.icon === "bolt" ? "Z" : b.icon === "check" ? "V" : "L"}
               "?"
               "?"
               "?"
@@ -152,6 +153,7 @@ export default function Home() {
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1, minWidth: '180px' }}>
                     <div style={{ width: '52px', height: '52px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(201,168,76,0.2)', flexShrink: 0 }}>
+              {b.icon === "shield" ? "?" : b.icon === "bolt" ? "Z" : b.icon === "check" ? "V" : "L"}
                       <img src={GAME_IMAGES[l.game]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none' }} />
                     </div>
                     <div>
@@ -161,6 +163,7 @@ export default function Home() {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: '160px' }}>
                     <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg, #c9a84c, #a07830)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', color: '#0f0f0f', fontWeight: '800', flexShrink: 0 }}>
+              {b.icon === "shield" ? "?" : b.icon === "bolt" ? "Z" : b.icon === "check" ? "V" : "L"}
                       {(isAr ? l.seller : l.seller_en)?.[0] || '?'}
                     </div>
                     <div>

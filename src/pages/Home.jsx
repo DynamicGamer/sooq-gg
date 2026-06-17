@@ -48,7 +48,7 @@ export default function Home() {
   const getBadge = (key) => key === 'trusted' ? t.trusted : key === 'vip' ? t.vipSeller : null
 
   return (
-    <div style={{ background: '#0c0a08', minHeight: '100vh', fontFamily: isAr ? "'Cairo', sans-serif" : "'Rajdhani', 'Cairo', sans-serif", direction: isAr ? 'rtl' : 'ltr' }}>
+    <div style={{ background: '#0f0f0f', minHeight: '100vh', fontFamily: isAr ? "'Cairo', sans-serif" : "'Rajdhani', 'Cairo', sans-serif", direction: isAr ? 'rtl' : 'ltr' }}>
 
       {/* HERO */}
       <div style={{ position: 'relative', overflow: 'hidden', padding: '60px 24px 50px', textAlign: 'center' }}>
@@ -67,7 +67,7 @@ export default function Home() {
           <div style={{ maxWidth: '600px', margin: '0 auto', background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '14px', display: 'flex', alignItems: 'center', padding: '6px 6px 6px 18px', backdropFilter: 'blur(20px)' }}>
             <span style={{ fontSize: '18px', opacity: 0.5, marginRight: '10px' }}>🔍</span>
             <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && navigate(`/listings/topups?q=${search}`)} placeholder={isAr ? 'ابحث عن لعبة...' : 'Search for a game... PUBG, Free Fire, Valorant'} style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', color: '#ffffff', fontSize: '15px', padding: '10px 0', fontFamily: 'inherit' }} />
-            <button onClick={() => navigate(`/listings/topups?q=${search}`)} style={{ background: 'linear-gradient(135deg, #c9a84c, #a07830)', border: 'none', borderRadius: '10px', color: '#0c0a08', padding: '12px 28px', fontSize: '15px', fontWeight: '800', cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap', boxShadow: '0 4px 16px rgba(201,168,76,0.4)' }}>
+            <button onClick={() => navigate(`/listings/topups?q=${search}`)} style={{ background: 'linear-gradient(135deg, #c9a84c, #a07830)', border: 'none', borderRadius: '10px', color: '#0f0f0f', padding: '12px 28px', fontSize: '15px', fontWeight: '800', cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap', boxShadow: '0 4px 16px rgba(201,168,76,0.4)' }}>
               {isAr ? 'بحث' : 'Search'}
             </button>
           </div>
@@ -124,7 +124,7 @@ export default function Home() {
                 <div style={{ height: '120px', position: 'relative', overflow: 'hidden', background: `linear-gradient(145deg, ${game.color}55, ${game.color}22)` }}>
                   <img src={GAME_IMAGES[game.name]} alt={game.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }} onError={e => { e.target.style.display = 'none' }} />
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(20,16,9,0.95) 0%, transparent 60%)' }} />
-                  {game.hot && <div style={{ position: 'absolute', top: '8px', left: '8px', background: 'linear-gradient(135deg, #c9a84c, #a07830)', borderRadius: '5px', fontSize: '9px', color: '#0c0a08', padding: '2px 8px', fontWeight: '800' }}>HOT</div>}
+                  {game.hot && <div style={{ position: 'absolute', top: '8px', left: '8px', background: 'linear-gradient(135deg, #c9a84c, #a07830)', borderRadius: '5px', fontSize: '9px', color: '#0f0f0f', padding: '2px 8px', fontWeight: '800' }}>HOT</div>}
                 </div>
                 <div style={{ padding: '12px 14px 14px' }}>
                   <div style={{ fontSize: '14px', fontWeight: '700', color: '#ffffff', marginBottom: '8px', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'" }}>{isAr ? game.nameAr : game.name}</div>
@@ -166,7 +166,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: '160px' }}>
-                    <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg, #c9a84c, #a07830)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', color: '#0c0a08', fontWeight: '800', flexShrink: 0 }}>
+                    <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg, #c9a84c, #a07830)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', color: '#0f0f0f', fontWeight: '800', flexShrink: 0 }}>
                       {(isAr ? l.seller : l.seller_en)?.[0] || '?'}
                     </div>
                     <div>
@@ -180,7 +180,7 @@ export default function Home() {
                       <div style={{ fontSize: '24px', fontWeight: '800', color: '#ffffff', lineHeight: '1', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'" }}>${l.price}</div>
                       <div style={{ fontSize: '11px', color: '#10b981', marginTop: '3px', fontWeight: '600' }}>⚡ {delivery}</div>
                     </div>
-                    <button style={{ background: 'linear-gradient(135deg, #c9a84c, #a07830)', border: 'none', color: '#0c0a08', padding: '11px 20px', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: '800', whiteSpace: 'nowrap', fontFamily: 'inherit', boxShadow: '0 4px 12px rgba(201,168,76,0.35)', transition: 'all 0.2s' }}
+                    <button style={{ background: 'linear-gradient(135deg, #c9a84c, #a07830)', border: 'none', color: '#0f0f0f', padding: '11px 20px', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: '800', whiteSpace: 'nowrap', fontFamily: 'inherit', boxShadow: '0 4px 12px rgba(201,168,76,0.35)', transition: 'all 0.2s' }}
                       onClick={e => { e.stopPropagation(); addItem({ ...l, name: isAr ? l.type_ar : l.type_en }) }}
                       onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)' }}
                       onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)' }}
@@ -230,7 +230,7 @@ export default function Home() {
             <h3 style={{ fontSize: '28px', fontWeight: '800', color: '#ffffff', margin: '0 0 10px', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'" }}>{isAr ? '💰 ابدأ البيع على سوق.gg' : '💰 START SELLING ON SOOQ.GG'}</h3>
             <p style={{ color: '#d4c5a9', fontSize: '15px', margin: 0, maxWidth: '400px', lineHeight: '1.7' }}>{isAr ? 'انضم لآلاف البائعين وابدأ كسب المال — مجاناً تماماً بدون رسوم مسبقة' : 'Join thousands of sellers and earn real money — free to start, no upfront fees'}</p>
           </div>
-          <Link to="/auth?mode=register" style={{ background: 'linear-gradient(135deg, #c9a84c, #a07830)', color: '#0c0a08', padding: '14px 28px', borderRadius: '10px', fontSize: '15px', fontWeight: '800', textDecoration: 'none', display: 'inline-block', boxShadow: '0 4px 20px rgba(201,168,76,0.4)', fontFamily: 'inherit' }}>
+          <Link to="/auth?mode=register" style={{ background: 'linear-gradient(135deg, #c9a84c, #a07830)', color: '#0f0f0f', padding: '14px 28px', borderRadius: '10px', fontSize: '15px', fontWeight: '800', textDecoration: 'none', display: 'inline-block', boxShadow: '0 4px 20px rgba(201,168,76,0.4)', fontFamily: 'inherit' }}>
             {isAr ? 'سجّل كبائع ←' : 'Register as Seller →'}
           </Link>
         </div>

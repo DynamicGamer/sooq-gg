@@ -1,8 +1,8 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg-primary: #0c0a08;
-  --bg-secondary: #141009;
-  --bg-tertiary: #1c1610;
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #161616;
+  --bg-tertiary: #1e1e1e;
   --border: rgba(201,168,76,0.1);
   --border-hover: rgba(201,168,76,0.25);
   --accent: #c9a84c;

@@ -56,6 +56,8 @@ export default function Dashboard() {
       desc_en: form.desc,
     }
     const { error } = await supabase.from("listings").insert([newListing])
+    console.log("error:", error)
+    console.log("newListing:", JSON.stringify(newListing))
     if (!error) {
       setListings(prev => [...prev, { ...newListing, earnings: "0.00", status: "active" }])
       setForm({ game: "", titleAr: "", titleEn: "", price: "", qty: "", desc: "" })
@@ -224,6 +226,7 @@ export default function Dashboard() {
     </div>
   )
 }
+
 
 
 

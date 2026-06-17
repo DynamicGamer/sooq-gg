@@ -107,6 +107,7 @@ useEffect(() => {
           </div>
         </div>
       </div>
+      </div>
 
       {/* TRUST BAR */}
       <div style={{ background:'rgba(255,255,255,0.02)', borderTop:'1px solid rgba(255,255,255,0.05)', borderBottom:'1px solid rgba(255,255,255,0.05)', padding:'16px 24px', display:'flex', justifyContent:'center', gap:'48px', flexWrap:'wrap' }}>

@@ -83,10 +83,10 @@ export default function Home() {
       {/* TRUST BAR */}
       <div style={{ background: "rgba(201,168,76,0.05)", borderTop: "1px solid rgba(201,168,76,0.15)", borderBottom: "1px solid rgba(201,168,76,0.15)", padding: "28px 24px", display: "flex", justifyContent: "center", gap: "32px", flexWrap: "wrap" }}>
         {[
-          { icon: "shield", title: isAr ? "???? ??????? ???????" : "Money-back Guarantee", desc: isAr ? "???????? ????? ?????" : "Your purchases are always protected" },
-          { icon: "bolt", title: isAr ? "????? ????" : "Instant Delivery", desc: isAr ? "???? ??????? ?? ?????" : "Most orders delivered in minutes" },
-          { icon: "check", title: isAr ? "?????? ??????" : "Verified Sellers", desc: isAr ? "?? ???? ?? ?????? ???" : "Every seller is verified by us" },
-          { icon: "lock", title: isAr ? "??? ???" : "Secure Payments", desc: isAr ? "?????? ?? ???? ??????" : "Crypto escrow keeps funds safe" },
+          { icon: "shield", title: "Money-back Guarantee", desc: "Your purchases are always protected" },
+          { icon: "bolt", title: "Instant Delivery", desc: "Most orders delivered in minutes" },
+          { icon: "check", title: "Verified Sellers", desc: "Every seller is verified by us" },
+          { icon: "lock", title: "Secure Payments", desc: "Crypto escrow keeps funds safe" },
         ].map(b => (
           <div key={b.title} style={{ display: "flex", alignItems: "center", gap: "14px", minWidth: "200px" }}>
             <div style={{ width: "44px", height: "44px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.25)", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>

@@ -191,11 +191,11 @@ export default function Dashboard() {
           {orders.map(o => (
             <div key={o.id} className="card" style={{ padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
               <div>
-                <div style={{ fontWeight: '700', fontSize: '13px' }}>{o.item} × {o.qty}</div>
-                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{isAr ? 'المشتري:' : 'Buyer:'} {o.buyer} · {o.date}</div>
+                <div style={{ fontWeight: "700", fontSize: "13px" }}>{JSON.parse(o.items || "[]").map(i => i.id).join(", ")} � ${o.grand_total}</div>
+                <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>{isAr ? "???????:" : "Buyer:"} {o.buyer_id?.slice(0,8)}... � {new Date(o.created_at).toLocaleDateString()}</div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ fontWeight: '800', color: '#fff' }}>${o.total}</span>
+                <span style={{ fontWeight: "800", color: "#fff" }}>${o.grand_total}</span>
                 <span className={`badge ${statusColor[o.status] || 'badge-purple'}`}>{td.status?.[o.status] || o.status}</span>
                 {o.status === 'pending' && (
                   <button className="btn-primary" style={{ padding: '5px 12px', fontSize: '11px' }}>{td.confirm}</button>

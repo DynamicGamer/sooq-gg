@@ -16,9 +16,9 @@ export default function Dashboard() {
   const { user } = useAuth()
   const td = t.dashboard
 
-  const username = user?.user_metadata?.username || user?.email?.split('@')[0] || 'User'
-
   if (!user) return <Navigate to="/auth" />
+
+  const username = user?.user_metadata?.username || user?.email?.split('@')[0] || 'User'
 
   const [tab, setTab] = useState('listings')
   const [listings, setListings] = useState([])

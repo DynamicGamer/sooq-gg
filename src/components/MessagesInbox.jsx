@@ -16,7 +16,7 @@ export default function MessagesInbox({ username, isAr }) {
     if (!user) return
 
     const { data } = await supabase
-      .from('messages')
+      .from('messages_with_listings')
       .select('*')
       .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
       .order('created_at', { ascending: false })
@@ -58,7 +58,7 @@ export default function MessagesInbox({ username, isAr }) {
               {convo.content?.[0] || '?'}
             </div>
             <div>
-              <div style={{ fontWeight: '700', color: '#ffffff', marginBottom: '3px' }}>{isAr ? 'محادثة' : 'Conversation'} — {convo.listing_id}</div>
+              <div style={{ fontWeight: '700', color: '#ffffff', marginBottom: '3px' }}>{convo.type_en || convo.listing_id}</div>
               <div style={{ fontSize: '12px', color: '#9a8570' }}>{convo.content?.slice(0, 40)}...</div>
             </div>
           </div>
@@ -78,3 +78,5 @@ export default function MessagesInbox({ username, isAr }) {
     </div>
   )
 }
+
+

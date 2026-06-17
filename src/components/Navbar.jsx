@@ -5,6 +5,21 @@ import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 import { GAMES } from '../lib/supabase'
 
+const GAME_IMAGES = {
+  'PUBG Mobile': '/games/pubg.jpg',
+  'Free Fire': '/games/freefire.jpg',
+  'Fortnite': '/games/fortnite.jpg',
+  'Clash of Clans': '/games/coc.jpg',
+  'Mobile Legends': '/games/mlbb.jpg',
+  'Valorant': '/games/valorant.jpg',
+  'FIFA Mobile': '/games/fifa.jpg',
+  'Genshin Impact': '/games/genshin.jpg',
+  'Call of Duty Mobile': '/games/codm.jpg',
+  'League of Legends': '/games/lol.jpg',
+  'Steam Wallet': '/games/steam.jpg',
+  'PlayStation': '/games/psn.jpg',
+}
+
 const CATS = ['topups','accounts','currency','items','boosting','giftcards']
 
 export default function Navbar() {
@@ -127,4 +142,6 @@ export default function Navbar() {
     </nav>
   )
 }
+
+
 

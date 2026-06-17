@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
-import { GAMES, LISTINGS } from '../lib/supabase'
+import { GAMES, fetchlistings } from '../lib/supabase'
 
 const GAME_GRADIENTS = {
   'PUBG Mobile':         ['#f59e0b', '#92400e'],
@@ -40,7 +40,11 @@ export default function Home() {
   const { addItem } = useCart()
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
-  const [activeCat, setActiveCat] = useState('topups')
+  const [listings, setlistings] = useState([])
+
+useEffect(() => {
+  fetchlistings().then(data => setlistings(data))
+}, [])
 
   const cats = [
     { id: 'topups',    label: t.nav.topups,    icon: '⚡' },
@@ -195,9 +199,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* LISTINGS */}
+        {/* listings */}
         <div style={{ display:'flex', flexDirection:'column', gap:'10px', marginBottom:'56px' }}>
-          {LISTINGS.map(l=>{
+          {listings.map(l=>{
             const badge=getBadge(l.badgeKey)
             const delivery=l.deliveryKey==='instant'?(isAr?'فوري':'Instant'):(isAr?'دقائق':'Minutes')
             const game=GAMES.find(g=>g.name===l.game)

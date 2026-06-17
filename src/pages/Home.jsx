@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
-import { GAMES, fetchlistings } from '../lib/supabase'
+import { GAMES, fetchListings } from '../lib/supabase'
 
 const GAME_GRADIENTS = {
   'PUBG Mobile':         ['#f59e0b', '#92400e'],
@@ -40,10 +40,10 @@ export default function Home() {
   const { addItem } = useCart()
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
-  const [listings, setlistings] = useState([])
+  const [listings, setListings] = useState([])
 
 useEffect(() => {
-  fetchlistings().then(data => setlistings(data))
+  fetchListings().then(data => setListings(data))
 }, [])
 
   const cats = [

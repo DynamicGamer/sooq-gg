@@ -57,7 +57,7 @@ export default function Home() {
         <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }} />
 
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '800px', margin: '0 auto' }}>
-          <h1 style={{ fontSize: isAr ? 'clamp(32px, 5vw, 60px)' : 'clamp(40px, 6vw, 72px)', fontWeight: '800', color: '#f5f0e8', lineHeight: isAr ? '1.4' : '1.1', marginBottom: '16px', fontFamily: isAr ? "'Cairo', sans-serif" : "'Rajdhani', sans-serif", letterSpacing: isAr ? '0' : '-1px' }}>
+          <h1 style={{ fontSize: isAr ? 'clamp(32px, 5vw, 60px)' : 'clamp(40px, 6vw, 72px)', fontWeight: '800', color: '#ffffff', lineHeight: isAr ? '1.4' : '1.1', marginBottom: '16px', fontFamily: isAr ? "'Cairo', sans-serif" : "'Rajdhani', sans-serif", letterSpacing: isAr ? '0' : '-1px' }}>
             {isAr ? (<>اشتري وبع{' '}<span style={{ background: 'linear-gradient(135deg, #c9a84c, #f5d485, #c9a84c)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>أي شيء</span>{' '}في الألعاب</>) : (<>BUY & SELL{' '}<span style={{ background: 'linear-gradient(135deg, #c9a84c, #f5d485, #c9a84c)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>ANYTHING</span>{' '}IN GAMING</>)}
           </h1>
           <p style={{ color: '#a89880', fontSize: '17px', marginBottom: '36px', lineHeight: '1.7' }}>
@@ -177,7 +177,7 @@ export default function Home() {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <div>
-                      <div style={{ fontSize: '24px', fontWeight: '800', color: '#f5f0e8', lineHeight: '1', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'" }}>${l.price}</div>
+                      <div style={{ fontSize: '24px', fontWeight: '800', color: '#ffffff', lineHeight: '1', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'" }}>${l.price}</div>
                       <div style={{ fontSize: '11px', color: '#10b981', marginTop: '3px', fontWeight: '600' }}>⚡ {delivery}</div>
                     </div>
                     <button style={{ background: 'linear-gradient(135deg, #c9a84c, #a07830)', border: 'none', color: '#0c0a08', padding: '11px 20px', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: '800', whiteSpace: 'nowrap', fontFamily: 'inherit', boxShadow: '0 4px 12px rgba(201,168,76,0.35)', transition: 'all 0.2s' }}

@@ -46,7 +46,7 @@ export default function listings() {
     if (sortBy === 'rating') list.sort((a, b) => b.rating - a.rating)
     if (sortBy === 'sales') list.sort((a, b) => b.sales - a.sales)
     return list
-  }, [search, selectedGame, priceMin, priceMax, sortBy, isAr])
+  }, [search, selectedGame, priceMin, priceMax, sortBy, isAr, listings])
 
   return (
     <div className="page-container">
@@ -194,4 +194,5 @@ export default function listings() {
     </div>
   )
 }
+
 

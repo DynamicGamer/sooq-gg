@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Chat from '../components/Chat'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
@@ -19,6 +20,7 @@ export default function ListingDetail() {
 
   const [listing, setListing] = useState(null)
   const [qty, setQty] = useState(1)
+  const [showChat, setShowChat] = useState(false)
 
   useEffect(() => {
     fetchListings().then(data => {
@@ -157,3 +159,5 @@ export default function ListingDetail() {
     </div>
   )
 }
+
+

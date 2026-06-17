@@ -32,7 +32,7 @@ export default function Navbar() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
           <div style={{ width: '32px', height: '32px', background: 'linear-gradient(135deg, #c9a84c, #a07830)', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', boxShadow: '0 4px 12px rgba(201,168,76,0.4)' }}>⚡</div>
-          <span style={{ fontSize: '20px', fontWeight: '900', color: '#f5f0e8', letterSpacing: '-0.5px' }}>
+          <span style={{ fontSize: '20px', fontWeight: '900', color: '#ffffff', letterSpacing: '-0.5px' }}>
             {t.logo}<span style={{ color: '#c9a84c' }}>.gg</span>
           </span>
         </Link>
@@ -40,7 +40,7 @@ export default function Navbar() {
         <div className="hide-mobile" style={{ display: 'flex', gap: '2px' }}>
           {CATS.map(c => (
             <Link key={c} to={`/listings/${c}`} style={{
-              color: location.pathname === `/listings/${c}` ? '#c9a84c' : '#6b5a45',
+              color: location.pathname === `/listings/${c}` ? '#c9a84c' : '#9a8570',
               padding: '5px 11px',
               borderRadius: '8px',
               fontSize: '13px',
@@ -49,8 +49,8 @@ export default function Navbar() {
               transition: 'all 0.15s',
               textDecoration: 'none',
             }}
-              onMouseEnter={e => { if (location.pathname !== `/listings/${c}`) { e.currentTarget.style.color = '#a89880'; e.currentTarget.style.background = 'rgba(201,168,76,0.06)' } }}
-              onMouseLeave={e => { if (location.pathname !== `/listings/${c}`) { e.currentTarget.style.color = '#6b5a45'; e.currentTarget.style.background = 'transparent' } }}
+              onMouseEnter={e => { if (location.pathname !== `/listings/${c}`) { e.currentTarget.style.color = '#d4c5a9'; e.currentTarget.style.background = 'rgba(201,168,76,0.06)' } }}
+              onMouseLeave={e => { if (location.pathname !== `/listings/${c}`) { e.currentTarget.style.color = '#9a8570'; e.currentTarget.style.background = 'transparent' } }}
             >{t.nav[c]}</Link>
           ))}
         </div>
@@ -70,19 +70,19 @@ export default function Navbar() {
 
         {user ? (
           <>
-            <Link to="/orders" style={{ color: '#6b5a45', padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: '600', border: '1px solid rgba(201,168,76,0.12)', background: 'rgba(201,168,76,0.04)', textDecoration: 'none' }}>
+            <Link to="/orders" style={{ color: '#9a8570', padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: '600', border: '1px solid rgba(201,168,76,0.12)', background: 'rgba(201,168,76,0.04)', textDecoration: 'none' }}>
               {isAr ? 'طلباتي' : 'Orders'}
             </Link>
             <Link to="/dashboard" style={{ color: '#c9a84c', padding: '6px 14px', fontSize: '13px', fontWeight: '700', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '8px', background: 'rgba(201,168,76,0.08)', textDecoration: 'none' }}>
               {t.nav.dashboard}
             </Link>
-            <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#6b5a45', fontSize: '13px', cursor: 'pointer', padding: '6px' }}>
+            <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#9a8570', fontSize: '13px', cursor: 'pointer', padding: '6px' }}>
               {t.nav.logout}
             </button>
           </>
         ) : (
           <>
-            <Link to="/auth" style={{ color: '#a89880', padding: '7px 16px', fontSize: '13px', fontWeight: '600', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '8px', background: 'transparent', textDecoration: 'none' }}>
+            <Link to="/auth" style={{ color: '#d4c5a9', padding: '7px 16px', fontSize: '13px', fontWeight: '600', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '8px', background: 'transparent', textDecoration: 'none' }}>
               {t.nav.login}
             </Link>
             <Link to="/auth?mode=register" style={{ background: 'linear-gradient(135deg, #c9a84c, #a07830)', color: '#0c0a08', padding: '7px 16px', fontSize: '13px', fontWeight: '800', borderRadius: '8px', textDecoration: 'none', boxShadow: '0 4px 12px rgba(201,168,76,0.3)' }}>

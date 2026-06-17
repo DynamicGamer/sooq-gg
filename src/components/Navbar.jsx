@@ -37,7 +37,7 @@ export default function Navbar() {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-          <div style={{ width: '32px', height: '32px', background: 'linear-gradient(135deg, #c9a84c, #a07830)', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', boxShadow: '0 4px 12px rgba(201,168,76,0.4)' }}>⚡</div>
+          <img src="/logo.svg" alt="SooqGG" style={{ width: "36px", height: "36px", borderRadius: "8px" }} />
           <span style={{ fontSize: '20px', fontWeight: '900', color: '#ffffff', letterSpacing: '-0.5px' }}>
             <span style={{ color: "#ffffff" }}>Sooq</span><span style={{ color: "#c9a84c" }}>GG</span>
           </span>

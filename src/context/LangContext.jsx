@@ -157,7 +157,7 @@ export const translations = {
         cols: [
           { title: 'Services', links: ['Top-Ups','Sell Accounts','Game Currency','Boosting','Gift Cards'] },
           { title: 'For Sellers', links: ['Start Selling','Dashboard','Commission Policy','Verification'] },
-          { title: 'Support', links: ['Help Center','Contact Us','Report a Problem','Terms of Service'] },
+          { title: 'Support', links: ['Help Center','Contact Us','Report a Problem','Terms of Service','Privacy Policy'] },
         ],
         copy: '© 2025 Sooq.gg — All rights reserved',
         made: '🇯🇴 Proudly made in Jordan',
@@ -231,3 +231,4 @@ export function LangProvider({ children }) {
 }
 
 export const useLang = () => useContext(LangContext)
+

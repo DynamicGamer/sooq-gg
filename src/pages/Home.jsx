@@ -111,9 +111,6 @@ useEffect(() => {
               ))}
             </div>
           </div>
-          </div>
-      </div>
-        </div>
       </div>
 
       {/* TRUST BAR */}

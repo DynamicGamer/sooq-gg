@@ -165,9 +165,9 @@ export default function Dashboard() {
         ].map(tab_item => (
           <button key={tab_item.id} onClick={() => setTab(tab_item.id)} style={{ padding: '7px 18px', borderRadius: 'calc(var(--radius-md) - 2px)', border: 'none', background: tab === tab_item.id ? 'var(--accent)' : 'transparent', color: tab === tab_item.id ? '#fff' : 'var(--text-muted)', fontSize: '13px', fontWeight: '700', transition: 'all 0.15s' }}>{tab_item.label}</button>
         ))}
+      </div>
+      {tab === 'listings' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {listings.map(l => (
-            <div key={l.id} className="card" style={{ padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div style={{ width: '36px', height: '36px', borderRadius: 'var(--radius-md)', overflow: 'hidden', flexShrink: 0 }}><img src={GAME_IMAGES[l.game]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display='none' }} /></div>
                 <div>

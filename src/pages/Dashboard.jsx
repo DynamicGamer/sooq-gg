@@ -173,8 +173,8 @@ export default function Dashboard() {
           { id: 'orders', label: td.tabOrders },
           { id: 'earnings', label: td.tabEarnings },
           { id: 'messages', label: isAr ? 'Messages' : 'Messages' },
-        ].map(tab_item => (
-          <button key={tab_item.id} onClick={() => setTab(tab_item.id)} style={{ padding: '7px 18px', borderRadius: 'calc(var(--radius-md) - 2px)', border: 'none', background: tab === tab_item.id ? 'var(--accent)' : 'transparent', color: tab === tab_item.id ? '#fff' : 'var(--text-muted)', fontSize: '13px', fontWeight: '700', transition: 'all 0.15s' }}>{tab_item.label}</button>
+          { id: 'messages', label: isAr ? 'Messages' : 'Messages' },
+          { id: 'profile', label: isAr ? '????? ??????' : 'Profile' },
         ))}
       </div>
       {tab === 'listings' && (
@@ -244,6 +244,58 @@ export default function Dashboard() {
       )}
       {tab === 'messages' && (
         <MessagesInbox username={username} isAr={isAr} />
+      )}
+      {tab === 'profile' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div className="card" style={{ padding: '28px' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '20px', color: '#ffffff' }}>{isAr ? '??????? ????? ??????' : 'Profile Information'}</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>
+              <label style={{ cursor: 'pointer', position: 'relative' }}>
+                <div style={{ width: '80px', height: '80px', borderRadius: '50%', overflow: 'hidden', border: '3px solid rgba(201,168,76,0.4)', background: 'linear-gradient(135deg, #c9a84c, #a07830)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', color: '#0c0a08', fontWeight: '800' }}>
+                  {avatarUrl ? <img src={avatarUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : username?.[0]?.toUpperCase()}
+                </div>
+                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => { const file = e.target.files[0]; if (!file) return; await supabase.storage.from('avatars').remove([user.id + '/avatar']); await supabase.storage.from('avatars').upload(user.id + '/avatar', file); setAvatarUrl(supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now()) }} />
+                <div style={{ position: 'absolute', bottom: 0, right: 0, width: '24px', height: '24px', background: '#c9a84c', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', color: '#0c0a08' }}>+</div>
+              </label>
+              <div>
+                <div style={{ fontSize: '20px', fontWeight: '800', color: '#ffffff', marginBottom: '4px' }}>{username}</div>
+                <div style={{ fontSize: '13px', color: '#9a8570' }}>{user.email}</div>
+                <div style={{ fontSize: '12px', color: '#c9a84c', marginTop: '4px' }}>{isAr ? '???? ??? ?????? ???????' : 'Click picture to change'}</div>
+              </div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' }}>
+              <div style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.15)', borderRadius: '10px', padding: '16px', textAlign: 'center' }}>
+                <div style={{ fontSize: '24px', fontWeight: '800', color: '#c9a84c' }}>{listings.length}</div>
+                <div style={{ fontSize: '12px', color: '#9a8570', marginTop: '4px' }}>{isAr ? '?????' : 'My Listings'}</div>
+              </div>
+              <div style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.15)', borderRadius: '10px', padding: '16px', textAlign: 'center' }}>
+                <div style={{ fontSize: '24px', fontWeight: '800', color: '#c9a84c' }}>{orders.length}</div>
+                <div style={{ fontSize: '12px', color: '#9a8570', marginTop: '4px' }}>{isAr ? '??????' : 'My Orders'}</div>
+              </div>
+              <div style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.15)', borderRadius: '10px', padding: '16px', textAlign: 'center' }}>
+                <div style={{ fontSize: '24px', fontWeight: '800', color: '#c9a84c' }}>4.9?</div>
+                <div style={{ fontSize: '12px', color: '#9a8570', marginTop: '4px' }}>{isAr ? '???????' : 'Rating'}</div>
+              </div>
+            </div>
+          </div>
+          <div className="card" style={{ padding: '28px' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#ffffff' }}>{isAr ? '??????' : 'Account'}</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>
+                <span style={{ color: '#9a8570', fontSize: '14px' }}>{isAr ? '?????? ??????????' : 'Email'}</span>
+                <span style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{user.email}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>
+                <span style={{ color: '#9a8570', fontSize: '14px' }}>{isAr ? '??? ????????' : 'Username'}</span>
+                <span style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{username}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0' }}>
+                <span style={{ color: '#9a8570', fontSize: '14px' }}>{isAr ? '????? ????????' : 'Member Since'}</span>
+                <span style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{new Date(user.created_at).toLocaleDateString()}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

@@ -113,7 +113,7 @@ const GAMES_LIST = ['PUBG Mobile','Free Fire','Fortnite','Clash of Clans','Mobil
           </label>
           <div>
             <h1 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '4px' }}>{td.title}</h1>
-            <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{isAr ? Welcome,  : Welcome back, }</p>
+            <p style={{ fontSize: "13px", color: "var(--text-muted)" }}>{isAr ? "Welcome, " + username : "Welcome back, " + username}</p>
           </div>
         </div>
           </div>

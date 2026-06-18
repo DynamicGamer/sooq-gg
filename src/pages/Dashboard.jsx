@@ -252,49 +252,6 @@ export default function Dashboard() {
       )}
                 </div>
                 <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => { const file = e.target.files[0]; if (!file) return; await supabase.storage.from('avatars').remove([user.id + '/avatar']); await supabase.storage.from('avatars').upload(user.id + '/avatar', file); setAvatarUrl(supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now()) }} />
-                <div style={{ position: 'absolute', bottom: 0, right: 0, width: '24px', height: '24px', background: '#c9a84c', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', color: '#0c0a08' }}>+</div>
-              </label>
-              <div>
-                <div style={{ fontSize: '20px', fontWeight: '800', color: '#ffffff', marginBottom: '4px' }}>{username}</div>
-                <div style={{ fontSize: '13px', color: '#9a8570' }}>{user.email}</div>
-                <div style={{ fontSize: '12px', color: '#c9a84c', marginTop: '4px' }}>Click picture to change</div>
-              </div>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' }}>
-              <div style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.15)', borderRadius: '10px', padding: '16px', textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: '800', color: '#c9a84c' }}>{listings.length}</div>
-                <div style={{ fontSize: '12px', color: '#9a8570', marginTop: '4px' }}>My Listings</div>
-              </div>
-              <div style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.15)', borderRadius: '10px', padding: '16px', textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: '800', color: '#c9a84c' }}>{orders.length}</div>
-                <div style={{ fontSize: '12px', color: '#9a8570', marginTop: '4px' }}>My Orders</div>
-              </div>
-              <div style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.15)', borderRadius: '10px', padding: '16px', textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: '800', color: '#c9a84c' }}>4.9</div>
-                <div style={{ fontSize: '12px', color: '#9a8570', marginTop: '4px' }}>Rating</div>
-              </div>
-            </div>
-          </div>
-          <div className="card" style={{ padding: '28px' }}>
-            <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#ffffff' }}>Account</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>
-                <span style={{ color: '#9a8570', fontSize: '14px' }}>Email</span>
-                <span style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{user.email}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>
-                <span style={{ color: '#9a8570', fontSize: '14px' }}>Username</span>
-                <span style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{username}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0' }}>
-                <span style={{ color: '#9a8570', fontSize: '14px' }}>Member Since</span>
-                <span style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{new Date(user.created_at).toLocaleDateString()}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
-

@@ -44,7 +44,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchListings().then(data => {
-      setListings(data.map(l => ({ ...l, typeEn: l.type_en, typeAr: l.type_ar, earnings: '0.00', status: 'active' })))
+      setListings(data.filter(l => l.seller_en === username).map(l => ({ ...l, typeEn: l.type_en, typeAr: l.type_ar, earnings: '0.00', status: 'active' })))
     })
   }, [])
 
@@ -252,3 +252,4 @@ export default function Dashboard() {
     </div>
   )
 }
+

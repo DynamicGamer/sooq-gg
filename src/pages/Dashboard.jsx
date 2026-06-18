@@ -51,7 +51,6 @@ export default function Dashboard() {
     })
   }, [])
   if (!user) return <Navigate to='/auth' />
-  const [orders, setOrders] = useState([])
 
       useEffect(() => {
     supabase.from('orders_with_listings').select('*').then(({ data }) => {

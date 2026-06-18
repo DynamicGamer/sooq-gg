@@ -71,7 +71,7 @@ export default function MessagesInbox({ username, isAr }) {
         <Chat
           listingId={activeChat.listing_id}
           sellerId={activeChat.receiver_id}
-          sellerName={isAr ? 'البائع' : 'Seller'}
+          sellerName={isAr ? convo.seller : convo.seller_en}
           onClose={() => setActiveChat(null)}
         />
       )}

@@ -24,35 +24,34 @@ const MOCK_ORDERS = []
 const GAMES_LIST = ['PUBG Mobile','Free Fire','Fortnite','Clash of Clans','Mobile Legends','Valorant','FIFA Mobile','Genshin Impact']
 
 export default function Dashboard() {
+export default function Dashboard() {
   const { t, isAr } = useLang()
   const { user } = useAuth()
   const td = t.dashboard
   const username = user?.user_metadata?.username || user?.email?.split('@')[0] || 'User'
-
-
-
-
-
+  const [tab, setTab] = useState('listings')
+  const [listings, setListings] = useState([])
+  const [avatarUrl, setAvatarUrl] = useState(null)
+  const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState({ game: '', titleAr: '', titleEn: '', price: '', desc: '' })
+  const [orders, setOrders] = useState([])
   useEffect(() => {
-    if (!user) return
-    const url = supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now()
-    setAvatarUrl(url)
+    if (user) {
+      const url = supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now()
+      setAvatarUrl(url)
+    }
   }, [user])
-  if (!user) return <Navigate to='/auth' />
-  const [form, setForm] = useState({ game: '', titleAr: '', titleEn: '', price: '', desc: '' })
-  if (!user) return <Navigate to="/auth" />
-    useEffect(() => {
-  const url = supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now()
-  setAvatarUrl(url)
-}, [user])
-
-      useEffect(() => {
+  useEffect(() => {
     fetchListings().then(data => {
       setListings(data.map(l => ({ ...l, typeEn: l.type_en, typeAr: l.type_ar, earnings: '0.00', status: 'active' })))
     })
   }, [])
-
+  useEffect(() => {
+    supabase.from('orders_with_listings').select('*').then(({ data }) => {
+      if (data) setOrders(data)
+    })
+  }, [])
+  if (!user) return <Navigate to='/auth' />
   const [orders, setOrders] = useState([])
 
       useEffect(() => {

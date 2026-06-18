@@ -37,8 +37,8 @@ export default function listings() {
 
   const filtered = useMemo(() => {
     let list = [...listings]
-    if (search) list = list.filter(l => (isAr ? l.type_ar : l.type_en).toLowerCase().includes(search.toLowerCase()) || l.game.toLowerCase().includes(search.toLowerCase()))
-    if (selectedGame !== 'all') list = list.filter(l => l.game_id === parseInt(selectedGame))
+    let list = [...listings]
+    if (category && category !== 'all') list = list.filter(l => l.category === category)
     if (priceMin) list = list.filter(l => parseFloat(l.price) >= parseFloat(priceMin))
     if (priceMax) list = list.filter(l => parseFloat(l.price) <= parseFloat(priceMax))
     if (sortBy === 'price_asc') list.sort((a, b) => parseFloat(a.price) - parseFloat(b.price))

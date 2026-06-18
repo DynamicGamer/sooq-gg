@@ -5,6 +5,21 @@ import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
 import { GAMES, fetchListings } from '../lib/supabase'
 
+const GAME_IMAGES = {
+  'PUBG Mobile': '/games/pubg.jpg',
+  'Free Fire': '/games/freefire.jpg',
+  'Fortnite': '/games/fortnite.jpg',
+  'Clash of Clans': '/games/coc.jpg',
+  'Mobile Legends': '/games/mlbb.jpg',
+  'Valorant': '/games/valorant.jpg',
+  'FIFA Mobile': '/games/fifa.jpg',
+  'Genshin Impact': '/games/genshin.jpg',
+  'Call of Duty Mobile': '/games/codm.jpg',
+  'League of Legends': '/games/lol.jpg',
+  'Steam Wallet': '/games/steam.jpg',
+  'PlayStation': '/games/psn.jpg',
+}
+
 const MOCK_REVIEWS = [
   { user: 'Ahmed_Jo', rating: 5, comment: 'سريع جداً وموثوق، أنصح بشدة', commentEn: 'Super fast and reliable, highly recommend', date: '2025-05-10' },
   { user: 'KSA_Gamer', rating: 5, comment: 'أفضل بائع في السوق', commentEn: 'Best seller on the market', date: '2025-05-08' },
@@ -164,3 +179,5 @@ export default function ListingDetail() {
     </div>
   )
 }
+
+

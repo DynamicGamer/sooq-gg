@@ -168,8 +168,8 @@ export default function Dashboard() {
       </div>
       {tab === 'listings' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ width: '36px', height: '36px', borderRadius: 'var(--radius-md)', overflow: 'hidden', flexShrink: 0 }}><img src={GAME_IMAGES[l.game]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display='none' }} /></div>
+          {listings.length === 0 && <div className='card' style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>No listings yet</div>}
+          {listings.map(l => (
                 <div>
                   <div style={{ fontWeight: '700', fontSize: '13px' }}>{isAr ? l.typeAr : l.typeEn}</div>
                   <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{l.game}</div>

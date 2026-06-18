@@ -24,7 +24,6 @@ const MOCK_ORDERS = []
 const GAMES_LIST = ['PUBG Mobile','Free Fire','Fortnite','Clash of Clans','Mobile Legends','Valorant','FIFA Mobile','Genshin Impact']
 
 export default function Dashboard() {
-export default function Dashboard() {
   const { t, isAr } = useLang()
   const { user } = useAuth()
   const td = t.dashboard

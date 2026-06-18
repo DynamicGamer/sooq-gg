@@ -25,8 +25,8 @@ const MOCK_ORDERS = []
 
 const GAMES_LIST = ['PUBG Mobile','Free Fire','Fortnite','Clash of Clans','Mobile Legends','Valorant','FIFA Mobile','Genshin Impact']
 
-export default function Dashboard() {
-  const { t, isAr } = useLang()
+  const [avatar, setAvatar] = useState(null)
+  const [avatarUrl, setAvatarUrl] = useState(null)
   const { user } = useAuth()
   const td = t.dashboard
   const username = user?.user_metadata?.username || user?.email?.split('@')[0] || 'User'
@@ -101,21 +101,21 @@ export default function Dashboard() {
   return (
     <div className="page-container">
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
-        <div>
-          <h1 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '4px' }}>{td.title}</h1>
-          <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
-            {isAr ? `مرحباً، ${username}` : `Welcome back, ${username}`}
-          </p>
+    <div className='page-container'>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <label style={{ cursor: 'pointer', position: 'relative' }}>
+            <div style={{ width: '52px', height: '52px', borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(201,168,76,0.4)', background: 'linear-gradient(135deg, #c9a84c, #a07830)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', color: '#0c0a08', fontWeight: '800' }}>
+            {avatarUrl ? <img src={avatarUrl} alt='avatar' style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : username?.[0]?.toUpperCase()}
+            </div>
+            <input type='file' accept='image/*' style={{ display: 'none' }} onChange={async e => { const file = e.target.files[0]; if (!file) return; await supabase.storage.from('avatars').upload(user.id + '/avatar', file, { upsert: true }); setAvatarUrl(supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now()) }} />
+            <div style={{ position: 'absolute', bottom: 0, right: 0, width: '16px', height: '16px', background: '#c9a84c', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', color: '#0c0a08' }}>+</div>
+          </label>
+          <div>
+            <h1 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '4px' }}>{td.title}</h1>
+            <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{isAr ? Welcome,  : Welcome back, }</p>
+          </div>
         </div>
-        <button className="btn-primary" onClick={() => setShowForm(true)}>{td.addListing}</button>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px', marginBottom: '28px' }}>
-        {statsData.map(s => (
-          <div key={s.label} className="card" style={{ padding: '16px', textAlign: 'center' }}>
-            <div style={{ fontSize: '22px', marginBottom: '6px' }}>{s.icon}</div>
-            <div style={{ fontSize: '20px', fontWeight: '800', marginBottom: '4px' }}>{s.value}</div>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{s.label}</div>
           </div>
         ))}
       </div>
@@ -236,6 +236,7 @@ export default function Dashboard() {
     </div>
   )
 }
+
 
 
 

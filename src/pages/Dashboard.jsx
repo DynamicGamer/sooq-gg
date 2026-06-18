@@ -50,7 +50,6 @@ export default function Dashboard() {
       if (data) setOrders(data)
     })
   }, [])
-  }, [])
   if (!user) return <Navigate to='/auth' />
   const totalEarnings = listings.reduce((s, l) => s + parseFloat(l.earnings || 0), 0).toFixed(2)
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))

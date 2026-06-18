@@ -191,7 +191,7 @@ export default function Dashboard() {
                 <span className={`badge ${statusColor[l.status] || 'badge-purple'}`}>{td.status?.[l.status] || l.status}</span>
                 <button className="btn-outline" style={{ padding: '4px 10px', fontSize: '11px' }}
                   onClick={() => setListings(prev => prev.filter(x => x.id !== l.id))}>
-                  {isAr ? 'حذف' : 'Delete'}
+                  {isAr ? 'Delete' : 'Delete'}
                 </button>
               </div>
             </div>

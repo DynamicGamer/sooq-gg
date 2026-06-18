@@ -45,7 +45,7 @@ export default function Dashboard() {
   const [form, setForm] = useState({ game: '', titleAr: '', titleEn: '', price: '', desc: '' })
   if (!user) return <Navigate to="/auth" />
     useEffect(() => {
-  const url = supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl
+  const url = supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now()
   setAvatarUrl(url)
 }, [user])
 
@@ -111,7 +111,7 @@ export default function Dashboard() {
   <div style={{ width: '52px', height: '52px', borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(201,168,76,0.4)', background: 'linear-gradient(135deg, #c9a84c, #a07830)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', color: '#0c0a08', fontWeight: '800' }}>
     {avatarUrl ? <img src={avatarUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : username?.[0]?.toUpperCase()}
   </div>
-  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => { const file = e.target.files[0]; if (!file) return; await supabase.storage.from('avatars').upload(user.id + '/avatar', file, { upsert: true }); setAvatarUrl(supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now()) }} />
+  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => { const file = e.target.files[0]; if (!file) return; await supabase.storage.from('avatars').upload(user.id + '/avatar', file, { upsert: true }); setAvatarUrl(supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now() + '?t=' + Date.now()) }} />
   <div style={{ position: 'absolute', bottom: 0, right: 0, width: '16px', height: '16px', background: '#c9a84c', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', color: '#0c0a08' }}>+</div>
 </label>
           <h1 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '4px' }}>{td.title}</h1>

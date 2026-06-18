@@ -166,7 +166,6 @@ export default function Dashboard() {
           { id: 'orders', label: td.tabOrders },
           { id: 'earnings', label: td.tabEarnings },
           { id: 'messages', label: 'Messages' },
-          { id: 'profile', label: 'Profile' },
         ].map(tab_item => (
           <button key={tab_item.id} onClick={() => setTab(tab_item.id)} style={{
             padding: '7px 18px', borderRadius: 'calc(var(--radius-md) - 2px)', border: 'none',
@@ -250,8 +249,6 @@ export default function Dashboard() {
       {tab === 'messages' && (
         <MessagesInbox username={username} isAr={isAr} />
       )}
-                </div>
-                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => { const file = e.target.files[0]; if (!file) return; await supabase.storage.from('avatars').remove([user.id + '/avatar']); await supabase.storage.from('avatars').upload(user.id + '/avatar', file); setAvatarUrl(supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now()) }} />
     </div>
   )
 }

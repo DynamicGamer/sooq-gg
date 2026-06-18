@@ -3,6 +3,21 @@ import { Link, Navigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
 import { supabase, fetchListings } from '../lib/supabase'
+
+const GAME_IMAGES = {
+  'PUBG Mobile': '/games/pubg.jpg',
+  'Free Fire': '/games/freefire.jpg',
+  'Fortnite': '/games/fortnite.jpg',
+  'Clash of Clans': '/games/coc.jpg',
+  'Mobile Legends': '/games/mlbb.jpg',
+  'Valorant': '/games/valorant.jpg',
+  'FIFA Mobile': '/games/fifa.jpg',
+  'Genshin Impact': '/games/genshin.jpg',
+  'Call of Duty Mobile': '/games/codm.jpg',
+  'League of Legends': '/games/lol.jpg',
+  'Steam Wallet': '/games/steam.jpg',
+  'PlayStation': '/games/psn.jpg',
+}
 import MessagesInbox from '../components/MessagesInbox'
 import { useState as useStateMsg, useEffect as useEffectMsg } from 'react'
 
@@ -155,7 +170,7 @@ export default function Dashboard() {
           {listings.map(l => (
             <div key={l.id} className="card" style={{ padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ width: '36px', height: '36px', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🎮</div>
+                <div style={{ width: '36px', height: '36px', borderRadius: 'var(--radius-md)', overflow: 'hidden', flexShrink: 0 }}><img src={GAME_IMAGES[l.game]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display='none' }} /></div>
                 <div>
                   <div style={{ fontWeight: '700', fontSize: '13px' }}>{isAr ? l.typeAr : l.typeEn}</div>
                   <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{l.game}</div>
@@ -221,6 +236,7 @@ export default function Dashboard() {
     </div>
   )
 }
+
 
 
 

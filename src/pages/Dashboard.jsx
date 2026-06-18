@@ -4,6 +4,7 @@ import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
 import { supabase, fetchListings } from '../lib/supabase'
 import MessagesInbox from '../components/MessagesInbox'
+
 const GAME_IMAGES = {
   'PUBG Mobile': '/games/pubg.jpg',
   'Free Fire': '/games/freefire.jpg',
@@ -19,38 +20,42 @@ const GAME_IMAGES = {
   'PlayStation': '/games/psn.jpg',
 }
 
-const MOCK_ORDERS = []
-
-const GAMES_LIST = ['PUBG Mobile','Free Fire','Fortnite','Clash of Clans','Mobile Legends','Valorant','FIFA Mobile','Genshin Impact']
+const GAMES_LIST = ['PUBG Mobile','Free Fire','Fortnite','Clash of Clans','Mobile Legends','Valorant','FIFA Mobile','Genshin Impact','Call of Duty Mobile','League of Legends','Steam Wallet','PlayStation']
 
 export default function Dashboard() {
   const { t, isAr } = useLang()
   const { user } = useAuth()
   const td = t.dashboard
   const username = user?.user_metadata?.username || user?.email?.split('@')[0] || 'User'
+
   const [tab, setTab] = useState('listings')
   const [listings, setListings] = useState([])
+  const [orders, setOrders] = useState([])
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState({ game: '', titleAr: '', titleEn: '', price: '', desc: '' })
-  const [orders, setOrders] = useState([])
+
   useEffect(() => {
     if (user) {
       const url = supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now()
       setAvatarUrl(url)
     }
   }, [user])
+
   useEffect(() => {
     fetchListings().then(data => {
       setListings(data.map(l => ({ ...l, typeEn: l.type_en, typeAr: l.type_ar, earnings: '0.00', status: 'active' })))
     })
   }, [])
+
   useEffect(() => {
     supabase.from('orders_with_listings').select('*').then(({ data }) => {
       if (data) setOrders(data)
     })
   }, [])
-  if (!user) return <Navigate to='/auth' />
+
+  if (!user) return <Navigate to="/auth" />
+
   const totalEarnings = listings.reduce((s, l) => s + parseFloat(l.earnings || 0), 0).toFixed(2)
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
@@ -95,17 +100,17 @@ export default function Dashboard() {
     <div className="page-container">
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-<label style={{ cursor: 'pointer', position: 'relative' }}>
-  <div style={{ width: '52px', height: '52px', borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(201,168,76,0.4)', background: 'linear-gradient(135deg, #c9a84c, #a07830)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', color: '#0c0a08', fontWeight: '800' }}>
-    {avatarUrl ? <img src={avatarUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : username?.[0]?.toUpperCase()}
-  </div>
-  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => { const file = e.target.files[0]; if (!file) return; await supabase.storage.from('avatars').remove([user.id + '/avatar']); await supabase.storage.from('avatars').upload(user.id + '/avatar', file); setAvatarUrl(supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now() + '?t=' + Date.now()) }} />
-  <div style={{ position: 'absolute', bottom: 0, right: 0, width: '16px', height: '16px', background: '#c9a84c', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', color: '#0c0a08' }}>+</div>
-</label>
-          <h1 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '4px' }}>{td.title}</h1>
-          <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
-            {isAr ? `مرحباً، ${username}` : `Welcome back, ${username}`}
-          </p>
+          <label style={{ cursor: 'pointer', position: 'relative' }}>
+            <div style={{ width: '52px', height: '52px', borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(201,168,76,0.4)', background: 'linear-gradient(135deg, #c9a84c, #a07830)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', color: '#0c0a08', fontWeight: '800' }}>
+              {avatarUrl ? <img src={avatarUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : username?.[0]?.toUpperCase()}
+            </div>
+            <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => { const file = e.target.files[0]; if (!file) return; await supabase.storage.from('avatars').remove([user.id + '/avatar']); await supabase.storage.from('avatars').upload(user.id + '/avatar', file); setAvatarUrl(supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now()) }} />
+            <div style={{ position: 'absolute', bottom: 0, right: 0, width: '16px', height: '16px', background: '#c9a84c', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', color: '#0c0a08' }}>+</div>
+          </label>
+          <div>
+            <h1 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '4px' }}>{td.title}</h1>
+            <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{'Welcome back, ' + username}</p>
+          </div>
         </div>
         <button className="btn-primary" onClick={() => setShowForm(true)}>{td.addListing}</button>
       </div>
@@ -127,13 +132,13 @@ export default function Dashboard() {
             <div>
               <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '5px' }}>{td.game}</label>
               <select value={form.game} onChange={e => set('game', e.target.value)} style={{ width: '100%', padding: '8px 10px', fontSize: '12px' }}>
-                <option value="">{isAr ? 'اختر اللعبة' : 'Select Game'}</option>
+                <option value="">Select Game</option>
                 {GAMES_LIST.map(g => <option key={g} value={g}>{g}</option>)}
               </select>
             </div>
             <div>
               <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '5px' }}>{td.listingTitle} (AR)</label>
-              <input value={form.titleAr} onChange={e => set('titleAr', e.target.value)} placeholder="مثال: 660 UC" style={{ width: '100%', padding: '8px 10px', fontSize: '12px' }} />
+              <input value={form.titleAr} onChange={e => set('titleAr', e.target.value)} placeholder="e.g. 660 UC" style={{ width: '100%', padding: '8px 10px', fontSize: '12px' }} />
             </div>
             <div>
               <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '5px' }}>{td.listingTitle} (EN)</label>
@@ -160,16 +165,27 @@ export default function Dashboard() {
           { id: 'listings', label: td.tabListings },
           { id: 'orders', label: td.tabOrders },
           { id: 'earnings', label: td.tabEarnings },
-          { id: 'messages', label: isAr ? 'Messages' : 'Messages' },
-          { id: 'profile', label: isAr ? 'Profile' : 'Profile' },
+          { id: 'messages', label: 'Messages' },
+          { id: 'profile', label: 'Profile' },
         ].map(tab_item => (
-          <button key={tab_item.id} onClick={() => setTab(tab_item.id)} style={{ padding: '7px 18px', borderRadius: 'calc(var(--radius-md) - 2px)', border: 'none', background: tab === tab_item.id ? 'var(--accent)' : 'transparent', color: tab === tab_item.id ? '#fff' : 'var(--text-muted)', fontSize: '13px', fontWeight: '700', transition: 'all 0.15s' }}>{tab_item.label}</button>
+          <button key={tab_item.id} onClick={() => setTab(tab_item.id)} style={{
+            padding: '7px 18px', borderRadius: 'calc(var(--radius-md) - 2px)', border: 'none',
+            background: tab === tab_item.id ? 'var(--accent)' : 'transparent',
+            color: tab === tab_item.id ? '#fff' : 'var(--text-muted)',
+            fontSize: '13px', fontWeight: '700', transition: 'all 0.15s',
+          }}>{tab_item.label}</button>
         ))}
       </div>
+
       {tab === 'listings' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {listings.length === 0 && <div className='card' style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>No listings yet</div>}
+          {listings.length === 0 && <div className="card" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>No listings yet</div>}
           {listings.map(l => (
+            <div key={l.id} className="card" style={{ padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ width: '36px', height: '36px', borderRadius: 'var(--radius-md)', overflow: 'hidden', flexShrink: 0 }}>
+                  <img src={GAME_IMAGES[l.game]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display='none' }} />
+                </div>
                 <div>
                   <div style={{ fontWeight: '700', fontSize: '13px' }}>{isAr ? l.typeAr : l.typeEn}</div>
                   <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{l.game}</div>
@@ -191,7 +207,7 @@ export default function Dashboard() {
                 <span className={`badge ${statusColor[l.status] || 'badge-purple'}`}>{td.status?.[l.status] || l.status}</span>
                 <button className="btn-outline" style={{ padding: '4px 10px', fontSize: '11px' }}
                   onClick={() => setListings(prev => prev.filter(x => x.id !== l.id))}>
-                  {isAr ? 'Delete' : 'Delete'}
+                  Delete
                 </button>
               </div>
             </div>
@@ -201,14 +217,15 @@ export default function Dashboard() {
 
       {tab === 'orders' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {orders.length === 0 && <div className="card" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>No orders yet</div>}
           {orders.map(o => (
             <div key={o.id} className="card" style={{ padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
               <div>
-                <div style={{ fontWeight: "700", fontSize: "13px" }}>{o.game ? o.game + "   " + o.type_en : o.grand_total}</div>
-                <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>{isAr ? "???????:" : "Buyer:"} {o.buyer_id?.slice(0,8)}...   {new Date(o.created_at).toLocaleDateString()}</div>
+                <div style={{ fontWeight: '700', fontSize: '13px' }}>{o.game ? o.game + ' - ' + o.type_en : o.grand_total} - ${o.grand_total}</div>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{'Buyer: ' + (o.buyer_id?.slice(0,8) || '?') + '... - ' + new Date(o.created_at).toLocaleDateString()}</div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ fontWeight: "800", color: "#fff" }}>${o.grand_total}</span>
+                <span style={{ fontWeight: '800', color: '#fff' }}>${o.grand_total}</span>
                 <span className={`badge ${statusColor[o.status] || 'badge-purple'}`}>{td.status?.[o.status] || o.status}</span>
                 {o.status === 'pending' && (
                   <button className="btn-primary" style={{ padding: '5px 12px', fontSize: '11px' }}>{td.confirm}</button>
@@ -224,18 +241,20 @@ export default function Dashboard() {
           <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>{td.earnings}</div>
           <div style={{ fontSize: '40px', fontWeight: '800', color: 'var(--green)', marginBottom: '20px' }}>${totalEarnings}</div>
           <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '20px' }}>
-            {isAr ? 'الرصيد المتاح للسحب (بعد عمولة 10%)' : 'Available balance for withdrawal (after 10% commission)'}
+            Available balance for withdrawal (after 10% commission)
           </p>
           <button className="btn-primary" style={{ padding: '10px 28px' }}>{td.withdraw}</button>
         </div>
       )}
+
       {tab === 'messages' && (
         <MessagesInbox username={username} isAr={isAr} />
       )}
+
       {tab === 'profile' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div className="card" style={{ padding: '28px' }}>
-            <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '20px', color: '#ffffff' }}>{isAr ? '??????? ????? ??????' : 'Profile Information'}</h3>
+            <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '20px', color: '#ffffff' }}>Profile Information</h3>
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>
               <label style={{ cursor: 'pointer', position: 'relative' }}>
                 <div style={{ width: '80px', height: '80px', borderRadius: '50%', overflow: 'hidden', border: '3px solid rgba(201,168,76,0.4)', background: 'linear-gradient(135deg, #c9a84c, #a07830)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', color: '#0c0a08', fontWeight: '800' }}>
@@ -247,56 +266,43 @@ export default function Dashboard() {
               <div>
                 <div style={{ fontSize: '20px', fontWeight: '800', color: '#ffffff', marginBottom: '4px' }}>{username}</div>
                 <div style={{ fontSize: '13px', color: '#9a8570' }}>{user.email}</div>
-                <div style={{ fontSize: '12px', color: '#c9a84c', marginTop: '4px' }}>{isAr ? '???? ??? ?????? ???????' : 'Click picture to change'}</div>
+                <div style={{ fontSize: '12px', color: '#c9a84c', marginTop: '4px' }}>Click picture to change</div>
               </div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' }}>
               <div style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.15)', borderRadius: '10px', padding: '16px', textAlign: 'center' }}>
                 <div style={{ fontSize: '24px', fontWeight: '800', color: '#c9a84c' }}>{listings.length}</div>
-                <div style={{ fontSize: '12px', color: '#9a8570', marginTop: '4px' }}>{isAr ? '?????' : 'My Listings'}</div>
+                <div style={{ fontSize: '12px', color: '#9a8570', marginTop: '4px' }}>My Listings</div>
               </div>
               <div style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.15)', borderRadius: '10px', padding: '16px', textAlign: 'center' }}>
                 <div style={{ fontSize: '24px', fontWeight: '800', color: '#c9a84c' }}>{orders.length}</div>
-                <div style={{ fontSize: '12px', color: '#9a8570', marginTop: '4px' }}>{isAr ? '??????' : 'My Orders'}</div>
+                <div style={{ fontSize: '12px', color: '#9a8570', marginTop: '4px' }}>My Orders</div>
               </div>
               <div style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.15)', borderRadius: '10px', padding: '16px', textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: '800', color: '#c9a84c' }}>4.9?</div>
-                <div style={{ fontSize: '12px', color: '#9a8570', marginTop: '4px' }}>{isAr ? '???????' : 'Rating'}</div>
+                <div style={{ fontSize: '24px', fontWeight: '800', color: '#c9a84c' }}>4.9</div>
+                <div style={{ fontSize: '12px', color: '#9a8570', marginTop: '4px' }}>Rating</div>
               </div>
             </div>
           </div>
           <div className="card" style={{ padding: '28px' }}>
-            <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#ffffff' }}>{isAr ? '??????' : 'Account'}</h3>
+            <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#ffffff' }}>Account</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>
-                <span style={{ color: '#9a8570', fontSize: '14px' }}>{isAr ? '?????? ??????????' : 'Email'}</span>
+                <span style={{ color: '#9a8570', fontSize: '14px' }}>Email</span>
                 <span style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{user.email}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>
-                <span style={{ color: '#9a8570', fontSize: '14px' }}>{isAr ? '??? ????????' : 'Username'}</span>
+                <span style={{ color: '#9a8570', fontSize: '14px' }}>Username</span>
                 <span style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{username}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0' }}>
-                <span style={{ color: '#9a8570', fontSize: '14px' }}>{isAr ? '????? ????????' : 'Member Since'}</span>
+                <span style={{ color: '#9a8570', fontSize: '14px' }}>Member Since</span>
                 <span style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{new Date(user.created_at).toLocaleDateString()}</span>
               </div>
             </div>
           </div>
         </div>
       )}
-    </div>
-  )
-}
-
-
-
-
-
-
-
-
-
-
     </div>
   )
 }

@@ -250,15 +250,6 @@ export default function Dashboard() {
       {tab === 'messages' && (
         <MessagesInbox username={username} isAr={isAr} />
       )}
-
-      {tab === 'profile' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div className="card" style={{ padding: '28px' }}>
-            <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '20px', color: '#ffffff' }}>Profile Information</h3>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>
-              <label style={{ cursor: 'pointer', position: 'relative' }}>
-                <div style={{ width: '80px', height: '80px', borderRadius: '50%', overflow: 'hidden', border: '3px solid rgba(201,168,76,0.4)', background: 'linear-gradient(135deg, #c9a84c, #a07830)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', color: '#0c0a08', fontWeight: '800' }}>
-                  {avatarUrl ? <img src={avatarUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : username?.[0]?.toUpperCase()}
                 </div>
                 <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => { const file = e.target.files[0]; if (!file) return; await supabase.storage.from('avatars').remove([user.id + '/avatar']); await supabase.storage.from('avatars').upload(user.id + '/avatar', file); setAvatarUrl(supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now()) }} />
                 <div style={{ position: 'absolute', bottom: 0, right: 0, width: '24px', height: '24px', background: '#c9a84c', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', color: '#0c0a08' }}>+</div>
@@ -306,3 +297,4 @@ export default function Dashboard() {
     </div>
   )
 }
+

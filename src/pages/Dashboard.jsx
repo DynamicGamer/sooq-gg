@@ -33,7 +33,7 @@ export default function Dashboard() {
   const [orders, setOrders] = useState([])
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [showForm, setShowForm] = useState(false)
-  const [form, setForm] = useState({ game: '', titleAr: '', titleEn: '', price: '', desc: '' })
+  const [form, setForm] = useState({ game: '', category: 'topups', titleAr: '', titleEn: '', price: '', desc: '' })
 
   useEffect(() => {
     if (user) {
@@ -74,15 +74,15 @@ export default function Dashboard() {
       sales: 0,
       badge_key: null,
       delivery_key: 'instant',
-      desc_ar: form.desc,
-      desc_en: form.desc,
+      delivery_key: 'instant',
+      category: form.category,
     }
     const { error } = await supabase.from('listings').insert([newListing])
     if (error) {
       alert('Error: ' + error.message)
     } else {
       setListings(prev => [...prev, { ...newListing, typeEn: newListing.type_en, typeAr: newListing.type_ar, earnings: '0.00', status: 'active' }])
-      setForm({ game: '', titleAr: '', titleEn: '', price: '', desc: '' })
+    setForm({ game: '', category: 'topups', titleAr: '', titleEn: '', price: '', desc: '' })
       setShowForm(false)
     }
   }
@@ -130,6 +130,17 @@ export default function Dashboard() {
           <h3 style={{ fontSize: '14px', fontWeight: '700', marginBottom: '16px' }}>{td.addListing}</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px', marginBottom: '12px' }}>
             <div>
+            <div>
+              <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '5px' }}>Category</label>
+              <select value={form.category} onChange={e => set('category', e.target.value)} style={{ width: '100%', padding: '8px 10px', fontSize: '12px' }}>
+                <option value='topups'>Top-Ups</option>
+                <option value='accounts'>Accounts</option>
+                <option value='currency'>Currency</option>
+                <option value='items'>Items</option>
+                <option value='boosting'>Boosting</option>
+                <option value='giftcards'>Gift Cards</option>
+              </select>
+            </div>
               <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '5px' }}>{td.game}</label>
               <select value={form.game} onChange={e => set('game', e.target.value)} style={{ width: '100%', padding: '8px 10px', fontSize: '12px' }}>
                 <option value="">Select Game</option>

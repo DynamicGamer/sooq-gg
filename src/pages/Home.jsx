@@ -164,7 +164,7 @@ export default function Home() {
                       <div style={{ fontSize: '11px', color: '#10b981', marginTop: '3px', fontWeight: '600' }}>⚡ {delivery}</div>
                     </div>
                     <button style={{ background: 'linear-gradient(135deg, #c9a84c, #a07830)', border: 'none', color: '#0f0f0f', padding: '11px 20px', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: '800', whiteSpace: 'nowrap', fontFamily: 'inherit', boxShadow: '0 4px 12px rgba(201,168,76,0.35)', transition: 'all 0.2s' }}
-                      onClick={e => { e.stopPropagation(); addItem({ ...l, name: isAr ? l.type_ar : l.type_en }) }}
+                      onClick={e => { e.stopPropagation(); navigate('/listing/' + l.id) }}
                       onMouseEnter={e => { e.currentTarget.style.opacity = '0.9' }}
                       onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
                     >{isAr ? 'شراء الآن' : 'Buy Now'}</button>

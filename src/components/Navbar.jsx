@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useLang } from '../context/LangContext'

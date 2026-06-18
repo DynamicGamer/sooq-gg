@@ -205,7 +205,7 @@ export default function Dashboard() {
                 </div>
                 <span className={`badge ${statusColor[l.status] || 'badge-purple'}`}>{td.status?.[l.status] || l.status}</span>
                 <button className="btn-outline" style={{ padding: '4px 10px', fontSize: '11px' }}
-                  onClick={() => setListings(prev => prev.filter(x => x.id !== l.id))}>
+                  onClick={async () => { await supabase.from('listings').delete().eq('id', l.id); setListings(prev => prev.filter(x => x.id !== l.id)) }}>
                   Delete
                 </button>
               </div>

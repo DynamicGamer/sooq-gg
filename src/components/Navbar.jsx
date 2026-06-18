@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { supabase } from '../lib/supabase'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
@@ -116,19 +118,24 @@ export default function Navbar() {
           )}
         </Link>
 
-        {user ? (
-          <>
-            <Link to="/orders" style={{ color: '#9a8570', padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: '600', border: '1px solid rgba(201,168,76,0.12)', background: 'rgba(201,168,76,0.04)', textDecoration: 'none' }}>
-              {isAr ? 'طلباتي' : 'Orders'}
-            </Link>
-            <Link to="/dashboard" style={{ color: '#c9a84c', padding: '6px 14px', fontSize: '13px', fontWeight: '700', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '8px', background: 'rgba(201,168,76,0.08)', textDecoration: 'none' }}>
-              {t.nav.dashboard}
-            </Link>
-            <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#9a8570', fontSize: '13px', cursor: 'pointer', padding: '6px' }}>
-              {t.nav.logout}
-            </button>
-          </>
-        ) : (
+     {user ? (
+  <>
+    <Link to="/orders" style={{ color: '#9a8570', padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: '600', border: '1px solid rgba(201,168,76,0.12)', background: 'rgba(201,168,76,0.04)', textDecoration: 'none' }}>
+      {isAr ? 'طلباتي' : 'Orders'}
+    </Link>
+    <Link to="/dashboard" style={{ color: '#c9a84c', padding: '6px 14px', fontSize: '13px', fontWeight: '700', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '8px', background: 'rgba(201,168,76,0.08)', textDecoration: 'none' }}>
+      {t.nav.dashboard}
+    </Link>
+    <Link to="/profile" style={{ textDecoration: 'none' }}>
+      <div style={{ width: '32px', height: '32px', borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(201,168,76,0.4)', background: 'linear-gradient(135deg, #c9a84c, #a07830)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', color: '#0c0a08', fontWeight: '800' }}>
+        {username?.[0]?.toUpperCase()}
+      </div>
+    </Link>
+    <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#9a8570', fontSize: '13px', cursor: 'pointer', padding: '6px' }}>
+      {t.nav.logout}
+    </button>
+  </>
+) : (
           <>
             <Link to="/auth" style={{ color: '#d4c5a9', padding: '7px 16px', fontSize: '13px', fontWeight: '600', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '8px', background: 'transparent', textDecoration: 'none' }}>
               {t.nav.login}

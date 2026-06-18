@@ -47,7 +47,7 @@ export default function Dashboard() {
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
   const handleAddListing = async () => {
-    alert("clicked")
+  const handleAddListing = async () => {
     if (!form.game || !form.price) return alert('Please select a game and enter a price')
     const newListing = {
       id: `l${Date.now()}`,

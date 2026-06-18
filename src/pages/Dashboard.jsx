@@ -191,7 +191,7 @@ export default function Dashboard() {
           {orders.map(o => (
             <div key={o.id} className="card" style={{ padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
               <div>
-                <div style={{ fontWeight: "700", fontSize: "13px" }}>{o.type_en || o.grand_total} — ${o.grand_total}</div>
+                <div style={{ fontWeight: "700", fontSize: "13px" }}>{o.game ? o.game + " — " + o.type_en : o.grand_total}</div>
                 <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>{isAr ? "???????:" : "Buyer:"} {o.buyer_id?.slice(0,8)}... · {new Date(o.created_at).toLocaleDateString()}</div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

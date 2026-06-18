@@ -1,25 +1,9 @@
 import { useState, useEffect } from 'react'
-import { useState, useEffect } from 'react'
-import { supabase } from '../lib/supabase'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
-import { GAMES } from '../lib/supabase'
-
-const GAME_IMAGES = {
-  'PUBG Mobile': '/games/pubg.jpg',
-  'Free Fire': '/games/freefire.jpg',
-  'Fortnite': '/games/fortnite.jpg',
-  'Clash of Clans': '/games/coc.jpg',
-  'Mobile Legends': '/games/mlbb.jpg',
-  'Valorant': '/games/valorant.jpg',
-  'FIFA Mobile': '/games/fifa.jpg',
-  'Genshin Impact': '/games/genshin.jpg',
-  'Call of Duty Mobile': '/games/codm.jpg',
-  'League of Legends': '/games/lol.jpg',
-  'Steam Wallet': '/games/steam.jpg',
-  'PlayStation': '/games/psn.jpg',
-}
+import { supabase, GAMES } from '../lib/supabase'
 
 const CATS = ['topups','accounts','currency','items','boosting','giftcards']
 
@@ -30,6 +14,16 @@ export default function Navbar() {
   const navigate = useNavigate()
   const location = useLocation()
   const [hoveredCat, setHoveredCat] = useState(null)
+  const [avatarUrl, setAvatarUrl] = useState(null)
+
+  const username = user?.user_metadata?.username || user?.email?.split('@')[0] || 'User'
+
+  useEffect(() => {
+    if (user) {
+      const url = supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now()
+      setAvatarUrl(url)
+    }
+  }, [user])
 
   const handleLogout = async () => { await signOut(); navigate('/') }
 
@@ -38,9 +32,9 @@ export default function Navbar() {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-          <img src="/logo.svg" alt="SooqGG" style={{ width: "36px", height: "36px", borderRadius: "8px" }} />
+          <img src="/logo.svg" alt="SooqGG" style={{ width: '36px', height: '36px', borderRadius: '8px' }} />
           <span style={{ fontSize: '20px', fontWeight: '900', color: '#ffffff', letterSpacing: '-0.5px' }}>
-            <span style={{ color: "#ffffff" }}>Sooq</span><span style={{ color: "#c9a84c" }}>GG</span>
+            <span style={{ color: '#ffffff' }}>Sooq</span><span style={{ color: '#c9a84c' }}>GG</span>
           </span>
         </Link>
 
@@ -62,24 +56,13 @@ export default function Navbar() {
                 display: 'block',
                 height: '62px',
                 lineHeight: '62px',
-              }}>{t.nav[c]}</Link>
+              }}
+                onMouseEnter={e => { if (location.pathname !== `/listings/${c}`) { e.currentTarget.style.color = '#d4c5a9' } }}
+                onMouseLeave={e => { if (location.pathname !== `/listings/${c}`) { e.currentTarget.style.color = '#9a8570' } }}
+              >{t.nav[c]}</Link>
 
-              {/* DROPDOWN */}
               {hoveredCat === c && (
-                <div style={{
-                  position: 'absolute',
-                  top: '62px',
-                  left: isAr ? 'auto' : '0',
-                  right: isAr ? '0' : 'auto',
-                  background: 'rgba(15,12,8,0.98)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(201,168,76,0.2)',
-                  borderRadius: '14px',
-                  padding: '16px',
-                  minWidth: '220px',
-                  boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
-                  zIndex: 200,
-                }}>
+                <div style={{ position: 'absolute', top: '62px', left: isAr ? 'auto' : '0', right: isAr ? '0' : 'auto', background: 'rgba(15,12,8,0.98)', backdropFilter: 'blur(20px)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '14px', padding: '16px', minWidth: '220px', boxShadow: '0 20px 40px rgba(0,0,0,0.6)', zIndex: 200 }}>
                   <div style={{ fontSize: '10px', color: '#c9a84c', fontWeight: '800', letterSpacing: '1px', marginBottom: '10px', paddingBottom: '8px', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>
                     {t.nav[c]?.toUpperCase()}
                   </div>
@@ -89,14 +72,12 @@ export default function Navbar() {
                       onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,168,76,0.08)'; e.currentTarget.style.color = '#c9a84c' }}
                       onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#d4c5a9' }}
                     >
-                      <img src={GAME_IMAGES[game.name]} alt={game.name} style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover' }} />
-                      <div>
-                        <div style={{ fontSize: '13px', fontWeight: '600' }}>{isAr ? game.nameAr : game.name}</div>
-                      </div>
+                      <img src={`/games/${game.name === 'PUBG Mobile' ? 'pubg' : game.name === 'Free Fire' ? 'freefire' : game.name === 'Fortnite' ? 'fortnite' : game.name === 'Clash of Clans' ? 'coc' : game.name === 'Mobile Legends' ? 'mlbb' : game.name === 'Valorant' ? 'valorant' : game.name === 'FIFA Mobile' ? 'fifa' : game.name === 'Genshin Impact' ? 'genshin' : 'pubg'}.jpg`} alt={game.name} style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover' }} onError={e => e.target.style.display='none'} />
+                      <div style={{ fontSize: '13px', fontWeight: '600' }}>{isAr ? game.nameAr : game.name}</div>
                     </Link>
                   ))}
                   <Link to={`/listings/${c}`} style={{ display: 'block', textAlign: 'center', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(201,168,76,0.1)', fontSize: '12px', color: '#c9a84c', fontWeight: '700', textDecoration: 'none' }}>
-                    {isAr ? 'عرض الكل ←' : 'View All →'}
+                    {isAr ? 'عرض الكل' : 'View All'}
                   </Link>
                 </div>
               )}
@@ -117,24 +98,24 @@ export default function Navbar() {
           )}
         </Link>
 
-     {user ? (
-  <>
-    <Link to="/orders" style={{ color: '#9a8570', padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: '600', border: '1px solid rgba(201,168,76,0.12)', background: 'rgba(201,168,76,0.04)', textDecoration: 'none' }}>
-      {isAr ? 'طلباتي' : 'Orders'}
-    </Link>
-    <Link to="/dashboard" style={{ color: '#c9a84c', padding: '6px 14px', fontSize: '13px', fontWeight: '700', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '8px', background: 'rgba(201,168,76,0.08)', textDecoration: 'none' }}>
-      {t.nav.dashboard}
-    </Link>
-    <Link to="/profile" style={{ textDecoration: 'none' }}>
-      <div style={{ width: '32px', height: '32px', borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(201,168,76,0.4)', background: 'linear-gradient(135deg, #c9a84c, #a07830)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', color: '#0c0a08', fontWeight: '800' }}>
-        {username?.[0]?.toUpperCase()}
-      </div>
-    </Link>
-    <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#9a8570', fontSize: '13px', cursor: 'pointer', padding: '6px' }}>
-      {t.nav.logout}
-    </button>
-  </>
-) : (
+        {user ? (
+          <>
+            <Link to="/orders" style={{ color: '#9a8570', padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: '600', border: '1px solid rgba(201,168,76,0.12)', background: 'rgba(201,168,76,0.04)', textDecoration: 'none' }}>
+              {isAr ? 'طلباتي' : 'Orders'}
+            </Link>
+            <Link to="/dashboard" style={{ color: '#c9a84c', padding: '6px 14px', fontSize: '13px', fontWeight: '700', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '8px', background: 'rgba(201,168,76,0.08)', textDecoration: 'none' }}>
+              {t.nav.dashboard}
+            </Link>
+            <Link to="/profile" style={{ textDecoration: 'none' }}>
+              <div style={{ width: '34px', height: '34px', borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(201,168,76,0.4)', background: 'linear-gradient(135deg, #c9a84c, #a07830)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', color: '#0c0a08', fontWeight: '800', cursor: 'pointer' }}>
+                {avatarUrl ? <img src={avatarUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => e.target.style.display='none'} /> : username?.[0]?.toUpperCase()}
+              </div>
+            </Link>
+            <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#9a8570', fontSize: '13px', cursor: 'pointer', padding: '6px' }}>
+              {t.nav.logout}
+            </button>
+          </>
+        ) : (
           <>
             <Link to="/auth" style={{ color: '#d4c5a9', padding: '7px 16px', fontSize: '13px', fontWeight: '600', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '8px', background: 'transparent', textDecoration: 'none' }}>
               {t.nav.login}
@@ -148,8 +129,3 @@ export default function Navbar() {
     </nav>
   )
 }
-
-
-
-
-

@@ -174,10 +174,10 @@ export default function Dashboard() {
           { id: 'earnings', label: td.tabEarnings },
           { id: 'messages', label: isAr ? 'Messages' : 'Messages' },
           { id: 'messages', label: isAr ? 'Messages' : 'Messages' },
-          { id: 'profile', label: isAr ? '????? ??????' : 'Profile' },
+          { id: 'profile', label: isAr ? 'Profile' : 'Profile' },
+        ].map(tab_item => (
+          <button key={tab_item.id} onClick={() => setTab(tab_item.id)} style={{ padding: '7px 18px', borderRadius: 'calc(var(--radius-md) - 2px)', border: 'none', background: tab === tab_item.id ? 'var(--accent)' : 'transparent', color: tab === tab_item.id ? '#fff' : 'var(--text-muted)', fontSize: '13px', fontWeight: '700', transition: 'all 0.15s' }}>{tab_item.label}</button>
         ))}
-      </div>
-      {tab === 'listings' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {listings.map(l => (
             <div key={l.id} className="card" style={{ padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>

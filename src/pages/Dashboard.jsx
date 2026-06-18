@@ -33,13 +33,13 @@ export default function Dashboard() {
 
 
 
-
-
-
-  const [tab, setTab] = useState('listings')
-  const [listings, setListings] = useState([])
-  const [avatarUrl, setAvatarUrl] = useState(null)
-  const [showForm, setShowForm] = useState(false)
+  const [form, setForm] = useState({ game: '', titleAr: '', titleEn: '', price: '', desc: '' })
+  useEffect(() => {
+    if (!user) return
+    const url = supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now()
+    setAvatarUrl(url)
+  }, [user])
+  if (!user) return <Navigate to='/auth' />
   const [form, setForm] = useState({ game: '', titleAr: '', titleEn: '', price: '', desc: '' })
   if (!user) return <Navigate to="/auth" />
     useEffect(() => {

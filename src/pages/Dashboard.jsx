@@ -3,7 +3,7 @@ import { Link, Navigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
 import { supabase, fetchListings } from '../lib/supabase'
-
+import MessagesInbox from '../components/MessagesInbox'
 const GAME_IMAGES = {
   'PUBG Mobile': '/games/pubg.jpg',
   'Free Fire': '/games/freefire.jpg',
@@ -18,8 +18,6 @@ const GAME_IMAGES = {
   'Steam Wallet': '/games/steam.jpg',
   'PlayStation': '/games/psn.jpg',
 }
-import MessagesInbox from '../components/MessagesInbox'
-import { useState as useStateMsg, useEffect as useEffectMsg } from 'react'
 
 const MOCK_ORDERS = []
 

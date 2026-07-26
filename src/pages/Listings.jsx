@@ -37,7 +37,6 @@ export default function listings() {
 
   const filtered = useMemo(() => {
     let list = [...listings]
-    let list = [...listings]
     if (category && category !== 'all') list = list.filter(l => l.category === category)
     if (priceMin) list = list.filter(l => parseFloat(l.price) >= parseFloat(priceMin))
     if (priceMax) list = list.filter(l => parseFloat(l.price) <= parseFloat(priceMax))

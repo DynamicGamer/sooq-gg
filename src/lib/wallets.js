@@ -43,4 +43,13 @@ export const WALLETS = {
   },
 }
 
+// TODO: replace with your real CliQ alias before going live (same as the wallet addresses above)
+export const CLIQ_INFO = {
+  alias: 'YOUR_CLIQ_ALIAS',
+  accountName: 'Your Name / Business Name',
+  bank: 'Your Bank (e.g. Arab Bank, CairoAmman Bank...)',
+  icon: '🇯🇴',
+  color: '#c9a84c',
+}
+
 export const COMMISSION_RATE = 0.07 // 7%

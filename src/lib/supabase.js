@@ -5,19 +5,29 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key'
 
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
+export const GENRES = [
+  { id: 'battle_royale', en: 'Battle Royale', ar: 'باتل رويال' },
+  { id: 'shooter',       en: 'Shooter',       ar: 'شوتر' },
+  { id: 'moba',          en: 'MOBA',          ar: 'موبا' },
+  { id: 'sports',        en: 'Sports',        ar: 'رياضة' },
+  { id: 'strategy',      en: 'Strategy',      ar: 'استراتيجية' },
+  { id: 'rpg',           en: 'RPG',           ar: 'آر بي جي' },
+  { id: 'platform',      en: 'Gift Cards & Platforms', ar: 'بطاقات ومنصات' },
+]
+
 export const GAMES = [
-  { id: 1,  name: 'PUBG Mobile',         nameAr: 'ببجي موبايل',        tagEn: 'UC Top-Up',       tagAr: 'UC شحن',         color: '#f59e0b', img: '🎯', sellers: 142, hot: true  },
-  { id: 2,  name: 'Free Fire',            nameAr: 'فري فاير',           tagEn: 'Diamond Top-Up',  tagAr: 'ماسة شحن',       color: '#10b981', img: '🔥', sellers: 98,  hot: true  },
-  { id: 3,  name: 'Fortnite',             nameAr: 'فورتنايت',           tagEn: 'V-Bucks',         tagAr: 'V-Bucks',        color: '#6366f1', img: '🌪️', sellers: 76,  hot: false },
-  { id: 4,  name: 'Clash of Clans',       nameAr: 'كلاش أوف كلانس',    tagEn: 'Gems Top-Up',     tagAr: 'جيمز شحن',       color: '#f97316', img: '🏰', sellers: 64,  hot: false },
-  { id: 5,  name: 'Mobile Legends',       nameAr: 'موبايل ليجندز',      tagEn: 'Diamond Top-Up',  tagAr: 'ماسة شحن',       color: '#8b5cf6', img: '⚡', sellers: 59,  hot: true  },
-  { id: 6,  name: 'Valorant',             nameAr: 'فالورانت',           tagEn: 'VP Top-Up',       tagAr: 'VP شحن',         color: '#ef4444', img: '🔫', sellers: 51,  hot: false },
-  { id: 7,  name: 'FIFA Mobile',          nameAr: 'فيفا موبايل',        tagEn: 'FC Points',       tagAr: 'FC Points',      color: '#3b82f6', img: '⚽', sellers: 88,  hot: false },
-  { id: 8,  name: 'Genshin Impact',       nameAr: 'جنشن إمباكت',        tagEn: 'Genesis Crystal', tagAr: 'Genesis Crystal', color: '#06b6d4', img: '✨', sellers: 43,  hot: false },
-  { id: 9,  name: 'Call of Duty Mobile',  nameAr: 'كول أوف ديوتي',      tagEn: 'CP Top-Up',       tagAr: 'CP شحن',         color: '#84cc16', img: '💥', sellers: 37,  hot: false },
-  { id: 10, name: 'League of Legends',    nameAr: 'ليج أوف ليجندز',     tagEn: 'RP Top-Up',       tagAr: 'RP شحن',         color: '#c084fc', img: '🏆', sellers: 29,  hot: false },
-  { id: 11, name: 'Steam Wallet',         nameAr: 'ستيم',               tagEn: 'Gift Card',       tagAr: 'بطاقة هدية',     color: '#64748b', img: '🎮', sellers: 55,  hot: false },
-  { id: 12, name: 'PlayStation',          nameAr: 'بلايستيشن',          tagEn: 'PSN Card',        tagAr: 'PSN Card',       color: '#1d4ed8', img: '🕹️', sellers: 47,  hot: false },
+  { id: 1,  name: 'PUBG Mobile',         nameAr: 'ببجي موبايل',        tagEn: 'UC Top-Up',       tagAr: 'UC شحن',         color: '#f59e0b', img: '🎯', sellers: 142, hot: true,  genre: 'battle_royale' },
+  { id: 2,  name: 'Free Fire',            nameAr: 'فري فاير',           tagEn: 'Diamond Top-Up',  tagAr: 'ماسة شحن',       color: '#10b981', img: '🔥', sellers: 98,  hot: true,  genre: 'battle_royale' },
+  { id: 3,  name: 'Fortnite',             nameAr: 'فورتنايت',           tagEn: 'V-Bucks',         tagAr: 'V-Bucks',        color: '#6366f1', img: '🌪️', sellers: 76,  hot: false, genre: 'battle_royale' },
+  { id: 4,  name: 'Clash of Clans',       nameAr: 'كلاش أوف كلانس',    tagEn: 'Gems Top-Up',     tagAr: 'جيمز شحن',       color: '#f97316', img: '🏰', sellers: 64,  hot: false, genre: 'strategy' },
+  { id: 5,  name: 'Mobile Legends',       nameAr: 'موبايل ليجندز',      tagEn: 'Diamond Top-Up',  tagAr: 'ماسة شحن',       color: '#8b5cf6', img: '⚡', sellers: 59,  hot: true,  genre: 'moba' },
+  { id: 6,  name: 'Valorant',             nameAr: 'فالورانت',           tagEn: 'VP Top-Up',       tagAr: 'VP شحن',         color: '#ef4444', img: '🔫', sellers: 51,  hot: false, genre: 'shooter' },
+  { id: 7,  name: 'FIFA Mobile',          nameAr: 'فيفا موبايل',        tagEn: 'FC Points',       tagAr: 'FC Points',      color: '#3b82f6', img: '⚽', sellers: 88,  hot: false, genre: 'sports' },
+  { id: 8,  name: 'Genshin Impact',       nameAr: 'جنشن إمباكت',        tagEn: 'Genesis Crystal', tagAr: 'Genesis Crystal', color: '#06b6d4', img: '✨', sellers: 43,  hot: false, genre: 'rpg' },
+  { id: 9,  name: 'Call of Duty Mobile',  nameAr: 'كول أوف ديوتي',      tagEn: 'CP Top-Up',       tagAr: 'CP شحن',         color: '#84cc16', img: '💥', sellers: 37,  hot: false, genre: 'shooter' },
+  { id: 10, name: 'League of Legends',    nameAr: 'ليج أوف ليجندز',     tagEn: 'RP Top-Up',       tagAr: 'RP شحن',         color: '#c084fc', img: '🏆', sellers: 29,  hot: false, genre: 'moba' },
+  { id: 11, name: 'Steam Wallet',         nameAr: 'ستيم',               tagEn: 'Gift Card',       tagAr: 'بطاقة هدية',     color: '#64748b', img: '🎮', sellers: 55,  hot: false, genre: 'platform' },
+  { id: 12, name: 'PlayStation',          nameAr: 'بلايستيشن',          tagEn: 'PSN Card',        tagAr: 'PSN Card',       color: '#1d4ed8', img: '🕹️', sellers: 47,  hot: false, genre: 'platform' },
 ]
 
 export async function fetchListings() {

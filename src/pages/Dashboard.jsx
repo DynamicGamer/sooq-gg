@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Link, Navigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
 import { supabase, fetchListings } from '../lib/supabase'
 import MessagesInbox from '../components/MessagesInbox'
+import Reveal, { RevealGroup, RevealItem } from '../components/Reveal'
 
 const GAME_IMAGES = {
   'PUBG Mobile': '/games/pubg.jpg',
@@ -88,42 +90,51 @@ export default function Dashboard() {
   }
 
   const statsData = [
-    { label: td.stats[0], value: `$${totalEarnings}`, icon: '💰' },
-    { label: td.stats[1], value: orders.filter(o => o.status === 'pending').length, icon: '📦' },
-    { label: td.stats[2], value: '4.9 ⭐', icon: '⭐' },
-    { label: td.stats[3], value: `$${(totalEarnings * 0.9).toFixed(2)}`, icon: '💳' },
+    { label: td.stats[0], value: `$${totalEarnings}`, icon: '💰', color: '#c9a84c' },
+    { label: td.stats[1], value: orders.filter(o => o.status === 'pending').length, icon: '📦', color: '#3b82f6' },
+    { label: td.stats[2], value: '4.9 ⭐', icon: '⭐', color: '#a78bfa' },
+    { label: td.stats[3], value: `$${(totalEarnings * 0.9).toFixed(2)}`, icon: '💳', color: '#10b981' },
   ]
 
   const statusColor = { active: 'badge-green', pending: 'badge-gold', completed: 'badge-purple' }
 
   return (
     <div className="page-container">
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+      <Reveal style={{
+        position: 'relative', overflow: 'hidden',
+        background: 'linear-gradient(135deg, #1a1205 0%, #0f0c06 100%)',
+        border: '1px solid rgba(201,168,76,0.25)', borderRadius: 'var(--radius-xl)',
+        padding: '28px 28px', marginBottom: '24px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px',
+      }}>
+        <div style={{ position: 'absolute', top: '-70px', insetInlineEnd: '-70px', width: '220px', height: '220px', background: 'radial-gradient(circle, rgba(201,168,76,0.18) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', position: 'relative' }}>
           <label style={{ cursor: 'pointer', position: 'relative' }}>
-            <div style={{ width: '52px', height: '52px', borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(201,168,76,0.4)', background: 'linear-gradient(135deg, #c9a84c, #a07830)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', color: '#0c0a08', fontWeight: '800' }}>
+            <div style={{ width: '60px', height: '60px', borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(201,168,76,0.5)', boxShadow: 'var(--glow-gold-soft)', background: 'linear-gradient(135deg, #c9a84c, #a07830)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px', color: '#0c0a08', fontWeight: '800' }}>
               {avatarUrl ? <img src={avatarUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : username?.[0]?.toUpperCase()}
             </div>
             <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => { const file = e.target.files[0]; if (!file) return; await supabase.storage.from('avatars').remove([user.id + '/avatar']); await supabase.storage.from('avatars').upload(user.id + '/avatar', file); setAvatarUrl(supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now()) }} />
-            <div style={{ position: 'absolute', bottom: 0, right: 0, width: '16px', height: '16px', background: '#c9a84c', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', color: '#0c0a08' }}>+</div>
+            <div style={{ position: 'absolute', bottom: 0, insetInlineEnd: 0, width: '18px', height: '18px', background: '#c9a84c', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#0c0a08', fontWeight: '800', border: '2px solid #0f0c06' }}>+</div>
           </label>
           <div>
-            <h1 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '4px' }}>{td.title}</h1>
+            <h1 style={{ fontSize: '22px', fontWeight: '800', marginBottom: '4px', fontFamily: 'var(--font-display)' }}>{td.title}</h1>
             <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{'Welcome back, ' + username}</p>
           </div>
         </div>
-        <button className="btn-primary" onClick={() => setShowForm(true)}>{td.addListing}</button>
-      </div>
+        <motion.button className="btn-primary" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={() => setShowForm(true)} style={{ position: 'relative' }}>{td.addListing}</motion.button>
+      </Reveal>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px', marginBottom: '28px' }}>
+      <RevealGroup style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px', marginBottom: '28px' }}>
         {statsData.map(s => (
-          <div key={s.label} className="card" style={{ padding: '16px', textAlign: 'center' }}>
-            <div style={{ fontSize: '22px', marginBottom: '6px' }}>{s.icon}</div>
-            <div style={{ fontSize: '20px', fontWeight: '800', marginBottom: '4px' }}>{s.value}</div>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{s.label}</div>
-          </div>
+          <RevealItem key={s.label}>
+            <div className="card" style={{ padding: '18px 16px', textAlign: 'center', borderTop: `2px solid ${s.color}` }}>
+              <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}18`, border: `1px solid ${s.color}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', margin: '0 auto 10px' }}>{s.icon}</div>
+              <div style={{ fontSize: '21px', fontWeight: '800', marginBottom: '4px', fontFamily: 'var(--font-display)' }}>{s.value}</div>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{s.label}</div>
+            </div>
+          </RevealItem>
         ))}
-      </div>
+      </RevealGroup>
 
       {showForm && (
         <div className="card" style={{ padding: '20px', marginBottom: '20px', border: '1px solid var(--accent-border)' }}>
@@ -171,90 +182,106 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div style={{ display: 'flex', gap: '4px', marginBottom: '16px', background: 'var(--bg-tertiary)', padding: '3px', borderRadius: 'var(--radius-md)', width: 'fit-content' }}>
+      <div style={{ display: 'flex', gap: '4px', marginBottom: '20px', background: 'var(--bg-tertiary)', padding: '4px', borderRadius: 'var(--radius-lg)', width: 'fit-content' }}>
         {[
-          { id: 'listings', label: td.tabListings },
-          { id: 'orders', label: td.tabOrders },
-          { id: 'earnings', label: td.tabEarnings },
-          { id: 'messages', label: 'Messages' },
+          { id: 'listings', label: td.tabListings, icon: '🎮' },
+          { id: 'orders', label: td.tabOrders, icon: '📦' },
+          { id: 'earnings', label: td.tabEarnings, icon: '💰' },
+          { id: 'messages', label: 'Messages', icon: '💬' },
         ].map(tab_item => (
           <button key={tab_item.id} onClick={() => setTab(tab_item.id)} style={{
-            padding: '7px 18px', borderRadius: 'calc(var(--radius-md) - 2px)', border: 'none',
-            background: tab === tab_item.id ? 'var(--accent)' : 'transparent',
-            color: tab === tab_item.id ? '#fff' : 'var(--text-muted)',
-            fontSize: '13px', fontWeight: '700', transition: 'all 0.15s',
-          }}>{tab_item.label}</button>
+            padding: '8px 18px', borderRadius: 'var(--radius-md)', border: 'none',
+            background: tab === tab_item.id ? 'linear-gradient(135deg, #c9a84c, #a07830)' : 'transparent',
+            color: tab === tab_item.id ? '#0f0f0f' : 'var(--text-muted)',
+            fontSize: '13px', fontWeight: '700', transition: 'all 0.15s', cursor: 'pointer',
+            boxShadow: tab === tab_item.id ? 'var(--glow-gold-soft)' : 'none',
+            display: 'flex', alignItems: 'center', gap: '6px',
+          }}><span>{tab_item.icon}</span>{tab_item.label}</button>
         ))}
       </div>
 
       {tab === 'listings' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {listings.length === 0 && <div className="card" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>No listings yet</div>}
-          {listings.map(l => (
-            <div key={l.id} className="card" style={{ padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ width: '36px', height: '36px', borderRadius: 'var(--radius-md)', overflow: 'hidden', flexShrink: 0 }}>
-                  <img src={GAME_IMAGES[l.game]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display='none' }} />
-                </div>
-                <div>
-                  <div style={{ fontWeight: '700', fontSize: '13px' }}>{isAr ? l.typeAr : l.typeEn}</div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{l.game}</div>
-                </div>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontWeight: '700', fontSize: '14px', color: '#fff' }}>${l.price}</div>
-                  <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{td.price}</div>
-                </div>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontWeight: '700', fontSize: '14px' }}>{l.sales}</div>
-                  <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{t.home.deals}</div>
-                </div>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontWeight: '700', fontSize: '14px', color: 'var(--green)' }}>${l.earnings}</div>
-                  <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{td.earnings}</div>
-                </div>
-                <span className={`badge ${statusColor[l.status] || 'badge-purple'}`}>{td.status?.[l.status] || l.status}</span>
-                <button className="btn-outline" style={{ padding: '4px 10px', fontSize: '11px' }}
-                  onClick={async () => { await supabase.from('listings').delete().eq('id', l.id); setListings(prev => prev.filter(x => x.id !== l.id)) }}>
-                  Delete
-                </button>
-              </div>
+        <RevealGroup style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {listings.length === 0 && (
+            <div className="card" style={{ padding: '48px', textAlign: 'center', color: 'var(--text-muted)' }}>
+              <div style={{ fontSize: '32px', marginBottom: '10px' }}>🎮</div>
+              {isAr ? 'لا توجد عروض بعد' : 'No listings yet'}
             </div>
+          )}
+          {listings.map(l => (
+            <RevealItem key={l.id}>
+              <div className="card" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ width: '42px', height: '42px', borderRadius: 'var(--radius-md)', overflow: 'hidden', flexShrink: 0, border: '1px solid rgba(201,168,76,0.2)' }}>
+                    <img src={GAME_IMAGES[l.game]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display='none' }} />
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: '700', fontSize: '13px', fontFamily: 'var(--font-display)' }}>{isAr ? l.typeAr : l.typeEn}</div>
+                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{l.game}</div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontWeight: '700', fontSize: '14px', color: '#fff' }}>${l.price}</div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{td.price}</div>
+                  </div>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontWeight: '700', fontSize: '14px' }}>{l.sales}</div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{t.home.deals}</div>
+                  </div>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontWeight: '700', fontSize: '14px', color: 'var(--green)' }}>${l.earnings}</div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{td.earnings}</div>
+                  </div>
+                  <span className={`badge ${statusColor[l.status] || 'badge-purple'}`}>{td.status?.[l.status] || l.status}</span>
+                  <button className="btn-outline" style={{ padding: '5px 12px', fontSize: '11px' }}
+                    onClick={async () => { await supabase.from('listings').delete().eq('id', l.id); setListings(prev => prev.filter(x => x.id !== l.id)) }}>
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </RevealItem>
           ))}
-        </div>
+        </RevealGroup>
       )}
 
       {tab === 'orders' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {orders.length === 0 && <div className="card" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>No orders yet</div>}
-          {orders.map(o => (
-            <div key={o.id} className="card" style={{ padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
-              <div>
-                <div style={{ fontWeight: '700', fontSize: '13px' }}>{o.game ? o.game + ' - ' + o.type_en : o.grand_total} - ${o.grand_total}</div>
-                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{'Buyer: ' + (o.buyer_id?.slice(0,8) || '?') + '... - ' + new Date(o.created_at).toLocaleDateString()}</div>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ fontWeight: '800', color: '#fff' }}>${o.grand_total}</span>
-                <span className={`badge ${statusColor[o.status] || 'badge-purple'}`}>{td.status?.[o.status] || o.status}</span>
-                {o.status === 'pending' && (
-                  <button className="btn-primary" style={{ padding: '5px 12px', fontSize: '11px' }}>{td.confirm}</button>
-                )}
-              </div>
+        <RevealGroup style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {orders.length === 0 && (
+            <div className="card" style={{ padding: '48px', textAlign: 'center', color: 'var(--text-muted)' }}>
+              <div style={{ fontSize: '32px', marginBottom: '10px' }}>📦</div>
+              {isAr ? 'لا توجد طلبات بعد' : 'No orders yet'}
             </div>
+          )}
+          {orders.map(o => (
+            <RevealItem key={o.id}>
+              <div className="card" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+                <div>
+                  <div style={{ fontWeight: '700', fontSize: '13px', fontFamily: 'var(--font-display)' }}>{o.game ? o.game + ' - ' + o.type_en : o.grand_total} - ${o.grand_total}</div>
+                  <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{'Buyer: ' + (o.buyer_id?.slice(0,8) || '?') + '... - ' + new Date(o.created_at).toLocaleDateString()}</div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <span style={{ fontWeight: '800', color: '#fff', fontFamily: 'var(--font-display)' }}>${o.grand_total}</span>
+                  <span className={`badge ${statusColor[o.status] || 'badge-purple'}`}>{td.status?.[o.status] || o.status}</span>
+                  {o.status === 'pending' && (
+                    <button className="btn-primary" style={{ padding: '6px 14px', fontSize: '11px' }}>{td.confirm}</button>
+                  )}
+                </div>
+              </div>
+            </RevealItem>
           ))}
-        </div>
+        </RevealGroup>
       )}
 
       {tab === 'earnings' && (
-        <div className="card" style={{ padding: '24px', textAlign: 'center' }}>
+        <Reveal className="card" style={{ padding: '32px', textAlign: 'center' }}>
           <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>{td.earnings}</div>
-          <div style={{ fontSize: '40px', fontWeight: '800', color: 'var(--green)', marginBottom: '20px' }}>${totalEarnings}</div>
+          <div className="text-glow" style={{ fontSize: '44px', fontWeight: '800', color: 'var(--green)', marginBottom: '20px', fontFamily: 'var(--font-display)' }}>${totalEarnings}</div>
           <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '20px' }}>
             Available balance for withdrawal (after 10% commission)
           </p>
           <button className="btn-primary" style={{ padding: '10px 28px' }}>{td.withdraw}</button>
-        </div>
+        </Reveal>
       )}
 
       {tab === 'messages' && (

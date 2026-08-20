@@ -4,7 +4,12 @@ import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
-import { WALLETS, COMMISSION_RATE } from '../lib/wallets'
+import { WALLETS, CLIQ_INFO, COMMISSION_RATE } from '../lib/wallets'
+
+const PAYMENT_OPTIONS = [
+  { key: 'CLIQ', type: 'cliq', symbol: 'CliQ', network: 'Jordan · Instant Bank Transfer', icon: CLIQ_INFO.icon, ...CLIQ_INFO },
+  ...Object.entries(WALLETS).map(([key, w]) => ({ key, type: 'crypto', ...w })),
+]
 
 const STEPS = ['select_crypto', 'send_payment', 'confirm', 'done']
 
@@ -48,7 +53,7 @@ export default function Checkout() {
         grand_total: grandTotal.toFixed(2),
         crypto_network: selectedWallet.network,
         crypto_symbol: selectedWallet.symbol,
-        wallet_address: selectedWallet.address,
+        wallet_address: selectedWallet.type === 'cliq' ? selectedWallet.alias : selectedWallet.address,
         tx_hash: txHash,
         status: 'pending_payment',
         created_at: new Date().toISOString(),
@@ -73,8 +78,6 @@ export default function Checkout() {
     }
     setLoading(false)
   }
-
-  const walletList = Object.entries(WALLETS)
 
   return (
     <div className="page-container" style={{ maxWidth: '600px' }}>
@@ -112,7 +115,7 @@ export default function Checkout() {
             {isAr ? 'اختر طريقة الدفع' : 'Select Payment Method'}
           </h2>
           <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '20px' }}>
-            {isAr ? 'اختر العملة التي تريد الدفع بها' : 'Choose which crypto you want to pay with'}
+            {isAr ? 'ادفع عبر CliQ محلياً في الأردن، أو بالعملات الرقمية' : 'Pay instantly with CliQ in Jordan, or with crypto'}
           </p>
 
           {/* ORDER SUMMARY */}
@@ -138,32 +141,36 @@ export default function Checkout() {
             </div>
           </div>
 
-          {/* CRYPTO OPTIONS */}
+          {/* PAYMENT OPTIONS */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
-            {walletList.map(([key, wallet]) => (
-              <div key={key}
-                onClick={() => setSelectedWallet(wallet)}
-                style={{
-                  background: selectedWallet?.address === wallet.address && selectedWallet?.network === wallet.network ? 'var(--accent-soft)' : 'var(--bg-secondary)',
-                  border: `1px solid ${selectedWallet?.address === wallet.address && selectedWallet?.network === wallet.network ? 'var(--accent)' : 'var(--border)'}`,
-                  borderRadius: 'var(--radius-lg)',
-                  padding: '14px 16px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  transition: 'all 0.15s',
-                }}>
-                <span style={{ fontSize: '24px' }}>{wallet.icon}</span>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: '700', fontSize: '14px' }}>{wallet.symbol}</div>
-                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{wallet.network}</div>
+            {PAYMENT_OPTIONS.map(option => {
+              const active = selectedWallet?.key === option.key
+              return (
+                <div key={option.key}
+                  onClick={() => setSelectedWallet(option)}
+                  style={{
+                    background: active ? 'var(--accent-soft)' : 'var(--bg-secondary)',
+                    border: `1px solid ${active ? 'var(--accent)' : 'var(--border)'}`,
+                    borderRadius: 'var(--radius-lg)',
+                    padding: '14px 16px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    transition: 'all 0.15s',
+                  }}>
+                  <span style={{ fontSize: '24px' }}>{option.icon}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: '700', fontSize: '14px' }}>{option.symbol}</div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{option.network}</div>
+                  </div>
+                  {option.type === 'cliq' && (
+                    <span className="badge badge-gold">{isAr ? 'الأردن' : 'JORDAN'}</span>
+                  )}
+                  {active && <span style={{ color: 'var(--accent)', fontSize: '18px' }}>✓</span>}
                 </div>
-                {selectedWallet?.network === wallet.network && selectedWallet?.symbol === wallet.symbol && (
-                  <span style={{ color: 'var(--accent)', fontSize: '18px' }}>✓</span>
-                )}
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           <button className="btn-primary" style={{ width: '100%', padding: '13px', fontSize: '15px' }}
@@ -181,7 +188,9 @@ export default function Checkout() {
             {isAr ? 'أرسل الدفعة' : 'Send Payment'}
           </h2>
           <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '20px' }}>
-            {isAr ? `أرسل المبلغ بالضبط إلى العنوان أدناه` : `Send the exact amount to the address below`}
+            {selectedWallet.type === 'cliq'
+              ? (isAr ? 'أرسل المبلغ عبر CliQ من تطبيق البنك الخاص بك' : 'Send the amount via CliQ from your banking app')
+              : (isAr ? 'أرسل المبلغ بالضبط إلى العنوان أدناه' : 'Send the exact amount to the address below')}
           </p>
 
           {/* AMOUNT */}
@@ -193,36 +202,73 @@ export default function Checkout() {
               ${grandTotal.toFixed(2)}
             </div>
             <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
-              {isAr ? 'ما يعادله من' : 'equivalent in'} {selectedWallet.symbol} ({selectedWallet.network})
+              {selectedWallet.type === 'cliq'
+                ? (isAr ? 'ما يعادله بالدينار الأردني عبر CliQ' : 'JOD equivalent via CliQ')
+                : `${isAr ? 'ما يعادله من' : 'equivalent in'} ${selectedWallet.symbol} (${selectedWallet.network})`}
             </div>
           </div>
 
-          {/* WALLET ADDRESS */}
-          <div className="card" style={{ padding: '20px', marginBottom: '16px' }}>
-            <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px', fontWeight: '700' }}>
-              {isAr ? 'عنوان المحفظة' : 'Wallet Address'} — {selectedWallet.network}
+          {selectedWallet.type === 'cliq' ? (
+            /* CLIQ DETAILS */
+            <div className="card" style={{ padding: '20px', marginBottom: '16px' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px', fontWeight: '700' }}>
+                {isAr ? 'اسم CliQ (Alias)' : 'CliQ Alias'}
+              </div>
+              <div style={{
+                background: 'var(--bg-tertiary)',
+                border: '1px solid var(--border-hover)',
+                borderRadius: 'var(--radius-md)',
+                padding: '12px 14px',
+                fontFamily: 'monospace',
+                fontSize: '14px',
+                wordBreak: 'break-all',
+                lineHeight: '1.6',
+                marginBottom: '10px',
+                color: '#fff',
+              }}>
+                {selectedWallet.alias}
+              </div>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                {isAr ? 'الاسم على الحساب: ' : 'Account name: '}<span style={{ color: '#fff' }}>{selectedWallet.accountName}</span>
+              </div>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '14px' }}>
+                {isAr ? 'البنك: ' : 'Bank: '}<span style={{ color: '#fff' }}>{selectedWallet.bank}</span>
+              </div>
+              <button
+                onClick={() => copy(selectedWallet.alias)}
+                className="btn-primary"
+                style={{ width: '100%', padding: '10px', fontSize: '13px' }}>
+                {copied ? (isAr ? '✓ تم النسخ!' : '✓ Copied!') : (isAr ? '📋 نسخ Alias' : '📋 Copy Alias')}
+              </button>
             </div>
-            <div style={{
-              background: 'var(--bg-tertiary)',
-              border: '1px solid var(--border-hover)',
-              borderRadius: 'var(--radius-md)',
-              padding: '12px 14px',
-              fontFamily: 'monospace',
-              fontSize: '13px',
-              wordBreak: 'break-all',
-              lineHeight: '1.6',
-              marginBottom: '10px',
-              color: '#fff',
-            }}>
-              {selectedWallet.address}
+          ) : (
+            /* WALLET ADDRESS */
+            <div className="card" style={{ padding: '20px', marginBottom: '16px' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px', fontWeight: '700' }}>
+                {isAr ? 'عنوان المحفظة' : 'Wallet Address'} — {selectedWallet.network}
+              </div>
+              <div style={{
+                background: 'var(--bg-tertiary)',
+                border: '1px solid var(--border-hover)',
+                borderRadius: 'var(--radius-md)',
+                padding: '12px 14px',
+                fontFamily: 'monospace',
+                fontSize: '13px',
+                wordBreak: 'break-all',
+                lineHeight: '1.6',
+                marginBottom: '10px',
+                color: '#fff',
+              }}>
+                {selectedWallet.address}
+              </div>
+              <button
+                onClick={() => copy(selectedWallet.address)}
+                className="btn-primary"
+                style={{ width: '100%', padding: '10px', fontSize: '13px' }}>
+                {copied ? (isAr ? '✓ تم النسخ!' : '✓ Copied!') : (isAr ? '📋 نسخ العنوان' : '📋 Copy Address')}
+              </button>
             </div>
-            <button
-              onClick={() => copy(selectedWallet.address)}
-              className="btn-primary"
-              style={{ width: '100%', padding: '10px', fontSize: '13px' }}>
-              {copied ? (isAr ? '✓ تم النسخ!' : '✓ Copied!') : (isAr ? '📋 نسخ العنوان' : '📋 Copy Address')}
-            </button>
-          </div>
+          )}
 
           {/* WARNING */}
           <div style={{
@@ -235,9 +281,11 @@ export default function Checkout() {
             marginBottom: '20px',
             lineHeight: '1.7',
           }}>
-            ⚠️ {isAr
-              ? `تأكد من إرسال المبلغ على شبكة ${selectedWallet.network} فقط. إرسال على شبكة خاطئة يعني فقدان الأموال.`
-              : `Make sure you send on the ${selectedWallet.network} network only. Sending on the wrong network means losing your funds.`}
+            ⚠️ {selectedWallet.type === 'cliq'
+              ? (isAr ? 'تأكد من مطابقة اسم الحساب قبل الإرسال عبر CliQ.' : 'Double-check the account name matches before sending via CliQ.')
+              : (isAr
+                ? `تأكد من إرسال المبلغ على شبكة ${selectedWallet.network} فقط. إرسال على شبكة خاطئة يعني فقدان الأموال.`
+                : `Make sure you send on the ${selectedWallet.network} network only. Sending on the wrong network means losing your funds.`)}
           </div>
 
           <div style={{ display: 'flex', gap: '8px' }}>
@@ -258,23 +306,29 @@ export default function Checkout() {
             {isAr ? 'تأكيد الدفع' : 'Confirm Payment'}
           </h2>
           <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '20px' }}>
-            {isAr ? 'أدخل رقم المعاملة (TX Hash) للتحقق من دفعتك' : 'Enter your transaction hash (TX ID) to verify your payment'}
+            {selectedWallet.type === 'cliq'
+              ? (isAr ? 'أدخل رقم مرجع التحويل للتحقق من دفعتك' : 'Enter your CliQ transfer reference to verify your payment')
+              : (isAr ? 'أدخل رقم المعاملة (TX Hash) للتحقق من دفعتك' : 'Enter your transaction hash (TX ID) to verify your payment')}
           </p>
 
           <div className="card" style={{ padding: '20px', marginBottom: '16px' }}>
             <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px', fontWeight: '700' }}>
-              {isAr ? 'رقم المعاملة (TX Hash / TXID)' : 'Transaction Hash (TX Hash / TXID)'}
+              {selectedWallet.type === 'cliq'
+                ? (isAr ? 'مرجع تحويل CliQ' : 'CliQ Transfer Reference')
+                : (isAr ? 'رقم المعاملة (TX Hash / TXID)' : 'Transaction Hash (TX Hash / TXID)')}
             </div>
             <input
               value={txHash}
               onChange={e => setTxHash(e.target.value)}
-              placeholder={isAr ? 'الصق رقم المعاملة هنا...' : 'Paste your transaction hash here...'}
+              placeholder={selectedWallet.type === 'cliq'
+                ? (isAr ? 'الصق رقم مرجع التحويل هنا...' : 'Paste your CliQ transfer reference here...')
+                : (isAr ? 'الصق رقم المعاملة هنا...' : 'Paste your transaction hash here...')}
               style={{ width: '100%', padding: '10px 12px', fontSize: '13px', fontFamily: 'monospace' }}
             />
             <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px' }}>
-              {isAr
-                ? 'يمكنك إيجاد TX Hash في تطبيق محفظتك بعد إرسال الدفعة'
-                : 'You can find the TX Hash in your wallet app after sending'}
+              {selectedWallet.type === 'cliq'
+                ? (isAr ? 'يمكنك إيجاد المرجع في إشعار التحويل من تطبيق البنك' : 'You can find the reference in the transfer confirmation from your banking app')
+                : (isAr ? 'يمكنك إيجاد TX Hash في تطبيق محفظتك بعد إرسال الدفعة' : 'You can find the TX Hash in your wallet app after sending')}
             </p>
           </div>
 

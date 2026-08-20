@@ -11,7 +11,7 @@ export default function Terms() {
           {isAr ? '← العودة للرئيسية' : '← Back to Home'}
         </Link>
 
-        <h1 style={{ fontSize: '36px', fontWeight: '800', color: '#ffffff', marginBottom: '8px', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'" }}>
+        <h1 style={{ fontSize: '36px', fontWeight: '800', color: '#ffffff', marginBottom: '8px', fontFamily: 'var(--font-display)' }}>
           {isAr ? 'الشروط والأحكام' : 'Terms & Conditions'}
         </h1>
         <p style={{ color: '#9a8570', fontSize: '14px', marginBottom: '40px' }}>
@@ -61,7 +61,7 @@ export default function Terms() {
           },
         ].map(section => (
           <div key={section.title} style={{ marginBottom: '32px', paddingBottom: '32px', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: '700', color: '#c9a84c', marginBottom: '12px', fontFamily: isAr ? "'Cairo'" : "'Rajdhani'" }}>{section.title}</h2>
+            <h2 style={{ fontSize: '18px', fontWeight: '700', color: '#c9a84c', marginBottom: '12px', fontFamily: 'var(--font-display)' }}>{section.title}</h2>
             <p style={{ fontSize: '15px', color: '#d4c5a9', lineHeight: '1.8' }}>{section.body}</p>
           </div>
         ))}

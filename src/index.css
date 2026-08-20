@@ -22,10 +22,18 @@
   --radius-md: 10px;
   --radius-lg: 14px;
   --radius-xl: 20px;
+  --font-body: 'Inter', 'Segoe UI', Arial, sans-serif;
+  --font-display: 'Unbounded', 'Inter', sans-serif;
+  --glow-gold: 0 0 24px rgba(201,168,76,0.35);
+  --glow-gold-soft: 0 0 14px rgba(201,168,76,0.22);
+}
+html[lang="ar"] {
+  --font-body: 'Cairo', 'Segoe UI', Arial, sans-serif;
+  --font-display: 'Cairo', sans-serif;
 }
 html { scroll-behavior: smooth; }
 body {
-  font-family: 'Cairo', 'Inter', 'Segoe UI', Arial, sans-serif;
+  font-family: var(--font-body);
   background: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
@@ -65,7 +73,7 @@ select option { background: #1c1610; }
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(201,168,76,0.3);
 }
-.btn-primary:hover { background: linear-gradient(135deg, #b8962e, #8a6e20); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,168,76,0.4); }
+.btn-primary:hover { background: linear-gradient(135deg, #b8962e, #8a6e20); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,168,76,0.4), var(--glow-gold); }
 .btn-primary:active { transform: scale(0.97); box-shadow: 0 2px 8px rgba(201,168,76,0.5); }
 .btn-outline {
   background: transparent;
@@ -84,6 +92,14 @@ select option { background: #1c1610; }
   background: linear-gradient(145deg, #141009, #1c1610);
   border: 1px solid rgba(201,168,76,0.1);
   border-radius: var(--radius-lg);
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+}
+.card:hover {
+  border-color: rgba(201,168,76,0.3);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.45), var(--glow-gold-soft);
+}
+.text-glow {
+  text-shadow: 0 0 30px rgba(201,168,76,0.45);
 }
 .badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 5px; }
 .badge-purple { background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.4); color: #c9a84c; }

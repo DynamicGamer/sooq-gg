@@ -3,6 +3,8 @@ import { Link, useParams, useSearchParams, useNavigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
 import { GAMES, fetchListings } from '../lib/supabase'
+import { countryLabel } from '../lib/countries'
+import Reveal, { RevealGroup, RevealItem } from '../components/Reveal'
 
 export default function listings() {
   const { category } = useParams()
@@ -141,12 +143,13 @@ export default function listings() {
               <div style={{ fontSize: '14px' }}>{isAr ? 'لا توجد نتائج' : 'No listings found'}</div>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <RevealGroup style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {filtered.map(l => {
                 const badge = getBadge(l.badge_key)
                 const delivery = l.delivery_key === 'instant' ? h.instant : h.minutes
                 return (
-                  <div key={l.id} className="card" style={{
+                  <RevealItem key={l.id}>
+                  <div className="card" style={{
                     padding: '14px 18px', display: 'flex', alignItems: 'center',
                     justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap',
                     cursor: 'pointer', transition: 'border-color 0.15s',
@@ -169,7 +172,10 @@ export default function listings() {
                         {(isAr ? l.seller : l.seller_en)[0]}
                       </div>
                       <div>
-                        <div style={{ fontSize: '12px', fontWeight: '600' }}>{isAr ? l.seller : l.seller_en}</div>
+                        <div style={{ fontSize: '12px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
+                          {isAr ? l.seller : l.seller_en}
+                          {l.country && <span style={{ fontSize: '10px', fontWeight: '600', color: 'var(--text-muted)' }}>{countryLabel(l.country, isAr)}</span>}
+                        </div>
                         <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>⭐ {l.rating} · {l.sales.toLocaleString()} {h.deals}</div>
                       </div>
                       {badge && <span className={`badge ${l.badge_key === 'vip' ? 'badge-purple' : 'badge-green'}`}>{badge}</span>}
@@ -184,9 +190,10 @@ export default function listings() {
                       >{h.buyNow}</button>
                     </div>
                   </div>
+                  </RevealItem>
                 )
               })}
-            </div>
+            </RevealGroup>
           )}
         </div>
       </div>

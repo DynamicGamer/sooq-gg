@@ -3,6 +3,7 @@ import { Link, Navigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
+import { RevealGroup, RevealItem } from '../components/Reveal'
 
 const STATUS_CONFIG = {
   pending_payment: { labelAr: 'في انتظار الدفع', labelEn: 'Pending Payment', color: '#fbbf24', bg: '#1f1a09', border: '#854f0b' },
@@ -52,7 +53,7 @@ export default function Orders() {
   return (
     <div className="page-container">
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '20px', fontWeight: '800' }}>
+        <h1 style={{ fontSize: '20px', fontWeight: '800', fontFamily: 'var(--font-display)' }}>
           {isAr ? 'طلباتي' : 'My Orders'}
         </h1>
         <button onClick={fetchOrders} className="btn-outline" style={{ padding: '6px 12px', fontSize: '12px' }}>
@@ -75,12 +76,13 @@ export default function Orders() {
           </Link>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <RevealGroup style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {orders.map(order => {
             const sc = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending_payment
             const items = Array.isArray(order.items) ? order.items : []
             return (
-              <div key={order.id} className="card" style={{ padding: '20px' }}>
+              <RevealItem key={order.id}>
+              <div className="card" style={{ padding: '20px' }}>
 
                 {/* HEADER */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
@@ -161,9 +163,10 @@ export default function Orders() {
                   </div>
                 )}
               </div>
+              </RevealItem>
             )
           })}
-        </div>
+        </RevealGroup>
       )}
     </div>
   )

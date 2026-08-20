@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
+import Reveal, { RevealGroup, RevealItem } from '../components/Reveal'
 
 export default function Cart() {
   const { t, isAr } = useLang()
@@ -18,23 +19,24 @@ export default function Cart() {
   }
 
   if (items.length === 0) return (
-    <div className="page-container" style={{ textAlign: 'center', paddingTop: '60px' }}>
+    <Reveal className="page-container" style={{ textAlign: 'center', paddingTop: '60px' }}>
       <div style={{ fontSize: '56px', marginBottom: '16px' }}>🛒</div>
-      <h2 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '8px' }}>{tc.empty}</h2>
+      <h2 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '8px', fontFamily: 'var(--font-display)' }}>{tc.empty}</h2>
       <p style={{ color: 'var(--text-muted)', marginBottom: '24px' }}>{tc.emptyDesc}</p>
       <Link to="/listings/topups" className="btn-primary">{tc.browseShopping}</Link>
-    </div>
+    </Reveal>
   )
 
   return (
     <div className="page-container">
-      <h1 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '24px' }}>{tc.title}</h1>
+      <h1 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '24px', fontFamily: 'var(--font-display)' }}>{tc.title}</h1>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '20px', alignItems: 'start' }}>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <RevealGroup style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {items.map(item => (
-            <div key={item.id} className="card" style={{ padding: '16px 18px', display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+            <RevealItem key={item.id}>
+            <div className="card" style={{ padding: '16px 18px', display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
               <div style={{ width: '44px', height: '44px', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px', flexShrink: 0 }}>🎮</div>
               <div style={{ flex: 1, minWidth: '140px' }}>
                 <div style={{ fontWeight: '700', fontSize: '14px', marginBottom: '3px' }}>{item.name || (isAr ? item.typeAr : item.typeEn)}</div>
@@ -45,15 +47,16 @@ export default function Cart() {
                 <span style={{ fontWeight: '700', minWidth: '20px', textAlign: 'center' }}>{item.qty}</span>
                 <button className="btn-outline" style={{ width: '28px', height: '28px', padding: 0 }} onClick={() => updateQty(item.id, item.qty + 1)}>+</button>
               </div>
-              <div style={{ fontWeight: '800', fontSize: '16px', color: '#fff', minWidth: '60px', textAlign: 'center' }}>
+              <div style={{ fontWeight: '800', fontSize: '16px', color: '#fff', minWidth: '60px', textAlign: 'center', fontFamily: 'var(--font-display)' }}>
                 ${(parseFloat(item.price) * item.qty).toFixed(2)}
               </div>
               <button onClick={() => removeItem(item.id)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer', padding: '4px' }}>🗑️</button>
             </div>
+            </RevealItem>
           ))}
-        </div>
+        </RevealGroup>
 
-        <div style={{ position: 'sticky', top: '74px' }}>
+        <Reveal style={{ position: 'sticky', top: '74px' }} delay={0.1}>
           <div className="card" style={{ padding: '20px' }}>
             <h3 style={{ fontSize: '14px', fontWeight: '700', marginBottom: '16px' }}>{tc.summary}</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid var(--border)' }}>
@@ -76,10 +79,10 @@ export default function Cart() {
             </div>
 
             <button className="btn-primary" style={{ width: '100%', padding: '12px', fontSize: '14px' }} onClick={handleCheckout}>
-              {isAr ? 'الدفع بالكريبتو ←' : 'Pay with Crypto →'}
+              {tc.checkout} ←
             </button>
           </div>
-        </div>
+        </Reveal>
       </div>
     </div>
   )

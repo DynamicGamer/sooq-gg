@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
+import Reveal from '../components/Reveal'
 
 export default function Auth() {
   const [searchParams] = useSearchParams()
@@ -37,13 +38,13 @@ export default function Auth() {
 
   return (
     <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-      <div style={{ width: '100%', maxWidth: '420px' }}>
+      <Reveal style={{ width: '100%', maxWidth: '420px' }}>
 
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: '28px' }}>
           <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg,#7c3aed,#4f46e5)', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px' }}>⚡</div>
-            <span style={{ fontSize: '22px', fontWeight: '800', color: '#fff' }}>{t.logo}<span style={{ color: 'var(--accent)' }}>.gg</span></span>
+            <img src="/logo.svg" alt="SooqGG" style={{ width: '36px', height: '36px', borderRadius: '9px' }} />
+            <span style={{ fontSize: '22px', fontWeight: '800', color: '#fff', fontFamily: 'var(--font-display)' }}>{t.logo}<span style={{ color: 'var(--accent)' }}>.gg</span></span>
           </Link>
         </div>
 
@@ -104,7 +105,7 @@ export default function Auth() {
             </button>
           </p>
         </div>
-      </div>
+      </Reveal>
     </div>
   )
 }

@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
 import { supabase, fetchListings } from '../lib/supabase'
+import { COUNTRIES, countryLabel } from '../lib/countries'
+import Reveal from '../components/Reveal'
 
 export default function Profile() {
   const { isAr } = useLang()
@@ -11,6 +13,8 @@ export default function Profile() {
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [listings, setListings] = useState([])
   const [orders, setOrders] = useState([])
+  const [country, setCountry] = useState('')
+  const [savingCountry, setSavingCountry] = useState(false)
 
   const username = user?.user_metadata?.username || user?.email?.split('@')[0] || 'User'
 
@@ -18,15 +22,23 @@ export default function Profile() {
     if (!user) { navigate('/auth'); return }
     const url = supabase.storage.from('avatars').getPublicUrl(user.id + '/avatar').data.publicUrl + '?t=' + Date.now()
     setAvatarUrl(url)
+    setCountry(user.user_metadata?.country || '')
     fetchListings().then(data => setListings(data.filter(l => l.seller_en === username)))
     supabase.from('orders_with_listings').select('*').then(({ data }) => { if (data) setOrders(data) })
   }, [user])
+
+  const saveCountry = async (code) => {
+    setCountry(code)
+    setSavingCountry(true)
+    await supabase.auth.updateUser({ data: { country: code } })
+    setSavingCountry(false)
+  }
 
   if (!user) return null
 
   return (
     <div style={{ background: '#0f0f0f', minHeight: '100vh', direction: isAr ? 'rtl' : 'ltr' }}>
-      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '48px 24px' }}>
+      <Reveal style={{ maxWidth: '800px', margin: '0 auto', padding: '48px 24px' }}>
 
         <div className="card" style={{ padding: '32px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap' }}>
           <label style={{ cursor: 'pointer', position: 'relative', flexShrink: 0 }}>
@@ -43,7 +55,10 @@ export default function Profile() {
             <div style={{ position: 'absolute', bottom: 0, right: 0, width: '26px', height: '26px', background: '#c9a84c', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', color: '#0c0a08' }}>+</div>
           </label>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '24px', fontWeight: '800', color: '#ffffff', marginBottom: '4px' }}>{username}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '24px', fontWeight: '800', color: '#ffffff', fontFamily: 'var(--font-display)' }}>{username}</span>
+              {country && <span className="badge badge-gold">{countryLabel(country, isAr)}</span>}
+            </div>
             <div style={{ fontSize: '14px', color: '#9a8570', marginBottom: '12px' }}>{user.email}</div>
             <div style={{ fontSize: '12px', color: '#c9a84c' }}>{isAr ? 'انقر على الصورة لتغييرها' : 'Click picture to change'}</div>
           </div>
@@ -77,6 +92,19 @@ export default function Profile() {
               <span style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{item.value}</span>
             </div>
           ))}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0' }}>
+            <span style={{ color: '#9a8570', fontSize: '14px' }}>{isAr ? 'الدولة' : 'Country'}</span>
+            <select value={country} onChange={e => saveCountry(e.target.value)} style={{ padding: '6px 10px', fontSize: '13px', fontWeight: '600', minWidth: '160px' }}>
+              <option value="">{isAr ? 'اختر الدولة' : 'Select country'}</option>
+              {COUNTRIES.map(c => (
+                <option key={c.code} value={c.code}>{c.flag} {isAr ? c.ar : c.en}</option>
+              ))}
+            </select>
+          </div>
+          {savingCountry && <div style={{ fontSize: '11px', color: 'var(--accent)', textAlign: 'end' }}>{isAr ? 'جارِ الحفظ...' : 'Saving...'}</div>}
+          <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px' }}>
+            {isAr ? 'تُستخدم دولتك تلقائياً في كل عرض جديد تنشئه' : "Your country is applied automatically to every new listing you create"}
+          </p>
         </div>
 
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
@@ -88,7 +116,7 @@ export default function Profile() {
           </button>
         </div>
 
-      </div>
+      </Reveal>
     </div>
   )
 }

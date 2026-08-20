@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext'
 import { supabase, fetchListings } from '../lib/supabase'
 import MessagesInbox from '../components/MessagesInbox'
 import Reveal, { RevealGroup, RevealItem } from '../components/Reveal'
+import { countryLabel } from '../lib/countries'
 
 const GAME_IMAGES = {
   'PUBG Mobile': '/games/pubg.jpg',
@@ -76,7 +77,7 @@ export default function Dashboard() {
       sales: 0,
       badge_key: null,
       delivery_key: 'instant',
-      delivery_key: 'instant',
+      country: user.user_metadata?.country || null,
       category: form.category,
     }
     const { error } = await supabase.from('listings').insert([newListing])
@@ -217,7 +218,9 @@ export default function Dashboard() {
                   </div>
                   <div>
                     <div style={{ fontWeight: '700', fontSize: '13px', fontFamily: 'var(--font-display)' }}>{isAr ? l.typeAr : l.typeEn}</div>
-                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{l.game}</div>
+                    <div style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      {l.game}{l.country && <span>· {countryLabel(l.country, isAr)}</span>}
+                    </div>
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>

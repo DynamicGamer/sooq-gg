@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
 import { GAMES, GENRES, fetchListings } from '../lib/supabase'
+import { countryLabel } from '../lib/countries'
 import Reveal, { RevealGroup, RevealItem } from '../components/Reveal'
 
 const GAME_IMAGES = {
@@ -91,9 +92,33 @@ export default function Home() {
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
 
+        {/* BUY OR SELL */}
+        <RevealGroup style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', marginBottom: '48px' }}>
+          <RevealItem>
+            <div style={{ position: 'relative', overflow: 'hidden', height: '100%', background: 'linear-gradient(145deg, #141009, #1c1610)', border: '1px solid rgba(201,168,76,0.15)', borderRadius: '18px', padding: '28px' }}>
+              <div style={{ fontSize: '30px', marginBottom: '12px' }}>🛒</div>
+              <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#ffffff', marginBottom: '8px', fontFamily: 'var(--font-display)' }}>{isAr ? 'تسوّق كمشتري' : 'Shop as a Buyer'}</h3>
+              <p style={{ fontSize: '13px', color: '#9a8570', lineHeight: '1.7', marginBottom: '18px' }}>
+                {isAr ? 'تصفح مئات العروض من بائعين موثقين، بحماية كاملة عبر نظام الضمان' : 'Browse hundreds of listings from verified sellers, fully protected by escrow'}
+              </p>
+              <a href="#all-games" className="btn-outline" style={{ display: 'inline-block' }}>{isAr ? 'تصفح العروض' : 'Browse Listings'}</a>
+            </div>
+          </RevealItem>
+          <RevealItem>
+            <div style={{ position: 'relative', overflow: 'hidden', height: '100%', background: 'linear-gradient(135deg, #1a1205 0%, #0f0c06 100%)', border: '1px solid rgba(201,168,76,0.35)', borderRadius: '18px', padding: '28px' }}>
+              <div style={{ position: 'absolute', top: '-50px', insetInlineEnd: '-50px', width: '180px', height: '180px', background: 'radial-gradient(circle, rgba(201,168,76,0.18) 0%, transparent 70%)', pointerEvents: 'none' }} />
+              <div style={{ fontSize: '30px', marginBottom: '12px', position: 'relative' }}>💰</div>
+              <h3 className="text-glow" style={{ fontSize: '18px', fontWeight: '800', color: '#ffffff', marginBottom: '8px', fontFamily: 'var(--font-display)', position: 'relative' }}>{isAr ? 'ابدأ البيع واربح' : 'Start Selling & Earn'}</h3>
+              <p style={{ fontSize: '13px', color: '#d4c5a9', lineHeight: '1.7', marginBottom: '18px', position: 'relative' }}>
+                {isAr ? 'انضم لآلاف البائعين وحوّل ألعابك إلى دخل حقيقي — مجاني تماماً بدون رسوم مسبقة' : 'Join thousands of sellers turning their games into real income — free to start, no upfront fees'}
+              </p>
+              <Link to="/auth?mode=register" className="btn-primary" style={{ display: 'inline-block', position: 'relative' }}>{isAr ? 'ابدأ البيع الآن ←' : 'Start Selling →'}</Link>
+            </div>
+          </RevealItem>
+        </RevealGroup>
 
         {/* ALL GAMES */}
-        <Reveal style={{ marginBottom: '48px' }}>
+        <Reveal id="all-games" style={{ marginBottom: '48px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
             <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#ffffff', fontFamily: 'var(--font-display)', margin: 0 }}>{isAr ? '🎮 كل الألعاب' : '🎮 ALL GAMES'}</h2>
             <span style={{ fontSize: '12px', color: '#9a8570' }}>{isAr ? `${filteredGames.length} لعبة` : `${filteredGames.length} games`}</span>
@@ -187,7 +212,10 @@ export default function Home() {
                       {(isAr ? l.seller : l.seller_en)?.[0] || '?'}
                     </div>
                     <div>
-                      <div style={{ fontSize: '14px', color: '#ffffff', fontWeight: '700' }}>{isAr ? l.seller : l.seller_en}</div>
+                      <div style={{ fontSize: '14px', color: '#ffffff', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                        {isAr ? l.seller : l.seller_en}
+                        {l.country && <span style={{ fontSize: '11px', fontWeight: '600', color: '#9a8570' }}>{countryLabel(l.country, isAr)}</span>}
+                      </div>
                       <div style={{ fontSize: '11px', color: '#9a8570' }}>⭐ {l.rating} · {l.sales?.toLocaleString()} {isAr ? 'صفقة' : 'deals'}</div>
                     </div>
                     {badge && <div style={{ background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.3)', borderRadius: '5px', fontSize: '10px', color: '#c9a84c', padding: '2px 8px', fontWeight: '700' }}>{badge}</div>}

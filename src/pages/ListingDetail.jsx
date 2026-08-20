@@ -4,6 +4,8 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
 import { GAMES, fetchListings } from '../lib/supabase'
+import { countryLabel } from '../lib/countries'
+import Reveal from '../components/Reveal'
 
 const GAME_IMAGES = {
   'PUBG Mobile': '/games/pubg.jpg',
@@ -68,7 +70,7 @@ export default function ListingDetail() {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '24px', alignItems: 'start' }}>
 
-        <div>
+        <Reveal>
           <div className="card" style={{ padding: '24px', marginBottom: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '16px' }}>
               <div style={{ width: '56px', height: '56px', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px' }}>
@@ -123,16 +125,19 @@ export default function ListingDetail() {
               </div>
             ))}
           </div>
-        </div>
+        </Reveal>
 
-        <div style={{ position: 'sticky', top: '74px' }}>
+        <Reveal style={{ position: 'sticky', top: '74px' }} delay={0.1}>
           <div className="card" style={{ padding: '20px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid var(--border)' }}>
               <div style={{ width: '40px', height: '40px', background: 'var(--accent-soft)', border: '1px solid var(--accent-border)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', color: '#a78bfa', fontWeight: '700' }}>
                 {(isAr ? listing.seller : listing.seller_en)[0]}
               </div>
               <div>
-                <div style={{ fontWeight: '700', fontSize: '14px' }}>{isAr ? listing.seller : listing.seller_en}</div>
+                <div style={{ fontWeight: '700', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                  {isAr ? listing.seller : listing.seller_en}
+                  {listing.country && <span style={{ fontSize: '11px', fontWeight: '600', color: 'var(--text-muted)' }}>{countryLabel(listing.country, isAr)}</span>}
+                </div>
                 <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>⭐ {listing.rating} · {listing.sales.toLocaleString()} {tl.sales}</div>
               </div>
               {listing.badge_key && (
@@ -165,16 +170,14 @@ export default function ListingDetail() {
               {tl.addCart}
             </button>
             <button className="btn-outline" style={{ width: "100%", padding: "11px", fontSize: "14px", marginTop: "8px" }} onClick={() => setShowChat(true)}>
-              {isAr ? "???? ??????" : "Message Seller"}
+              {isAr ? "راسل البائع" : "Message Seller"}
             </button>
-            {showChat && listing && <Chat listingId={listing.id} sellerId={listing.seller_id} sellerName={isAr ? listing.seller : listing.seller_en} onClose={() => setShowChat(false)} />}
-            <div style={{ marginTop: "14px", padding: "10px", background: "var(--bg-tertiary)", borderRadius: "var(--radius-md)", fontSize: "11px", color: "var(--text-muted)", textAlign: "center" }}>
-        </div>
+            {showChat && listing && <Chat listingId={listing.id} sellerId={listing.seller_id} sellerName={isAr ? listing.seller : listing.seller_en} sellerRating={listing.rating} sellerCountry={listing.country} onClose={() => setShowChat(false)} />}
             <div style={{ marginTop: "14px", padding: "10px", background: "var(--bg-tertiary)", borderRadius: "var(--radius-md)", fontSize: "11px", color: "var(--text-muted)", textAlign: "center" }}>
               {t.cart.secure}
             </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </div>
   )

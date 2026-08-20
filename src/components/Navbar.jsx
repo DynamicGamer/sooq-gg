@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
@@ -15,6 +15,12 @@ export default function Navbar() {
   const [browseOpen, setBrowseOpen] = useState(false)
   const [hoveredCat, setHoveredCat] = useState(CATS[0])
   const [avatarUrl, setAvatarUrl] = useState(null)
+  const closeTimer = useRef(null)
+
+  const openBrowse = () => { clearTimeout(closeTimer.current); setBrowseOpen(true) }
+  const scheduleCloseBrowse = () => { closeTimer.current = setTimeout(() => setBrowseOpen(false), 250) }
+
+  useEffect(() => () => clearTimeout(closeTimer.current), [])
 
   const username = user?.user_metadata?.username || user?.email?.split('@')[0] || 'User'
 
@@ -38,24 +44,24 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <div className="hide-mobile" style={{ position: 'relative' }}
-          onMouseEnter={() => setBrowseOpen(true)}
-          onMouseLeave={() => setBrowseOpen(false)}
+        <div className="hide-mobile" style={{ position: 'relative', height: '62px' }}
+          onMouseEnter={openBrowse}
+          onMouseLeave={scheduleCloseBrowse}
         >
           <button style={{
             display: 'flex', alignItems: 'center', gap: '7px',
             color: browseOpen ? '#c9a84c' : '#d4c5a9',
             background: browseOpen ? 'rgba(201,168,76,0.1)' : 'transparent',
-            border: 'none', padding: '5px 14px', borderRadius: '8px',
+            border: 'none', padding: '0 14px', borderRadius: '8px',
             fontSize: '13px', fontWeight: '700', cursor: 'pointer',
-            height: '38px', fontFamily: 'inherit', transition: 'all 0.15s',
+            height: '100%', fontFamily: 'inherit', transition: 'all 0.15s',
           }}>
             <span style={{ fontSize: '15px' }}>☰</span>
             {isAr ? 'تصفح' : 'Browse'}
           </button>
 
           {browseOpen && (
-            <div style={{ position: 'absolute', top: '52px', left: isAr ? 'auto' : '0', right: isAr ? '0' : 'auto', background: 'rgba(15,12,8,0.98)', backdropFilter: 'blur(20px)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '14px', padding: '14px', display: 'flex', gap: '4px', boxShadow: '0 20px 40px rgba(0,0,0,0.6)', zIndex: 200 }}>
+            <div style={{ position: 'absolute', top: '62px', left: isAr ? 'auto' : '0', right: isAr ? '0' : 'auto', background: 'rgba(15,12,8,0.98)', backdropFilter: 'blur(20px)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '14px', padding: '14px', display: 'flex', gap: '4px', boxShadow: '0 20px 40px rgba(0,0,0,0.6)', zIndex: 200 }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', minWidth: '150px', borderInlineEnd: '1px solid rgba(201,168,76,0.12)', paddingInlineEnd: '10px' }}>
                 {CATS.map(c => (
                   <div key={c} onMouseEnter={() => setHoveredCat(c)}

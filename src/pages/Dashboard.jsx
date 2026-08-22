@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, Navigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
@@ -30,8 +30,9 @@ export default function Dashboard() {
   const { user } = useAuth()
   const td = t.dashboard
   const username = user?.user_metadata?.username || user?.email?.split('@')[0] || 'User'
+  const [searchParams] = useSearchParams()
 
-  const [tab, setTab] = useState('listings')
+  const [tab, setTab] = useState(searchParams.get('tab') === 'messages' ? 'messages' : 'listings')
   const [listings, setListings] = useState([])
   const [orders, setOrders] = useState([])
   const [avatarUrl, setAvatarUrl] = useState(null)
@@ -333,7 +334,13 @@ export default function Dashboard() {
       )}
 
       {tab === 'messages' && (
-        <MessagesInbox username={username} isAr={isAr} />
+        <MessagesInbox isAr={isAr} initialConversation={searchParams.get('listingId') ? {
+          listingId: searchParams.get('listingId'),
+          sellerId: searchParams.get('sellerId'),
+          sellerName: searchParams.get('sellerName'),
+          sellerRating: searchParams.get('sellerRating'),
+          sellerCountry: searchParams.get('sellerCountry') || null,
+        } : null} />
       )}
     </div>
   )

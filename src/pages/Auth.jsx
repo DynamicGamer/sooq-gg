@@ -10,6 +10,11 @@ import Reveal from '../components/Reveal'
 // Authentication -> Attack Protection -> enable CAPTCHA (Turnstile).
 const TURNSTILE_SITE_KEY = '1x00000000000000000000AA'
 
+// Flip to true once Supabase email delivery is confirmed working (custom SMTP set up,
+// Magic Link template includes {{ .Token }}) — until then, requiring an emailed code would
+// lock everyone out since the email never arrives.
+const REQUIRE_2FA = false
+
 export default function Auth() {
   const [searchParams] = useSearchParams()
   const [mode, setMode] = useState(searchParams.get('mode') === 'register' ? 'register' : 'login')
@@ -112,7 +117,16 @@ export default function Auth() {
     }
 
     setLoading(false)
-    setSuccess(isAr ? 'تم إنشاء الحساب! تحقق من بريدك الإلكتروني.' : 'Account created! Check your email.')
+
+    // If email confirmation is off in your Supabase project, signUp already returns an
+    // active session — no email needed, so just log them straight in instead of telling
+    // them to check an email that will never arrive.
+    if (data.session) {
+      navigate('/dashboard')
+      return
+    }
+
+    setSuccess(isAr ? 'تم إنشاء الحساب! تحقق من بريدك الإلكتروني لتأكيد حسابك (تحقق من مجلد الرسائل غير المرغوب فيها أيضاً).' : 'Account created! Check your email to confirm your account (check spam too).')
   }
 
   const handleLoginCredentials = async () => {
@@ -125,6 +139,13 @@ export default function Auth() {
       setLoading(false)
       return setError(isAr ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة' : 'Incorrect email or password')
     }
+
+    if (!REQUIRE_2FA) {
+      setLoading(false)
+      navigate('/dashboard')
+      return
+    }
+
     // Credentials are valid — drop this session and require the emailed code before it counts.
     await supabase.auth.signOut()
     const { error: otpErr } = await supabase.auth.signInWithOtp({ email: form.email.trim(), options: { shouldCreateUser: false } })

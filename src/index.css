@@ -117,3 +117,6 @@ select option { background: #1c1610; }
   .page-container { padding: 16px 12px; }
   .hide-mobile { display: none !important; }
 }
+@media (min-width: 641px) {
+  .hide-desktop { display: none !important; }
+}

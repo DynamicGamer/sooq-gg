@@ -169,7 +169,7 @@ export default function Home() {
             {filteredGames.map(game => (
               <RevealItem key={game.id}>
                 <motion.div whileHover={{ y: -5 }} transition={{ type: 'spring', stiffness: 300, damping: 20 }}>
-                  <Link to={`/listings/topups?game=${game.id}`} style={{ display: 'block', borderRadius: '14px', overflow: 'hidden', border: '1px solid rgba(201,168,76,0.1)', background: '#141009', textDecoration: 'none' }}
+                  <Link to={`/listings/all?game=${game.id}`} style={{ display: 'block', borderRadius: '14px', overflow: 'hidden', border: '1px solid rgba(201,168,76,0.1)', background: '#141009', textDecoration: 'none' }}
                     onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.4)'; e.currentTarget.style.boxShadow = '0 16px 32px rgba(0,0,0,0.5)' }}
                     onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.1)'; e.currentTarget.style.boxShadow = 'none' }}
                   >

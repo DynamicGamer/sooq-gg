@@ -19,8 +19,15 @@ export default function Orders() {
   const { user } = useAuth()
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
+  const [reviewedOrderIds, setReviewedOrderIds] = useState(new Set())
+  const [reviewingOrderId, setReviewingOrderId] = useState(null)
+  const [reviewRating, setReviewRating] = useState(5)
+  const [reviewComment, setReviewComment] = useState('')
+  const [submittingReview, setSubmittingReview] = useState(false)
 
   if (!user) return <Navigate to="/auth" />
+
+  const username = user?.user_metadata?.username || user?.email?.split('@')[0] || 'User'
 
   useEffect(() => {
     fetchOrders()
@@ -36,6 +43,33 @@ export default function Orders() {
 
     if (!error) setOrders(data || [])
     setLoading(false)
+
+    const { data: myReviews } = await supabase.from('reviews').select('order_id').eq('buyer_id', user.id)
+    if (myReviews) setReviewedOrderIds(new Set(myReviews.map(r => r.order_id)))
+  }
+
+  const startReview = (orderId) => {
+    setReviewingOrderId(orderId)
+    setReviewRating(5)
+    setReviewComment('')
+  }
+
+  const submitReview = async (order) => {
+    const listingId = order.items?.[0]?.id
+    setSubmittingReview(true)
+    const { error } = await supabase.from('reviews').insert({
+      order_id: order.id,
+      listing_id: listingId,
+      buyer_id: user.id,
+      buyer_username: username,
+      rating: reviewRating,
+      comment: reviewComment.trim() || null,
+    })
+    setSubmittingReview(false)
+    if (!error) {
+      setReviewedOrderIds(prev => new Set([...prev, order.id]))
+      setReviewingOrderId(null)
+    }
   }
 
   const updateStatus = async (orderId, status) => {
@@ -131,8 +165,13 @@ export default function Orders() {
                         </button>
                       </>
                     )}
-                    {order.status === 'completed' && (
-                      <span style={{ fontSize: '13px', color: '#4ade80' }}>✓ {isAr ? 'تم بنجاح' : 'Completed'}</span>
+                    {order.status === 'completed' && !reviewedOrderIds.has(order.id) && (
+                      <button className="btn-outline" style={{ padding: '7px 14px', fontSize: '12px' }} onClick={() => startReview(order.id)}>
+                        ⭐ {isAr ? 'قيّم البائع' : 'Leave a Review'}
+                      </button>
+                    )}
+                    {order.status === 'completed' && reviewedOrderIds.has(order.id) && (
+                      <span style={{ fontSize: '13px', color: '#4ade80' }}>✓ {isAr ? 'تم التقييم' : 'Reviewed'}</span>
                     )}
                     {order.status === 'released' && (
                       <span style={{ fontSize: '13px', color: '#60a5fa' }}>💸 {isAr ? 'تم تحرير الأموال للبائع' : 'Funds released to seller'}</span>
@@ -160,6 +199,34 @@ export default function Orders() {
                     ⚠️ {isAr
                       ? 'تم فتح نزاع. فريق سوق.gg سيتواصل معك خلال 24 ساعة.'
                       : 'Dispute opened. The Sooq.gg team will review within 24 hours.'}
+                  </div>
+                )}
+
+                {reviewingOrderId === order.id && (
+                  <div style={{ background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-md)', padding: '16px', marginTop: '12px' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px', fontWeight: '700' }}>
+                      {isAr ? 'قيّم تجربتك مع البائع' : 'Rate your experience with the seller'}
+                    </div>
+                    <div style={{ display: 'flex', gap: '4px', marginBottom: '10px' }}>
+                      {[1, 2, 3, 4, 5].map(n => (
+                        <button key={n} onClick={() => setReviewRating(n)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '22px', padding: 0, opacity: n <= reviewRating ? 1 : 0.3 }}>⭐</button>
+                      ))}
+                    </div>
+                    <textarea
+                      value={reviewComment}
+                      onChange={e => setReviewComment(e.target.value)}
+                      placeholder={isAr ? 'اكتب تعليقاً (اختياري)...' : 'Write a comment (optional)...'}
+                      rows={2}
+                      style={{ width: '100%', padding: '8px 10px', fontSize: '12px', resize: 'vertical', marginBottom: '10px' }}
+                    />
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button className="btn-primary" style={{ padding: '7px 16px', fontSize: '12px' }} disabled={submittingReview} onClick={() => submitReview(order)}>
+                        {submittingReview ? '...' : (isAr ? 'إرسال التقييم' : 'Submit Review')}
+                      </button>
+                      <button className="btn-outline" style={{ padding: '7px 16px', fontSize: '12px' }} onClick={() => setReviewingOrderId(null)}>
+                        {isAr ? 'إلغاء' : 'Cancel'}
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>

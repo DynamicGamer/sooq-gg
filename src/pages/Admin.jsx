@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
+import Chat from '../components/Chat'
 
 const ADMIN_EMAIL = 'thabetalqaisi@gmail.com'
 
@@ -25,6 +26,10 @@ export default function Admin() {
   const [selected, setSelected] = useState(null)
   const [note, setNote] = useState('')
   const [error, setError] = useState('')
+  const [section, setSection] = useState('orders') // 'orders' | 'messages'
+  const [conversations, setConversations] = useState([])
+  const [activeListingId, setActiveListingId] = useState(null)
+  const [conversationsLoading, setConversationsLoading] = useState(true)
 
   if (!user) return <Navigate to="/auth" />
   if (user.email !== ADMIN_EMAIL) return (
@@ -40,6 +45,26 @@ export default function Admin() {
     const interval = setInterval(fetchOrders, 30000)
     return () => clearInterval(interval)
   }, [])
+
+  useEffect(() => {
+    if (section === 'messages') fetchAllConversations()
+  }, [section])
+
+  const fetchAllConversations = async () => {
+    setConversationsLoading(true)
+    const { data } = await supabase.from('messages_with_listings').select('*').order('created_at', { ascending: false })
+    if (data) {
+      const seen = new Set()
+      const convos = []
+      for (const msg of data) {
+        if (!seen.has(msg.listing_id)) { seen.add(msg.listing_id); convos.push(msg) }
+      }
+      setConversations(convos)
+    }
+    setConversationsLoading(false)
+  }
+
+  const activeConvo = conversations.find(c => String(c.listing_id) === String(activeListingId))
 
   const fetchOrders = async () => {
     setLoading(true)
@@ -99,7 +124,7 @@ export default function Admin() {
           <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>سوق.gg — Live data from Supabase</p>
         </div>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <button onClick={fetchOrders} className="btn-outline" style={{ padding: '5px 12px', fontSize: '12px' }}>
+          <button onClick={section === 'orders' ? fetchOrders : fetchAllConversations} className="btn-outline" style={{ padding: '5px 12px', fontSize: '12px' }}>
             🔄 Refresh
           </button>
           <div style={{ background: 'var(--accent-soft)', border: '1px solid var(--accent-border)', borderRadius: 'var(--radius-md)', padding: '6px 14px', fontSize: '12px', color: '#a78bfa' }}>
@@ -108,6 +133,58 @@ export default function Admin() {
         </div>
       </div>
 
+      {/* SECTION TOGGLE */}
+      <div style={{ display: 'flex', gap: '4px', marginBottom: '20px', background: 'var(--bg-tertiary)', padding: '4px', borderRadius: 'var(--radius-md)', width: 'fit-content' }}>
+        {[{ id: 'orders', label: '📦 Orders' }, { id: 'messages', label: '💬 All Messages' }].map(s => (
+          <button key={s.id} onClick={() => setSection(s.id)} style={{
+            padding: '7px 18px', borderRadius: 'calc(var(--radius-md) - 2px)', border: 'none',
+            background: section === s.id ? 'var(--accent)' : 'transparent',
+            color: section === s.id ? '#fff' : 'var(--text-muted)',
+            fontSize: '13px', fontWeight: '700', cursor: 'pointer',
+          }}>{s.label}</button>
+        ))}
+      </div>
+
+      {section === 'messages' ? (
+        <div className="card" style={{ padding: 0, display: 'grid', gridTemplateColumns: '300px 1fr', minHeight: '600px', overflow: 'hidden' }}>
+          <div className={activeConvo ? 'hide-mobile' : ''} style={{ borderInlineEnd: '1px solid rgba(201,168,76,0.12)', overflowY: 'auto' }}>
+            {conversationsLoading ? (
+              <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>Loading...</div>
+            ) : conversations.length === 0 ? (
+              <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>No conversations yet</div>
+            ) : conversations.map(convo => {
+              const isActive = String(convo.listing_id) === String(activeListingId)
+              return (
+                <div key={convo.listing_id} onClick={() => setActiveListingId(String(convo.listing_id))} style={{
+                  padding: '14px 16px', cursor: 'pointer',
+                  background: isActive ? 'rgba(201,168,76,0.1)' : 'transparent',
+                  borderInlineStart: isActive ? '3px solid var(--accent)' : '3px solid transparent',
+                  borderBottom: '1px solid rgba(201,168,76,0.06)',
+                }}>
+                  <div style={{ fontWeight: '700', fontSize: '13px', color: '#fff', marginBottom: '2px' }}>{convo.seller_en || convo.seller}</div>
+                  <div style={{ fontSize: '11px', color: '#c9a84c', marginBottom: '2px' }}>{convo.type_en || convo.type_ar}</div>
+                  <div style={{ fontSize: '11px', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{convo.content}</div>
+                </div>
+              )
+            })}
+          </div>
+          <div className={activeConvo ? '' : 'hide-mobile'} style={{ padding: '12px' }}>
+            {activeConvo ? (
+              <Chat
+                listingId={activeConvo.listing_id}
+                sellerId={activeConvo.receiver_id}
+                sellerName={(activeConvo.seller_en || activeConvo.seller) + ' — ' + (activeConvo.type_en || activeConvo.type_ar)}
+                onBack={() => setActiveListingId(null)}
+              />
+            ) : (
+              <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6b5a45', fontSize: '13px' }}>
+                Select a conversation to view and reply as support
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+      <>
       {/* STATS */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '10px', marginBottom: '24px' }}>
         {[
@@ -311,6 +388,8 @@ export default function Admin() {
           </div>
         )}
       </div>
+      </>
+      )}
     </div>
   )
 }

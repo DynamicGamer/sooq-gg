@@ -32,6 +32,7 @@ export default function listings() {
   }, [searchParams])
 
   const cats = [
+    { id: 'all', label: isAr ? 'كل العروض' : 'All Listings', icon: '🔎' },
     { id: 'topups', label: t.nav.topups, icon: '⚡' },
     { id: 'accounts', label: t.nav.accounts, icon: '🎮' },
     { id: 'currency', label: t.nav.currency, icon: '💰' },

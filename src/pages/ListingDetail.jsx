@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import Chat from '../components/Chat'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
+import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
-import { GAMES, fetchListings } from '../lib/supabase'
+import { GAMES, fetchListings, supabase } from '../lib/supabase'
 import CountryBadge from '../components/CountryBadge'
 import Reveal from '../components/Reveal'
 
@@ -22,28 +22,25 @@ const GAME_IMAGES = {
   'PlayStation': '/games/psn.jpg',
 }
 
-const MOCK_REVIEWS = [
-  { user: 'Ahmed_Jo', rating: 5, comment: 'سريع جداً وموثوق، أنصح بشدة', commentEn: 'Super fast and reliable, highly recommend', date: '2025-05-10' },
-  { user: 'KSA_Gamer', rating: 5, comment: 'أفضل بائع في السوق', commentEn: 'Best seller on the market', date: '2025-05-08' },
-  { user: 'UAE_Player', rating: 4, comment: 'خدمة ممتازة', commentEn: 'Excellent service', date: '2025-05-05' },
-]
-
 export default function ListingDetail() {
   const { id } = useParams()
   const { t, isAr } = useLang()
   const { addItem } = useCart()
+  const { user } = useAuth()
   const navigate = useNavigate()
   const tl = t.listing
 
   const [listing, setListing] = useState(null)
   const [qty, setQty] = useState(1)
-  const [showChat, setShowChat] = useState(false)
   const [activeImage, setActiveImage] = useState(0)
+  const [reviews, setReviews] = useState([])
 
   useEffect(() => {
     fetchListings().then(data => {
       setListing(data.find(l => l.id === id))
     })
+    supabase.from('reviews').select('*').eq('listing_id', id).order('created_at', { ascending: false })
+      .then(({ data }) => { if (data) setReviews(data) })
   }, [id])
 
   if (!listing) return (
@@ -125,21 +122,24 @@ export default function ListingDetail() {
 
           <div className="card" style={{ padding: '20px' }}>
             <h3 style={{ fontSize: '14px', fontWeight: '700', marginBottom: '16px' }}>{tl.reviews}</h3>
-            {MOCK_REVIEWS.map((r, i) => (
-              <div key={i} style={{ borderBottom: i < MOCK_REVIEWS.length - 1 ? '1px solid var(--border)' : 'none', paddingBottom: '14px', marginBottom: '14px' }}>
+            {reviews.length === 0 && (
+              <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{tl.noReviews}</p>
+            )}
+            {reviews.map((r, i) => (
+              <div key={r.id} style={{ borderBottom: i < reviews.length - 1 ? '1px solid var(--border)' : 'none', paddingBottom: '14px', marginBottom: '14px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <div style={{ width: '28px', height: '28px', background: 'var(--accent-soft)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#a78bfa', fontWeight: '700' }}>
-                      {r.user[0]}
+                      {r.buyer_username?.[0]?.toUpperCase() || '?'}
                     </div>
-                    <span style={{ fontSize: '12px', fontWeight: '600' }}>{r.user}</span>
+                    <span style={{ fontSize: '12px', fontWeight: '600' }}>{r.buyer_username}</span>
                   </div>
                   <div>
                     {'⭐'.repeat(r.rating)}
-                    <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginRight: '8px' }}>{r.date}</span>
+                    <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginRight: '8px' }}>{new Date(r.created_at).toLocaleDateString()}</span>
                   </div>
                 </div>
-                <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{isAr ? r.comment : r.commentEn}</p>
+                {r.comment && <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{r.comment}</p>}
               </div>
             ))}
           </div>
@@ -187,10 +187,20 @@ export default function ListingDetail() {
               onClick={() => addItem({ ...listing, name: isAr ? listing.type_ar : listing.type_en })}>
               {tl.addCart}
             </button>
-            <button className="btn-outline" style={{ width: "100%", padding: "11px", fontSize: "14px", marginTop: "8px" }} onClick={() => setShowChat(true)}>
+            <button className="btn-outline" style={{ width: "100%", padding: "11px", fontSize: "14px", marginTop: "8px" }} onClick={() => {
+              if (!user) { navigate('/auth'); return }
+              const params = new URLSearchParams({
+                tab: 'messages',
+                listingId: listing.id,
+                sellerId: listing.seller_id || '',
+                sellerName: isAr ? listing.seller : listing.seller_en,
+                sellerRating: listing.rating || '',
+                sellerCountry: listing.country || '',
+              })
+              navigate(`/dashboard?${params.toString()}`)
+            }}>
               {isAr ? "راسل البائع" : "Message Seller"}
             </button>
-            {showChat && listing && <Chat listingId={listing.id} sellerId={listing.seller_id} sellerName={isAr ? listing.seller : listing.seller_en} sellerRating={listing.rating} sellerCountry={listing.country} onClose={() => setShowChat(false)} />}
             <div style={{ marginTop: "14px", padding: "10px", background: "var(--bg-tertiary)", borderRadius: "var(--radius-md)", fontSize: "11px", color: "var(--text-muted)", textAlign: "center" }}>
               {t.cart.secure}
             </div>

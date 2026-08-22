@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext'
 import { supabase, fetchListings } from '../lib/supabase'
 import MessagesInbox from '../components/MessagesInbox'
 import Reveal, { RevealGroup, RevealItem } from '../components/Reveal'
-import { countryLabel } from '../lib/countries'
+import CountryBadge from '../components/CountryBadge'
 
 const GAME_IMAGES = {
   'PUBG Mobile': '/games/pubg.jpg',
@@ -37,6 +37,14 @@ export default function Dashboard() {
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState({ game: '', category: 'topups', titleAr: '', titleEn: '', price: '', desc: '' })
+  const [imageFiles, setImageFiles] = useState([])
+  const [savingListing, setSavingListing] = useState(false)
+
+  const MAX_IMAGES = 5
+  const addImageFiles = (files) => {
+    setImageFiles(prev => [...prev, ...Array.from(files)].slice(0, MAX_IMAGES))
+  }
+  const removeImageFile = (idx) => setImageFiles(prev => prev.filter((_, i) => i !== idx))
 
   useEffect(() => {
     if (user) {
@@ -64,8 +72,21 @@ export default function Dashboard() {
 
   const handleAddListing = async () => {
     if (!form.game || !form.price) return alert('Please select a game and enter a price')
+    setSavingListing(true)
+
+    const listingId = `l${Date.now()}`
+    const imageUrls = []
+    for (let i = 0; i < imageFiles.length; i++) {
+      const file = imageFiles[i]
+      const path = `${user.id}/${listingId}-${i}-${file.name}`
+      const { error: uploadErr } = await supabase.storage.from('listing-images').upload(path, file)
+      if (!uploadErr) {
+        imageUrls.push(supabase.storage.from('listing-images').getPublicUrl(path).data.publicUrl)
+      }
+    }
+
     const newListing = {
-      id: `l${Date.now()}`,
+      id: listingId,
       game_id: 0,
       game: form.game,
       type_en: form.titleEn || form.titleAr,
@@ -79,13 +100,16 @@ export default function Dashboard() {
       delivery_key: 'instant',
       country: user.user_metadata?.country || null,
       category: form.category,
+      images: imageUrls,
     }
     const { error } = await supabase.from('listings').insert([newListing])
+    setSavingListing(false)
     if (error) {
       alert('Error: ' + error.message)
     } else {
       setListings(prev => [...prev, { ...newListing, typeEn: newListing.type_en, typeAr: newListing.type_ar, earnings: '0.00', status: 'active' }])
-    setForm({ game: '', category: 'topups', titleAr: '', titleEn: '', price: '', desc: '' })
+      setForm({ game: '', category: 'topups', titleAr: '', titleEn: '', price: '', desc: '' })
+      setImageFiles([])
       setShowForm(false)
     }
   }
@@ -176,9 +200,30 @@ export default function Dashboard() {
             <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '5px' }}>{td.description}</label>
             <textarea value={form.desc} onChange={e => set('desc', e.target.value)} rows={3} style={{ width: '100%', padding: '8px 10px', fontSize: '12px', resize: 'vertical' }} />
           </div>
+
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '5px' }}>
+              {isAr ? `صور العرض (${imageFiles.length}/${MAX_IMAGES})` : `Listing Photos (${imageFiles.length}/${MAX_IMAGES})`}
+            </label>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              {imageFiles.map((file, i) => (
+                <div key={i} style={{ position: 'relative', width: '64px', height: '64px' }}>
+                  <img src={URL.createObjectURL(file)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-hover)' }} />
+                  <button type="button" onClick={() => removeImageFile(i)} style={{ position: 'absolute', top: '-6px', right: '-6px', width: '18px', height: '18px', borderRadius: '50%', background: '#ef4444', border: 'none', color: '#fff', fontSize: '11px', cursor: 'pointer', lineHeight: 1 }}>✕</button>
+                </div>
+              ))}
+              {imageFiles.length < MAX_IMAGES && (
+                <label style={{ width: '64px', height: '64px', border: '1px dashed var(--border-hover)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '22px' }}>
+                  +
+                  <input type="file" accept="image/*" multiple style={{ display: 'none' }} onChange={e => { addImageFiles(e.target.files); e.target.value = '' }} />
+                </label>
+              )}
+            </div>
+          </div>
+
           <div style={{ display: 'flex', gap: '8px' }}>
-            <button className="btn-primary" onClick={handleAddListing}>{td.saveListing}</button>
-            <button className="btn-outline" onClick={() => setShowForm(false)}>{td.cancelBtn}</button>
+            <button className="btn-primary" onClick={handleAddListing} disabled={savingListing}>{savingListing ? '...' : td.saveListing}</button>
+            <button className="btn-outline" onClick={() => { setShowForm(false); setImageFiles([]) }}>{td.cancelBtn}</button>
           </div>
         </div>
       )}
@@ -214,12 +259,12 @@ export default function Dashboard() {
               <div className="card" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <div style={{ width: '42px', height: '42px', borderRadius: 'var(--radius-md)', overflow: 'hidden', flexShrink: 0, border: '1px solid rgba(201,168,76,0.2)' }}>
-                    <img src={GAME_IMAGES[l.game]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display='none' }} />
+                    <img src={l.images?.[0] || GAME_IMAGES[l.game]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display='none' }} />
                   </div>
                   <div>
                     <div style={{ fontWeight: '700', fontSize: '13px', fontFamily: 'var(--font-display)' }}>{isAr ? l.typeAr : l.typeEn}</div>
                     <div style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      {l.game}{l.country && <span>· {countryLabel(l.country, isAr)}</span>}
+                      {l.game}{l.country && <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>· <CountryBadge code={l.country} isAr={isAr} /></span>}
                     </div>
                   </div>
                 </div>

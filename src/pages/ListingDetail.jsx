@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
 import { GAMES, fetchListings } from '../lib/supabase'
-import { countryLabel } from '../lib/countries'
+import CountryBadge from '../components/CountryBadge'
 import Reveal from '../components/Reveal'
 
 const GAME_IMAGES = {
@@ -38,6 +38,7 @@ export default function ListingDetail() {
   const [listing, setListing] = useState(null)
   const [qty, setQty] = useState(1)
   const [showChat, setShowChat] = useState(false)
+  const [activeImage, setActiveImage] = useState(0)
 
   useEffect(() => {
     fetchListings().then(data => {
@@ -98,6 +99,23 @@ export default function ListingDetail() {
             </div>
           </div>
 
+          {listing.images?.length > 0 && (
+            <div className="card" style={{ padding: '16px', marginBottom: '16px' }}>
+              <div style={{ width: '100%', aspectRatio: '16/9', borderRadius: 'var(--radius-md)', overflow: 'hidden', marginBottom: listing.images.length > 1 ? '10px' : 0, background: 'var(--bg-tertiary)' }}>
+                <img src={listing.images[activeImage]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </div>
+              {listing.images.length > 1 && (
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  {listing.images.map((img, i) => (
+                    <button key={i} onClick={() => setActiveImage(i)} style={{ width: '56px', height: '56px', borderRadius: 'var(--radius-sm)', overflow: 'hidden', padding: 0, border: i === activeImage ? '2px solid var(--accent)' : '1px solid var(--border-hover)', cursor: 'pointer', flexShrink: 0 }}>
+                      <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="card" style={{ padding: '20px', marginBottom: '16px' }}>
             <h3 style={{ fontSize: '14px', fontWeight: '700', marginBottom: '12px' }}>{tl.description}</h3>
             <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
@@ -136,7 +154,7 @@ export default function ListingDetail() {
               <div>
                 <div style={{ fontWeight: '700', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                   {isAr ? listing.seller : listing.seller_en}
-                  {listing.country && <span style={{ fontSize: '11px', fontWeight: '600', color: 'var(--text-muted)' }}>{countryLabel(listing.country, isAr)}</span>}
+                  {listing.country && <span style={{ fontSize: '11px', fontWeight: '600', color: 'var(--text-muted)' }}><CountryBadge code={listing.country} isAr={isAr} /></span>}
                 </div>
                 <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>⭐ {listing.rating} · {listing.sales.toLocaleString()} {tl.sales}</div>
               </div>

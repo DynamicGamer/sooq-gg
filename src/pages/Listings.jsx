@@ -3,7 +3,7 @@ import { Link, useParams, useSearchParams, useNavigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
 import { GAMES, fetchListings } from '../lib/supabase'
-import { countryLabel } from '../lib/countries'
+import CountryBadge from '../components/CountryBadge'
 import Reveal, { RevealGroup, RevealItem } from '../components/Reveal'
 
 export default function listings() {
@@ -186,8 +186,8 @@ export default function listings() {
                     onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: '160px' }}>
-                      <div style={{ width: '38px', height: '38px', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px' }}>
-                        {GAMES.find(g => g.name === l.game)?.img || '🎮'}
+                      <div style={{ width: '38px', height: '38px', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-md)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px' }}>
+                        {l.images?.[0] ? <img src={l.images[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (GAMES.find(g => g.name === l.game)?.img || '🎮')}
                       </div>
                       <div>
                         <div style={{ fontWeight: '700', fontSize: '13px' }}>{isAr ? l.type_ar : l.type_en}</div>
@@ -201,7 +201,7 @@ export default function listings() {
                       <div>
                         <div style={{ fontSize: '12px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
                           {isAr ? l.seller : l.seller_en}
-                          {l.country && <span style={{ fontSize: '10px', fontWeight: '600', color: 'var(--text-muted)' }}>{countryLabel(l.country, isAr)}</span>}
+                          {l.country && <span style={{ fontSize: '10px', fontWeight: '600', color: 'var(--text-muted)' }}><CountryBadge code={l.country} isAr={isAr} /></span>}
                         </div>
                         <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>⭐ {l.rating} · {l.sales.toLocaleString()} {h.deals}</div>
                       </div>

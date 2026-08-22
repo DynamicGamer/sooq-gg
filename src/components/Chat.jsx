@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
-import { countryLabel } from '../lib/countries'
+import CountryBadge from './CountryBadge'
 
 const formatTime = (ts) => new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 
@@ -64,8 +64,6 @@ export default function Chat({ listingId, sellerId, sellerName, sellerRating, se
 
   if (!user) return null
 
-  const subtitle = sellerCountry ? countryLabel(sellerCountry, isAr) : (sellerRating ? `⭐ ${sellerRating}` : (isAr ? 'بائع' : 'Seller'))
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 30, scale: 0.96 }}
@@ -87,7 +85,9 @@ export default function Chat({ listingId, sellerId, sellerName, sellerRating, se
           </div>
           <div>
             <div style={{ fontSize: '13px', fontWeight: '700', color: '#ffffff', fontFamily: 'var(--font-display)' }}>{sellerName}</div>
-            <div style={{ fontSize: '10px', color: '#9a8570' }}>{subtitle}</div>
+            <div style={{ fontSize: '10px', color: '#9a8570' }}>
+              {sellerCountry ? <CountryBadge code={sellerCountry} isAr={isAr} /> : sellerRating ? `⭐ ${sellerRating}` : (isAr ? 'بائع' : 'Seller')}
+            </div>
           </div>
         </div>
         <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.06)', border: 'none', borderRadius: '50%', width: '26px', height: '26px', color: '#9a8570', cursor: 'pointer', fontSize: '16px', lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}

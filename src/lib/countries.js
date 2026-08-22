@@ -19,9 +19,3 @@ export const COUNTRIES = [
 export function findCountry(code) {
   return COUNTRIES.find(c => c.code === code) || null
 }
-
-export function countryLabel(code, isAr) {
-  const c = findCountry(code)
-  if (!c) return null
-  return `${c.flag} ${isAr ? c.ar : c.en}`
-}

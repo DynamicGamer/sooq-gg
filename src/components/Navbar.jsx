@@ -71,55 +71,59 @@ export default function Navbar() {
               </Link>
 
               {openCat === c && (
-                <div style={{ position: 'absolute', top: '62px', insetInlineStart: 0, width: '300px', background: 'rgba(15,12,8,0.98)', backdropFilter: 'blur(20px)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '14px', padding: '14px', boxShadow: '0 20px 40px rgba(0,0,0,0.6)', zIndex: 200 }}>
+                <div style={{ position: 'absolute', top: '62px', insetInlineStart: 0, width: '500px', background: 'rgba(15,12,8,0.98)', backdropFilter: 'blur(20px)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '14px', padding: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.6)', zIndex: 200 }}>
                   <input
                     autoFocus
                     value={menuSearch}
                     onChange={e => setMenuSearch(e.target.value)}
                     placeholder={isAr ? 'ابحث عن لعبة...' : 'Search for game...'}
-                    style={{ width: '100%', padding: '8px 12px', fontSize: '12px', marginBottom: '12px' }}
+                    style={{ width: '100%', padding: '9px 12px', fontSize: '12px', marginBottom: '14px' }}
                   />
 
-                  {!menuSearch.trim() && popularGames.length > 0 && (
-                    <>
-                      <div style={{ fontSize: '10px', color: '#c9a84c', fontWeight: '800', letterSpacing: '1px', marginBottom: '8px' }}>
-                        {isAr ? 'الألعاب الشائعة' : 'POPULAR GAMES'}
+                  <div style={{ display: 'flex', gap: '16px' }}>
+                    {!menuSearch.trim() && popularGames.length > 0 && (
+                      <div style={{ flex: 1, minWidth: 0, borderInlineEnd: '1px solid rgba(201,168,76,0.12)', paddingInlineEnd: '16px' }}>
+                        <div style={{ fontSize: '10px', color: '#c9a84c', fontWeight: '800', letterSpacing: '1px', marginBottom: '8px' }}>
+                          {isAr ? 'الألعاب الشائعة' : 'POPULAR GAMES'}
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                          {popularGames.map(game => (
+                            <Link key={game.id} to={`/listings/${c}?game=${game.id}`} onClick={() => setOpenCat(null)}
+                              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 8px', borderRadius: '8px', textDecoration: 'none', color: '#d4c5a9' }}
+                              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,168,76,0.08)'; e.currentTarget.style.color = '#c9a84c' }}
+                              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#d4c5a9' }}
+                            >
+                              <img src={`/games/${GAME_ICON_SLUG[game.name]}.jpg`} alt={game.name} style={{ width: '24px', height: '24px', borderRadius: '5px', objectFit: 'cover', flexShrink: 0 }} onError={e => e.target.style.display = 'none'} />
+                              <div style={{ fontSize: '12px', fontWeight: '600', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{isAr ? game.nameAr : game.name}</div>
+                            </Link>
+                          ))}
+                        </div>
                       </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '4px', marginBottom: '12px' }}>
-                        {popularGames.map(game => (
+                    )}
+
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: '10px', color: '#c9a84c', fontWeight: '800', letterSpacing: '1px', marginBottom: '8px' }}>
+                        {isAr ? 'كل الألعاب' : 'ALL GAMES'}
+                      </div>
+                      <div style={{ maxHeight: '260px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        {visibleGames.map(game => (
                           <Link key={game.id} to={`/listings/${c}?game=${game.id}`} onClick={() => setOpenCat(null)}
-                            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 8px', borderRadius: '8px', textDecoration: 'none', color: '#d4c5a9' }}
+                            style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '7px 8px', borderRadius: '8px', textDecoration: 'none', color: '#d4c5a9' }}
                             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,168,76,0.08)'; e.currentTarget.style.color = '#c9a84c' }}
                             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#d4c5a9' }}
                           >
-                            <img src={`/games/${GAME_ICON_SLUG[game.name]}.jpg`} alt={game.name} style={{ width: '24px', height: '24px', borderRadius: '5px', objectFit: 'cover', flexShrink: 0 }} onError={e => e.target.style.display = 'none'} />
-                            <div style={{ fontSize: '12px', fontWeight: '600', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{isAr ? game.nameAr : game.name}</div>
+                            <img src={`/games/${GAME_ICON_SLUG[game.name]}.jpg`} alt={game.name} style={{ width: '26px', height: '26px', borderRadius: '6px', objectFit: 'cover', flexShrink: 0 }} onError={e => e.target.style.display = 'none'} />
+                            <div style={{ fontSize: '13px', fontWeight: '600' }}>{isAr ? game.nameAr : game.name}</div>
                           </Link>
                         ))}
+                        {visibleGames.length === 0 && (
+                          <div style={{ fontSize: '12px', color: '#6b5a45', textAlign: 'center', padding: '12px 0' }}>{isAr ? 'لا توجد نتائج' : 'No games found'}</div>
+                        )}
                       </div>
-                    </>
-                  )}
-
-                  <div style={{ fontSize: '10px', color: '#c9a84c', fontWeight: '800', letterSpacing: '1px', marginBottom: '8px', paddingTop: menuSearch.trim() ? 0 : '8px', borderTop: menuSearch.trim() ? 'none' : '1px solid rgba(201,168,76,0.1)' }}>
-                    {isAr ? 'كل الألعاب' : 'ALL GAMES'}
-                  </div>
-                  <div style={{ maxHeight: '220px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                    {visibleGames.map(game => (
-                      <Link key={game.id} to={`/listings/${c}?game=${game.id}`} onClick={() => setOpenCat(null)}
-                        style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '7px 8px', borderRadius: '8px', textDecoration: 'none', color: '#d4c5a9' }}
-                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,168,76,0.08)'; e.currentTarget.style.color = '#c9a84c' }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#d4c5a9' }}
-                      >
-                        <img src={`/games/${GAME_ICON_SLUG[game.name]}.jpg`} alt={game.name} style={{ width: '26px', height: '26px', borderRadius: '6px', objectFit: 'cover', flexShrink: 0 }} onError={e => e.target.style.display = 'none'} />
-                        <div style={{ fontSize: '13px', fontWeight: '600' }}>{isAr ? game.nameAr : game.name}</div>
-                      </Link>
-                    ))}
-                    {visibleGames.length === 0 && (
-                      <div style={{ fontSize: '12px', color: '#6b5a45', textAlign: 'center', padding: '12px 0' }}>{isAr ? 'لا توجد نتائج' : 'No games found'}</div>
-                    )}
+                    </div>
                   </div>
 
-                  <Link to={`/listings/${c}`} onClick={() => setOpenCat(null)} style={{ display: 'block', textAlign: 'center', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(201,168,76,0.1)', fontSize: '12px', color: '#c9a84c', fontWeight: '700', textDecoration: 'none' }}>
+                  <Link to={`/listings/${c}`} onClick={() => setOpenCat(null)} style={{ display: 'block', textAlign: 'center', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(201,168,76,0.1)', fontSize: '12px', color: '#c9a84c', fontWeight: '700', textDecoration: 'none' }}>
                     {isAr ? 'عرض الكل ←' : 'View All →'}
                   </Link>
                 </div>

@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
-import { GAMES, GENRES, fetchListings } from '../lib/supabase'
-import { countryLabel } from '../lib/countries'
+import { GAMES, GENRES, fetchListings, fetchLiveStats } from '../lib/supabase'
+import CountryBadge from '../components/CountryBadge'
 import Reveal, { RevealGroup, RevealItem } from '../components/Reveal'
 
 const GAME_IMAGES = {
@@ -29,9 +29,11 @@ export default function Home() {
   const [search, setSearch] = useState('')
   const [listings, setListings] = useState([])
   const [activeGenres, setActiveGenres] = useState([])
+  const [liveStats, setLiveStats] = useState({ trades: 0, volume: 0, activeListings: 0 })
 
   useEffect(() => {
     fetchListings().then(data => setListings(data))
+    fetchLiveStats().then(setLiveStats)
   }, [])
 
   const toggleGenre = (id) => {
@@ -89,6 +91,22 @@ export default function Home() {
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}><div style={{ width: "42px", height: "42px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.25)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", color: "#c9a84c", fontWeight: "800", fontSize: "16px" }}>🔒</div><div><div style={{ fontSize: "14px", fontWeight: "700", color: "#fff" }}>{isAr ? 'دفع آمن' : 'Secure Payments'}</div><div style={{ fontSize: "12px", color: "#9a8570" }}>{isAr ? 'CliQ وكريبتو مع نظام الضمان' : 'CliQ & crypto escrow keep funds safe'}</div></div></div>
       </Reveal>
 
+      {/* LIVE STATS */}
+      <Reveal style={{ padding: '20px 24px', display: 'flex', justifyContent: 'center', gap: '48px', flexWrap: 'wrap', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>
+        {[
+          { label: isAr ? 'صفقة مكتملة' : 'Trades Completed', value: liveStats.trades.toLocaleString() },
+          { label: isAr ? 'حجم التداول' : 'Trade Volume', value: `$${liveStats.volume.toLocaleString(undefined, { maximumFractionDigits: 0 })}` },
+          { label: isAr ? 'عرض نشط' : 'Active Listings', value: liveStats.activeListings.toLocaleString() },
+        ].map(s => (
+          <div key={s.label} style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '22px', fontWeight: '800', color: '#ffffff', fontFamily: 'var(--font-display)' }}>{s.value}</div>
+            <div style={{ fontSize: '11px', color: '#9a8570', display: 'flex', alignItems: 'center', gap: '5px', justifyContent: 'center', marginTop: '2px' }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', display: 'inline-block', boxShadow: '0 0 6px #10b981' }} />
+              {s.label}
+            </div>
+          </div>
+        ))}
+      </Reveal>
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
 
@@ -162,12 +180,7 @@ export default function Home() {
                     </div>
                     <div style={{ padding: '12px 14px 14px' }}>
                       <div style={{ fontSize: '14px', fontWeight: '700', color: '#ffffff', marginBottom: '8px', fontFamily: 'var(--font-display)' }}>{isAr ? game.nameAr : game.name}</div>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <div style={{ fontSize: '11px', color: '#c9a84c', background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '5px', padding: '2px 8px', fontWeight: '600' }}>{isAr ? game.tagAr : game.tagEn}</div>
-                        <div style={{ fontSize: '11px', color: '#9a8570', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />{game.sellers}
-                        </div>
-                      </div>
+                      <div style={{ fontSize: '11px', color: '#c9a84c', background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '5px', padding: '2px 8px', fontWeight: '600', display: 'inline-block' }}>{isAr ? game.tagAr : game.tagEn}</div>
                     </div>
                   </Link>
                 </motion.div>
@@ -200,7 +213,7 @@ export default function Home() {
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1, minWidth: '180px' }}>
                     <div style={{ width: '52px', height: '52px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(201,168,76,0.2)', flexShrink: 0 }}>
-                      <img src={GAME_IMAGES[l.game]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none' }} />
+                      <img src={l.images?.[0] || GAME_IMAGES[l.game]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none' }} />
                     </div>
                     <div>
                       <div style={{ fontWeight: '700', fontSize: '16px', color: '#ffffff', marginBottom: '3px', fontFamily: 'var(--font-display)' }}>{isAr ? l.type_ar : l.type_en}</div>
@@ -214,7 +227,7 @@ export default function Home() {
                     <div>
                       <div style={{ fontSize: '14px', color: '#ffffff', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                         {isAr ? l.seller : l.seller_en}
-                        {l.country && <span style={{ fontSize: '11px', fontWeight: '600', color: '#9a8570' }}>{countryLabel(l.country, isAr)}</span>}
+                        {l.country && <span style={{ fontSize: '11px', fontWeight: '600', color: '#9a8570' }}><CountryBadge code={l.country} isAr={isAr} /></span>}
                       </div>
                       <div style={{ fontSize: '11px', color: '#9a8570' }}>⭐ {l.rating} · {l.sales?.toLocaleString()} {isAr ? 'صفقة' : 'deals'}</div>
                     </div>

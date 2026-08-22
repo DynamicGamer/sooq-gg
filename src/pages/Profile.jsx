@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
 import { supabase, fetchListings } from '../lib/supabase'
-import { COUNTRIES, countryLabel } from '../lib/countries'
+import { COUNTRIES } from '../lib/countries'
 import Reveal from '../components/Reveal'
+import CountryBadge from '../components/CountryBadge'
 
 export default function Profile() {
   const { isAr } = useLang()
@@ -57,7 +58,7 @@ export default function Profile() {
           <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px', flexWrap: 'wrap' }}>
               <span style={{ fontSize: '24px', fontWeight: '800', color: '#ffffff', fontFamily: 'var(--font-display)' }}>{username}</span>
-              {country && <span className="badge badge-gold">{countryLabel(country, isAr)}</span>}
+              {country && <span className="badge badge-gold"><CountryBadge code={country} isAr={isAr} /></span>}
             </div>
             <div style={{ fontSize: '14px', color: '#9a8570', marginBottom: '12px' }}>{user.email}</div>
             <div style={{ fontSize: '12px', color: '#c9a84c' }}>{isAr ? 'انقر على الصورة لتغييرها' : 'Click picture to change'}</div>

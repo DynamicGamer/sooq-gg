@@ -7,20 +7,31 @@ import { supabase, GAMES } from '../lib/supabase'
 
 const CATS = ['topups','accounts','currency','items','boosting','giftcards']
 
+const GAME_ICON_SLUG = {
+  'PUBG Mobile': 'pubg', 'Free Fire': 'freefire', 'Fortnite': 'fortnite', 'Clash of Clans': 'coc',
+  'Mobile Legends': 'mlbb', 'Valorant': 'valorant', 'FIFA Mobile': 'fifa', 'Genshin Impact': 'genshin',
+  'Call of Duty Mobile': 'codm', 'League of Legends': 'lol', 'Steam Wallet': 'steam', 'PlayStation': 'psn',
+}
+
 export default function Navbar() {
   const { t, toggle, isAr } = useLang()
   const { user, signOut } = useAuth()
   const { count } = useCart()
   const navigate = useNavigate()
-  const [browseOpen, setBrowseOpen] = useState(false)
-  const [hoveredCat, setHoveredCat] = useState(CATS[0])
+  const [openCat, setOpenCat] = useState(null)
+  const [menuSearch, setMenuSearch] = useState('')
   const [avatarUrl, setAvatarUrl] = useState(null)
   const closeTimer = useRef(null)
 
-  const openBrowse = () => { clearTimeout(closeTimer.current); setBrowseOpen(true) }
-  const scheduleCloseBrowse = () => { closeTimer.current = setTimeout(() => setBrowseOpen(false), 250) }
+  const openMenu = (c) => { clearTimeout(closeTimer.current); setOpenCat(c); setMenuSearch('') }
+  const scheduleClose = () => { closeTimer.current = setTimeout(() => setOpenCat(null), 250) }
 
   useEffect(() => () => clearTimeout(closeTimer.current), [])
+
+  const popularGames = GAMES.filter(g => g.hot)
+  const visibleGames = menuSearch.trim()
+    ? GAMES.filter(g => g.name.toLowerCase().includes(menuSearch.trim().toLowerCase()) || g.nameAr.includes(menuSearch.trim()))
+    : GAMES
 
   const username = user?.user_metadata?.username || user?.email?.split('@')[0] || 'User'
 
@@ -44,58 +55,77 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <div className="hide-mobile" style={{ position: 'relative', height: '62px' }}
-          onMouseEnter={openBrowse}
-          onMouseLeave={scheduleCloseBrowse}
-        >
-          <button style={{
-            display: 'flex', alignItems: 'center', gap: '7px',
-            color: browseOpen ? '#c9a84c' : '#d4c5a9',
-            background: browseOpen ? 'rgba(201,168,76,0.1)' : 'transparent',
-            border: 'none', padding: '0 14px', borderRadius: '8px',
-            fontSize: '13px', fontWeight: '700', cursor: 'pointer',
-            height: '100%', fontFamily: 'inherit', transition: 'all 0.15s',
-          }}>
-            <span style={{ fontSize: '15px' }}>☰</span>
-            {isAr ? 'تصفح' : 'Browse'}
-          </button>
+        <div className="hide-mobile" style={{ display: 'flex', height: '62px' }}>
+          {CATS.map(c => (
+            <div key={c} style={{ position: 'relative', height: '100%' }}
+              onMouseEnter={() => openMenu(c)}
+              onMouseLeave={scheduleClose}
+            >
+              <Link to={`/listings/${c}`} style={{
+                display: 'flex', alignItems: 'center', height: '100%', padding: '0 12px',
+                color: openCat === c ? '#c9a84c' : '#9a8570',
+                background: openCat === c ? 'rgba(201,168,76,0.1)' : 'transparent',
+                fontSize: '13px', fontWeight: '600', textDecoration: 'none', transition: 'all 0.15s',
+              }}>
+                {t.nav[c]}
+              </Link>
 
-          {browseOpen && (
-            <div style={{ position: 'absolute', top: '62px', left: isAr ? 'auto' : '0', right: isAr ? '0' : 'auto', background: 'rgba(15,12,8,0.98)', backdropFilter: 'blur(20px)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '14px', padding: '14px', display: 'flex', gap: '4px', boxShadow: '0 20px 40px rgba(0,0,0,0.6)', zIndex: 200 }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', minWidth: '150px', borderInlineEnd: '1px solid rgba(201,168,76,0.12)', paddingInlineEnd: '10px' }}>
-                {CATS.map(c => (
-                  <div key={c} onMouseEnter={() => setHoveredCat(c)}
-                    style={{
-                      color: hoveredCat === c ? '#c9a84c' : '#d4c5a9',
-                      background: hoveredCat === c ? 'rgba(201,168,76,0.1)' : 'transparent',
-                      padding: '9px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: '600',
-                      cursor: 'pointer', transition: 'all 0.15s',
-                    }}
-                  >
-                    <Link to={`/listings/${c}`} onClick={() => setBrowseOpen(false)} style={{ color: 'inherit', textDecoration: 'none', display: 'block' }}>{t.nav[c]}</Link>
+              {openCat === c && (
+                <div style={{ position: 'absolute', top: '62px', insetInlineStart: 0, width: '300px', background: 'rgba(15,12,8,0.98)', backdropFilter: 'blur(20px)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '14px', padding: '14px', boxShadow: '0 20px 40px rgba(0,0,0,0.6)', zIndex: 200 }}>
+                  <input
+                    autoFocus
+                    value={menuSearch}
+                    onChange={e => setMenuSearch(e.target.value)}
+                    placeholder={isAr ? 'ابحث عن لعبة...' : 'Search for game...'}
+                    style={{ width: '100%', padding: '8px 12px', fontSize: '12px', marginBottom: '12px' }}
+                  />
+
+                  {!menuSearch.trim() && popularGames.length > 0 && (
+                    <>
+                      <div style={{ fontSize: '10px', color: '#c9a84c', fontWeight: '800', letterSpacing: '1px', marginBottom: '8px' }}>
+                        {isAr ? 'الألعاب الشائعة' : 'POPULAR GAMES'}
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '4px', marginBottom: '12px' }}>
+                        {popularGames.map(game => (
+                          <Link key={game.id} to={`/listings/${c}?game=${game.id}`} onClick={() => setOpenCat(null)}
+                            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 8px', borderRadius: '8px', textDecoration: 'none', color: '#d4c5a9' }}
+                            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,168,76,0.08)'; e.currentTarget.style.color = '#c9a84c' }}
+                            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#d4c5a9' }}
+                          >
+                            <img src={`/games/${GAME_ICON_SLUG[game.name]}.jpg`} alt={game.name} style={{ width: '24px', height: '24px', borderRadius: '5px', objectFit: 'cover', flexShrink: 0 }} onError={e => e.target.style.display = 'none'} />
+                            <div style={{ fontSize: '12px', fontWeight: '600', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{isAr ? game.nameAr : game.name}</div>
+                          </Link>
+                        ))}
+                      </div>
+                    </>
+                  )}
+
+                  <div style={{ fontSize: '10px', color: '#c9a84c', fontWeight: '800', letterSpacing: '1px', marginBottom: '8px', paddingTop: menuSearch.trim() ? 0 : '8px', borderTop: menuSearch.trim() ? 'none' : '1px solid rgba(201,168,76,0.1)' }}>
+                    {isAr ? 'كل الألعاب' : 'ALL GAMES'}
                   </div>
-                ))}
-              </div>
-              <div style={{ minWidth: '220px', padding: '2px 4px' }}>
-                <div style={{ fontSize: '10px', color: '#c9a84c', fontWeight: '800', letterSpacing: '1px', marginBottom: '10px', paddingBottom: '8px', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>
-                  {t.nav[hoveredCat]?.toUpperCase()}
-                </div>
-                {GAMES.slice(0, 8).map(game => (
-                  <Link key={game.id} to={`/listings/${hoveredCat}?game=${game.id}`} onClick={() => setBrowseOpen(false)}
-                    style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 10px', borderRadius: '8px', textDecoration: 'none', transition: 'all 0.15s', color: '#d4c5a9' }}
-                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,168,76,0.08)'; e.currentTarget.style.color = '#c9a84c' }}
-                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#d4c5a9' }}
-                  >
-                    <img src={`/games/${game.name === 'PUBG Mobile' ? 'pubg' : game.name === 'Free Fire' ? 'freefire' : game.name === 'Fortnite' ? 'fortnite' : game.name === 'Clash of Clans' ? 'coc' : game.name === 'Mobile Legends' ? 'mlbb' : game.name === 'Valorant' ? 'valorant' : game.name === 'FIFA Mobile' ? 'fifa' : game.name === 'Genshin Impact' ? 'genshin' : 'pubg'}.jpg`} alt={game.name} style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover' }} onError={e => e.target.style.display='none'} />
-                    <div style={{ fontSize: '13px', fontWeight: '600' }}>{isAr ? game.nameAr : game.name}</div>
+                  <div style={{ maxHeight: '220px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                    {visibleGames.map(game => (
+                      <Link key={game.id} to={`/listings/${c}?game=${game.id}`} onClick={() => setOpenCat(null)}
+                        style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '7px 8px', borderRadius: '8px', textDecoration: 'none', color: '#d4c5a9' }}
+                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,168,76,0.08)'; e.currentTarget.style.color = '#c9a84c' }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#d4c5a9' }}
+                      >
+                        <img src={`/games/${GAME_ICON_SLUG[game.name]}.jpg`} alt={game.name} style={{ width: '26px', height: '26px', borderRadius: '6px', objectFit: 'cover', flexShrink: 0 }} onError={e => e.target.style.display = 'none'} />
+                        <div style={{ fontSize: '13px', fontWeight: '600' }}>{isAr ? game.nameAr : game.name}</div>
+                      </Link>
+                    ))}
+                    {visibleGames.length === 0 && (
+                      <div style={{ fontSize: '12px', color: '#6b5a45', textAlign: 'center', padding: '12px 0' }}>{isAr ? 'لا توجد نتائج' : 'No games found'}</div>
+                    )}
+                  </div>
+
+                  <Link to={`/listings/${c}`} onClick={() => setOpenCat(null)} style={{ display: 'block', textAlign: 'center', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(201,168,76,0.1)', fontSize: '12px', color: '#c9a84c', fontWeight: '700', textDecoration: 'none' }}>
+                    {isAr ? 'عرض الكل ←' : 'View All →'}
                   </Link>
-                ))}
-                <Link to={`/listings/${hoveredCat}`} onClick={() => setBrowseOpen(false)} style={{ display: 'block', textAlign: 'center', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(201,168,76,0.1)', fontSize: '12px', color: '#c9a84c', fontWeight: '700', textDecoration: 'none' }}>
-                  {isAr ? 'عرض الكل' : 'View All'}
-                </Link>
-              </div>
+                </div>
+              )}
             </div>
-          )}
+          ))}
         </div>
       </div>
 

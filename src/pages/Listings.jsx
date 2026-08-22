@@ -19,12 +19,17 @@ export default function listings() {
   const [sortBy, setSortBy] = useState('default')
   const [priceMin, setPriceMin] = useState('')
   const [priceMax, setPriceMax] = useState('')
-  const [activeCat, setActiveCat] = useState(category || 'topups')
   const [listings, setListings] = useState([])
 
   useEffect(() => {
     fetchListings().then(data => setListings(data))
   }, [])
+
+  // Keep filters in sync when navigating here again with different ?game=/?q= (e.g. from the Browse menu)
+  useEffect(() => {
+    setSelectedGame(searchParams.get('game') || 'all')
+    setSearch(searchParams.get('q') || '')
+  }, [searchParams])
 
   const cats = [
     { id: 'topups', label: t.nav.topups, icon: '⚡' },
@@ -37,9 +42,20 @@ export default function listings() {
 
   const getBadge = (key) => key === 'trusted' ? t.trusted : key === 'vip' ? t.vipSeller : null
 
+  const selectedGameObj = selectedGame !== 'all' ? GAMES.find(g => String(g.id) === String(selectedGame)) : null
+
   const filtered = useMemo(() => {
     let list = [...listings]
     if (category && category !== 'all') list = list.filter(l => l.category === category)
+    if (selectedGameObj) list = list.filter(l => l.game === selectedGameObj.name)
+    if (search.trim()) {
+      const q = search.trim().toLowerCase()
+      list = list.filter(l =>
+        l.type_en?.toLowerCase().includes(q) ||
+        l.type_ar?.includes(search.trim()) ||
+        l.game?.toLowerCase().includes(q)
+      )
+    }
     if (priceMin) list = list.filter(l => parseFloat(l.price) >= parseFloat(priceMin))
     if (priceMax) list = list.filter(l => parseFloat(l.price) <= parseFloat(priceMax))
     if (sortBy === 'price_asc') list.sort((a, b) => parseFloat(a.price) - parseFloat(b.price))
@@ -47,7 +63,7 @@ export default function listings() {
     if (sortBy === 'rating') list.sort((a, b) => b.rating - a.rating)
     if (sortBy === 'sales') list.sort((a, b) => b.sales - a.sales)
     return list
-  }, [search, selectedGame, priceMin, priceMax, sortBy, isAr, listings])
+  }, [search, selectedGameObj, category, priceMin, priceMax, sortBy, listings])
 
   return (
     <div className="page-container">
@@ -125,7 +141,7 @@ export default function listings() {
         {/* listings */}
         <div>
           {/* Search + count */}
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '16px', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', alignItems: 'center' }}>
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
@@ -136,6 +152,17 @@ export default function listings() {
               {filtered.length} {isAr ? 'عرض' : 'listings'}
             </span>
           </div>
+
+          {/* ACTIVE FILTER CHIP */}
+          {selectedGameObj && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{isAr ? 'مُفلتر حسب:' : 'Filtered by:'}</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'var(--accent-soft)', border: '1px solid var(--accent-border)', borderRadius: '100px', padding: '4px 6px 4px 12px', fontSize: '12px', fontWeight: '700', color: 'var(--accent)' }}>
+                {isAr ? selectedGameObj.nameAr : selectedGameObj.name}
+                <button onClick={() => setSelectedGame('all')} style={{ background: 'rgba(201,168,76,0.2)', border: 'none', borderRadius: '50%', width: '18px', height: '18px', color: 'var(--accent)', cursor: 'pointer', fontSize: '11px', lineHeight: 1 }}>✕</button>
+              </span>
+            </div>
+          )}
 
           {filtered.length === 0 ? (
             <div className="card" style={{ padding: '48px', textAlign: 'center', color: 'var(--text-muted)' }}>

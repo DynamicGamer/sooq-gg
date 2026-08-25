@@ -24,6 +24,12 @@ export default function Dashboard() {
   const [form, setForm] = useState({ game: '', category: 'topups', titleAr: '', titleEn: '', price: '', desc: '' })
   const [imageFiles, setImageFiles] = useState([])
   const [savingListing, setSavingListing] = useState(false)
+  const [withdrawOpen, setWithdrawOpen] = useState(false)
+  const [withdrawAmount, setWithdrawAmount] = useState('')
+  const [withdrawMethod, setWithdrawMethod] = useState('cliq')
+  const [withdrawDestination, setWithdrawDestination] = useState('')
+  const [submittingWithdraw, setSubmittingWithdraw] = useState(false)
+  const [withdrawRequests, setWithdrawRequests] = useState([])
 
   const MAX_IMAGES = 5
   const addImageFiles = (files) => {
@@ -43,6 +49,42 @@ export default function Dashboard() {
       setListings(data.filter(l => l.seller_en === username).map(l => ({ ...l, typeEn: l.type_en, typeAr: l.type_ar, earnings: '0.00', status: 'active' })))
     })
   }, [])
+
+  useEffect(() => {
+    if (!user) return
+    fetchWithdrawRequests()
+  }, [user])
+
+  const fetchWithdrawRequests = async () => {
+    const { data } = await supabase.from('withdrawal_requests').select('*').eq('seller_id', user.id).order('created_at', { ascending: false })
+    if (data) setWithdrawRequests(data)
+  }
+
+  const submitWithdraw = async () => {
+    if (!withdrawAmount || parseFloat(withdrawAmount) <= 0) {
+      return alert(isAr ? 'أدخل مبلغاً صحيحاً' : 'Enter a valid amount')
+    }
+    if (!withdrawDestination.trim()) {
+      return alert(isAr ? 'أدخل وجهة الدفع (Alias أو عنوان المحفظة)' : 'Enter a payout destination (CliQ alias or wallet address)')
+    }
+    setSubmittingWithdraw(true)
+    const { error } = await supabase.from('withdrawal_requests').insert({
+      seller_id: user.id,
+      seller_username: username,
+      amount: parseFloat(withdrawAmount),
+      payout_method: withdrawMethod,
+      payout_destination: withdrawDestination.trim(),
+      status: 'pending',
+    })
+    setSubmittingWithdraw(false)
+    if (error) {
+      return alert((isAr ? 'فشل إرسال طلب السحب: ' : 'Failed to submit withdrawal request: ') + error.message)
+    }
+    setWithdrawAmount('')
+    setWithdrawDestination('')
+    setWithdrawOpen(false)
+    fetchWithdrawRequests()
+  }
 
   useEffect(() => {
     supabase.from('orders_with_listings').select('*').then(({ data }) => {
@@ -331,14 +373,57 @@ export default function Dashboard() {
       )}
 
       {tab === 'earnings' && (
-        <Reveal className="card" style={{ padding: '32px', textAlign: 'center' }}>
-          <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>{td.earnings}</div>
-          <div className="text-glow" style={{ fontSize: '44px', fontWeight: '800', color: 'var(--green)', marginBottom: '20px', fontFamily: 'var(--font-display)' }}>${totalEarnings}</div>
-          <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '20px' }}>
-            Available balance for withdrawal (after 10% commission)
-          </p>
-          <button className="btn-primary" style={{ padding: '10px 28px' }}>{td.withdraw}</button>
-        </Reveal>
+        <>
+          <Reveal className="card" style={{ padding: '32px', textAlign: 'center', marginBottom: '16px' }}>
+            <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>{td.earnings}</div>
+            <div className="text-glow" style={{ fontSize: '44px', fontWeight: '800', color: 'var(--green)', marginBottom: '20px', fontFamily: 'var(--font-display)' }}>${totalEarnings}</div>
+            <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '20px' }}>
+              {isAr ? 'الرصيد المتاح للسحب (بعد عمولة 10%)' : 'Available balance for withdrawal (after 10% commission)'}
+            </p>
+            <button className="btn-primary" style={{ padding: '10px 28px' }} onClick={() => setWithdrawOpen(o => !o)}>{td.withdraw}</button>
+
+            {withdrawOpen && (
+              <div style={{ textAlign: 'start', maxWidth: '360px', margin: '24px auto 0', paddingTop: '20px', borderTop: '1px solid var(--border)' }}>
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '5px' }}>{isAr ? 'المبلغ (USD)' : 'Amount (USD)'}</label>
+                  <input type="number" step="0.01" value={withdrawAmount} onChange={e => setWithdrawAmount(e.target.value)} placeholder="0.00" style={{ width: '100%', padding: '8px 10px', fontSize: '12px' }} />
+                </div>
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '5px' }}>{isAr ? 'طريقة الدفع' : 'Payout Method'}</label>
+                  <select value={withdrawMethod} onChange={e => setWithdrawMethod(e.target.value)} style={{ width: '100%', padding: '8px 10px', fontSize: '12px' }}>
+                    <option value="cliq">CliQ</option>
+                    <option value="crypto">{isAr ? 'عملات رقمية' : 'Crypto'}</option>
+                  </select>
+                </div>
+                <div style={{ marginBottom: '14px' }}>
+                  <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '5px' }}>
+                    {withdrawMethod === 'cliq' ? (isAr ? 'اسم CliQ (Alias)' : 'CliQ Alias') : (isAr ? 'عنوان المحفظة' : 'Wallet Address')}
+                  </label>
+                  <input value={withdrawDestination} onChange={e => setWithdrawDestination(e.target.value)} placeholder={withdrawMethod === 'cliq' ? '@your-alias' : '0x...'} style={{ width: '100%', padding: '8px 10px', fontSize: '12px', fontFamily: 'monospace' }} />
+                </div>
+                <button className="btn-primary" style={{ width: '100%', padding: '10px' }} disabled={submittingWithdraw} onClick={submitWithdraw}>
+                  {submittingWithdraw ? '...' : (isAr ? 'إرسال طلب السحب' : 'Submit Withdrawal Request')}
+                </button>
+              </div>
+            )}
+          </Reveal>
+
+          {withdrawRequests.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {withdrawRequests.map(w => (
+                <div key={w.id} className="card" style={{ padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+                  <div>
+                    <div style={{ fontWeight: '700', fontSize: '13px' }}>${parseFloat(w.amount).toFixed(2)} — {w.payout_method === 'cliq' ? 'CliQ' : (isAr ? 'عملات رقمية' : 'Crypto')}</div>
+                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{w.payout_destination} · {new Date(w.created_at).toLocaleDateString()}</div>
+                  </div>
+                  <span className={`badge ${w.status === 'paid' ? 'badge-green' : 'badge-gold'}`}>
+                    {w.status === 'paid' ? (isAr ? 'تم الدفع' : 'Paid') : (isAr ? 'قيد الانتظار' : 'Pending')}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
 
       {tab === 'messages' && (

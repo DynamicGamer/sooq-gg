@@ -26,10 +26,12 @@ export default function Admin() {
   const [selected, setSelected] = useState(null)
   const [note, setNote] = useState('')
   const [error, setError] = useState('')
-  const [section, setSection] = useState('orders') // 'orders' | 'messages'
+  const [section, setSection] = useState('orders') // 'orders' | 'messages' | 'withdrawals'
   const [conversations, setConversations] = useState([])
   const [activeListingId, setActiveListingId] = useState(null)
   const [conversationsLoading, setConversationsLoading] = useState(true)
+  const [withdrawals, setWithdrawals] = useState([])
+  const [withdrawalsLoading, setWithdrawalsLoading] = useState(true)
 
   if (!user) return <Navigate to="/auth" />
   if (user.email !== ADMIN_EMAIL) return (
@@ -48,7 +50,21 @@ export default function Admin() {
 
   useEffect(() => {
     if (section === 'messages') fetchAllConversations()
+    if (section === 'withdrawals') fetchWithdrawals()
   }, [section])
+
+  const fetchWithdrawals = async () => {
+    setWithdrawalsLoading(true)
+    const { data } = await supabase.from('withdrawal_requests').select('*').order('created_at', { ascending: false })
+    if (data) setWithdrawals(data)
+    setWithdrawalsLoading(false)
+  }
+
+  const markWithdrawalPaid = async (id) => {
+    const { error: e } = await supabase.from('withdrawal_requests').update({ status: 'paid' }).eq('id', id)
+    if (e) { alert('Error: ' + e.message); return }
+    setWithdrawals(prev => prev.map(w => w.id === id ? { ...w, status: 'paid' } : w))
+  }
 
   const fetchAllConversations = async () => {
     setConversationsLoading(true)
@@ -135,7 +151,7 @@ export default function Admin() {
 
       {/* SECTION TOGGLE */}
       <div style={{ display: 'flex', gap: '4px', marginBottom: '20px', background: 'var(--bg-tertiary)', padding: '4px', borderRadius: 'var(--radius-md)', width: 'fit-content' }}>
-        {[{ id: 'orders', label: '📦 Orders' }, { id: 'messages', label: '💬 All Messages' }].map(s => (
+        {[{ id: 'orders', label: '📦 Orders' }, { id: 'messages', label: '💬 All Messages' }, { id: 'withdrawals', label: '💸 Withdrawals' }].map(s => (
           <button key={s.id} onClick={() => setSection(s.id)} style={{
             padding: '7px 18px', borderRadius: 'calc(var(--radius-md) - 2px)', border: 'none',
             background: section === s.id ? 'var(--accent)' : 'transparent',
@@ -182,6 +198,31 @@ export default function Admin() {
               </div>
             )}
           </div>
+        </div>
+      ) : section === 'withdrawals' ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {withdrawalsLoading ? (
+            <div className="card" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>Loading...</div>
+          ) : withdrawals.length === 0 ? (
+            <div className="card" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>No withdrawal requests yet</div>
+          ) : withdrawals.map(w => (
+            <div key={w.id} className="card" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+              <div>
+                <div style={{ fontWeight: '800', fontSize: '15px', color: '#fff' }}>${parseFloat(w.amount).toFixed(2)} — {w.seller_username || w.seller_id?.slice(0, 8)}</div>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                  {w.payout_method === 'cliq' ? 'CliQ' : 'Crypto'} · <span style={{ fontFamily: 'monospace' }}>{w.payout_destination}</span> · {new Date(w.created_at).toLocaleString()}
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span className={`badge ${w.status === 'paid' ? 'badge-green' : 'badge-gold'}`}>{w.status === 'paid' ? 'Paid' : 'Pending'}</span>
+                {w.status !== 'paid' && (
+                  <button className="btn-primary" style={{ padding: '7px 14px', fontSize: '12px', background: '#10b981', border: 'none' }} onClick={() => markWithdrawalPaid(w.id)}>
+                    ✓ Mark Paid
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
       <>

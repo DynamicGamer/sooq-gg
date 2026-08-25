@@ -108,11 +108,23 @@ export default function Auth() {
       return setError(e.message)
     }
 
+    // Supabase doesn't always return an error for an email that's already registered —
+    // as an anti-enumeration measure it can return a "successful" user object with an
+    // empty `identities` array instead. Catch that before assuming signup actually
+    // created a new account.
+    if (data.user && data.user.identities && data.user.identities.length === 0) {
+      setLoading(false)
+      return setError(isAr ? 'هذا البريد الإلكتروني مسجل بالفعل' : 'This email is already registered')
+    }
+
     if (data.user) {
       const { error: profileErr } = await supabase.from('profiles').insert({ id: data.user.id, username })
       if (profileErr) {
         setLoading(false)
-        return setError(isAr ? 'اسم المستخدم مستخدم بالفعل، جرب اسماً آخر' : 'Username already taken, please try a different one')
+        if (profileErr.code === '23505' && /username/i.test(profileErr.message)) {
+          return setError(isAr ? 'اسم المستخدم مستخدم بالفعل، جرب اسماً آخر' : 'Username already taken, please try a different one')
+        }
+        return setError((isAr ? 'فشل إنشاء الحساب: ' : 'Failed to create account: ') + profileErr.message)
       }
     }
 

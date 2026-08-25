@@ -88,7 +88,11 @@ export default function Auth() {
     setLoading(true)
     const username = form.username.trim()
 
-    const { data: existing } = await supabase.from('profiles').select('id').eq('username', username).maybeSingle()
+    const { data: existing, error: checkErr } = await supabase.from('profiles').select('id').eq('username', username).maybeSingle()
+    if (checkErr) {
+      setLoading(false)
+      return setError(isAr ? 'تعذر التحقق من اسم المستخدم، حاول مرة أخرى' : 'Could not verify username availability, please try again')
+    }
     if (existing) {
       setLoading(false)
       return setError(isAr ? 'اسم المستخدم مستخدم بالفعل' : 'Username is already taken')
@@ -110,11 +114,18 @@ export default function Auth() {
 
     // Supabase doesn't always return an error for an email that's already registered —
     // as an anti-enumeration measure it can return a "successful" user object with an
-    // empty `identities` array instead. Catch that before assuming signup actually
-    // created a new account.
+    // empty `identities` array instead. But that alone doesn't mean the account is
+    // actually usable: if a prior signup attempt got this far (auth user created) and
+    // then failed at the profiles-insert step below (e.g. a username collision), the
+    // email is "registered" but orphaned — no profile was ever created for it. Only
+    // block as a true duplicate if a profile actually exists; otherwise let this attempt
+    // finish creating the missing profile instead of leaving the user stuck.
     if (data.user && data.user.identities && data.user.identities.length === 0) {
-      setLoading(false)
-      return setError(isAr ? 'هذا البريد الإلكتروني مسجل بالفعل' : 'This email is already registered')
+      const { data: existingProfile } = await supabase.from('profiles').select('id').eq('id', data.user.id).maybeSingle()
+      if (existingProfile) {
+        setLoading(false)
+        return setError(isAr ? 'هذا البريد الإلكتروني مسجل بالفعل' : 'This email is already registered')
+      }
     }
 
     if (data.user) {

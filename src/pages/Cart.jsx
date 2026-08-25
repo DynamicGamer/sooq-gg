@@ -3,6 +3,7 @@ import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import Reveal, { RevealGroup, RevealItem } from '../components/Reveal'
+import GameThumb from '../components/GameThumb'
 
 export default function Cart() {
   const { t, isAr } = useLang()
@@ -37,7 +38,7 @@ export default function Cart() {
           {items.map(item => (
             <RevealItem key={item.id}>
             <div className="card" style={{ padding: '16px 18px', display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
-              <div style={{ width: '44px', height: '44px', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px', flexShrink: 0 }}>🎮</div>
+              <GameThumb game={item.game} style={{ width: '44px', height: '44px', borderRadius: 'var(--radius-md)', flexShrink: 0 }} emojiSize="20px" />
               <div style={{ flex: 1, minWidth: '140px' }}>
                 <div style={{ fontWeight: '700', fontSize: '14px', marginBottom: '3px' }}>{item.name || (isAr ? item.typeAr : item.typeEn)}</div>
                 <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{item.game}</div>

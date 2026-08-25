@@ -22,6 +22,10 @@
   --radius-md: 10px;
   --radius-lg: 14px;
   --radius-xl: 20px;
+  --radius-pill: 100px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
   --font-body: 'Inter', 'Segoe UI', Arial, sans-serif;
   --font-display: 'Unbounded', 'Inter', sans-serif;
   --glow-gold: 0 0 24px rgba(201,168,76,0.35);
@@ -105,6 +109,51 @@ select option { background: #1c1610; }
 .badge-purple { background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.4); color: #c9a84c; }
 .badge-green  { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: #34d399; }
 .badge-gold   { background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3); color: #c9a84c; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(201,168,76,0.06);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: var(--radius-pill);
+  padding: 6px 16px;
+  font-size: 12px; font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+.chip.active {
+  background: linear-gradient(135deg, #c9a84c, #a07830);
+  border-color: transparent;
+  color: #0f0f0f;
+}
+.verified-check {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--accent);
+  color: #0f0f0f;
+  font-size: 9px; font-weight: 900;
+  flex-shrink: 0;
+}
+.dropdown-trigger {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  font-size: 12px; font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+.dropdown-trigger:hover { border-color: var(--accent); color: var(--accent); }
+.filter-section-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; background: none; border: none; padding: 0;
+  font-size: 11px; color: var(--text-muted); font-weight: 700;
+  cursor: pointer; font-family: inherit;
+}
 .page-container { max-width: 1100px; margin: 0 auto; padding: 32px 20px; }
 .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
 .section-title { font-size: 20px; font-weight: 800; color: var(--text-primary); }

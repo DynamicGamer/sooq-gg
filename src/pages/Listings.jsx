@@ -1,26 +1,34 @@
 import { useState, useMemo, useEffect } from 'react'
 import { Link, useParams, useSearchParams, useNavigate } from 'react-router-dom'
 import { useLang } from '../context/LangContext'
-import { useCart } from '../context/CartContext'
 import { GAMES, fetchListings } from '../lib/supabase'
-import CountryBadge from '../components/CountryBadge'
 import GameThumb from '../components/GameThumb'
-import Reveal, { RevealGroup, RevealItem } from '../components/Reveal'
+import ListingCard from '../components/ListingCard'
+import { RevealGroup, RevealItem } from '../components/Reveal'
+
+const SORT_OPTIONS = (isAr) => [
+  { val: 'default', label: isAr ? 'الافتراضي' : 'Default' },
+  { val: 'price_asc', label: isAr ? 'السعر: الأقل أولاً' : 'Price: Low to High' },
+  { val: 'price_desc', label: isAr ? 'السعر: الأعلى أولاً' : 'Price: High to Low' },
+  { val: 'rating', label: isAr ? 'الأعلى تقييماً' : 'Top Rated' },
+  { val: 'sales', label: isAr ? 'الأكثر مبيعاً' : 'Best Selling' },
+]
 
 export default function listings() {
   const { category } = useParams()
   const [searchParams] = useSearchParams()
   const { t, isAr } = useLang()
-  const { addItem } = useCart()
   const navigate = useNavigate()
-  const h = t.home
 
   const [search, setSearch] = useState(searchParams.get('q') || '')
   const [selectedGame, setSelectedGame] = useState(searchParams.get('game') || 'all')
   const [sortBy, setSortBy] = useState('default')
+  const [sortOpen, setSortOpen] = useState(false)
   const [priceMin, setPriceMin] = useState('')
   const [priceMax, setPriceMax] = useState('')
   const [listings, setListings] = useState([])
+  const [gameSectionOpen, setGameSectionOpen] = useState(true)
+  const [priceSectionOpen, setPriceSectionOpen] = useState(true)
 
   useEffect(() => {
     fetchListings().then(data => setListings(data))
@@ -42,8 +50,7 @@ export default function listings() {
     { id: 'giftcards', label: t.nav.giftcards, icon: '🎁' },
   ]
 
-  const getBadge = (key) => key === 'trusted' ? t.trusted : key === 'vip' ? t.vipSeller : null
-
+  const popularGames = useMemo(() => GAMES.filter(g => g.hot), [])
   const selectedGameObj = selectedGame !== 'all' ? GAMES.find(g => String(g.id) === String(selectedGame)) : null
 
   const filtered = useMemo(() => {
@@ -67,6 +74,9 @@ export default function listings() {
     return list
   }, [search, selectedGameObj, category, priceMin, priceMax, sortBy, listings])
 
+  const sortOptions = SORT_OPTIONS(isAr)
+  const activeSortLabel = sortOptions.find(o => o.val === sortBy)?.label
+
   return (
     <div className="page-container">
       {/* BREADCRUMB */}
@@ -74,12 +84,33 @@ export default function listings() {
         <Link to="/" style={{ color: 'var(--accent)' }}>{isAr ? 'الرئيسية' : 'Home'}</Link>
         <span>›</span>
         <span>{cats.find(c => c.id === category)?.label || category}</span>
+        {selectedGameObj && (<><span>›</span><span>{isAr ? selectedGameObj.nameAr : selectedGameObj.name}</span></>)}
       </div>
 
+      {/* GAME CONTEXT HEADER */}
+      {selectedGameObj && (
+        <div className="card" style={{ padding: '16px 18px', marginBottom: '18px', display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+          <GameThumb game={selectedGameObj} style={{ width: '48px', height: '48px', borderRadius: 'var(--radius-md)', flexShrink: 0 }} emojiSize="22px" />
+          <div style={{ fontSize: '17px', fontWeight: '800', fontFamily: 'var(--font-display)', color: '#fff' }}>
+            {isAr ? selectedGameObj.nameAr : selectedGameObj.name}
+          </div>
+          <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginInlineStart: 'auto' }}>
+            {cats.map(c => (
+              <Link key={c.id} to={`/listings/${c.id}?game=${selectedGameObj.id}`} style={{
+                padding: '6px 12px', borderRadius: 'var(--radius-md)', fontSize: '12px',
+                fontWeight: category === c.id ? '700' : '500',
+                color: category === c.id ? 'var(--accent)' : 'var(--text-muted)',
+                background: category === c.id ? 'var(--accent-soft)' : 'transparent',
+              }}>{c.label}</Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* CATEGORY TABS */}
-      <div style={{ display: 'flex', gap: '7px', marginBottom: '24px', overflowX: 'auto', paddingBottom: '4px' }}>
+      <div style={{ display: 'flex', gap: '7px', marginBottom: '18px', overflowX: 'auto', paddingBottom: '4px' }}>
         {cats.map(c => (
-          <Link key={c.id} to={`/listings/${c.id}`} style={{
+          <Link key={c.id} to={`/listings/${c.id}${selectedGameObj ? `?game=${selectedGameObj.id}` : ''}`} style={{
             background: category === c.id ? 'var(--accent)' : 'var(--bg-tertiary)',
             border: `1px solid ${category === c.id ? 'var(--accent)' : 'var(--border-hover)'}`,
             color: category === c.id ? '#fff' : 'var(--text-secondary)',
@@ -89,77 +120,98 @@ export default function listings() {
         ))}
       </div>
 
+      {/* POPULAR GAMES QUICK FILTER */}
+      {popularGames.length > 0 && (
+        <div style={{ display: 'flex', gap: '8px', marginBottom: '22px', overflowX: 'auto', paddingBottom: '4px' }}>
+          <span style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
+            {isAr ? 'شائع:' : 'Popular:'}
+          </span>
+          {popularGames.map(g => (
+            <button key={g.id} className={`chip ${String(selectedGame) === String(g.id) ? 'active' : ''}`}
+              onClick={() => setSelectedGame(prev => String(prev) === String(g.id) ? 'all' : String(g.id))}
+              style={{ whiteSpace: 'nowrap' }}
+            >
+              {isAr ? g.nameAr : g.name}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '20px', alignItems: 'start' }}>
 
         {/* SIDEBAR FILTERS */}
-        <div className="card hide-mobile" style={{ padding: '16px', position: 'sticky', top: '74px' }}>
+        <div className="card hide-mobile" style={{ padding: '16px', position: 'sticky', top: '110px' }}>
           <div style={{ fontSize: '13px', fontWeight: '700', marginBottom: '14px' }}>
             {isAr ? 'تصفية النتائج' : 'Filters'}
           </div>
 
           {/* Game filter */}
           <div style={{ marginBottom: '16px' }}>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '7px', fontWeight: '600' }}>
+            <button className="filter-section-toggle" style={{ marginBottom: gameSectionOpen ? '9px' : 0 }} onClick={() => setGameSectionOpen(o => !o)}>
               {isAr ? 'اللعبة' : 'Game'}
-            </div>
-            <select value={selectedGame} onChange={e => setSelectedGame(e.target.value)}
-              style={{ width: '100%', padding: '7px 10px', fontSize: '12px' }}>
-              <option value="all">{isAr ? 'كل الألعاب' : 'All Games'}</option>
-              {GAMES.map(g => <option key={g.id} value={g.id}>{isAr ? g.nameAr : g.name}</option>)}
-            </select>
+              <span style={{ transform: gameSectionOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s', fontSize: '9px' }}>▾</span>
+            </button>
+            {gameSectionOpen && (
+              <select value={selectedGame} onChange={e => setSelectedGame(e.target.value)}
+                style={{ width: '100%', padding: '7px 10px', fontSize: '12px' }}>
+                <option value="all">{isAr ? 'كل الألعاب' : 'All Games'}</option>
+                {GAMES.map(g => <option key={g.id} value={g.id}>{isAr ? g.nameAr : g.name}</option>)}
+              </select>
+            )}
           </div>
 
           {/* Price range */}
           <div style={{ marginBottom: '16px' }}>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '7px', fontWeight: '600' }}>
+            <button className="filter-section-toggle" style={{ marginBottom: priceSectionOpen ? '9px' : 0 }} onClick={() => setPriceSectionOpen(o => !o)}>
               {isAr ? 'نطاق السعر (USD)' : 'Price Range (USD)'}
-            </div>
-            <div style={{ display: 'flex', gap: '6px' }}>
-              <input placeholder={isAr ? 'من' : 'Min'} value={priceMin} onChange={e => setPriceMin(e.target.value)} style={{ width: '50%', padding: '6px 8px', fontSize: '12px' }} type="number" />
-              <input placeholder={isAr ? 'إلى' : 'Max'} value={priceMax} onChange={e => setPriceMax(e.target.value)} style={{ width: '50%', padding: '6px 8px', fontSize: '12px' }} type="number" />
-            </div>
-          </div>
-
-          {/* Sort */}
-          <div>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '7px', fontWeight: '600' }}>
-              {isAr ? 'ترتيب حسب' : 'Sort By'}
-            </div>
-            {[
-              { val: 'default', label: isAr ? 'الافتراضي' : 'Default' },
-              { val: 'price_asc', label: isAr ? 'السعر: الأقل أولاً' : 'Price: Low to High' },
-              { val: 'price_desc', label: isAr ? 'السعر: الأعلى أولاً' : 'Price: High to Low' },
-              { val: 'rating', label: isAr ? 'الأعلى تقييماً' : 'Top Rated' },
-              { val: 'sales', label: isAr ? 'الأكثر مبيعاً' : 'Best Selling' },
-            ].map(opt => (
-              <label key={opt.val} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', marginBottom: '6px', cursor: 'pointer', color: sortBy === opt.val ? 'var(--accent)' : 'var(--text-secondary)' }}>
-                <input type="radio" name="sort" value={opt.val} checked={sortBy === opt.val} onChange={() => setSortBy(opt.val)} />
-                {opt.label}
-              </label>
-            ))}
+              <span style={{ transform: priceSectionOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s', fontSize: '9px' }}>▾</span>
+            </button>
+            {priceSectionOpen && (
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <input placeholder={isAr ? 'من' : 'Min'} value={priceMin} onChange={e => setPriceMin(e.target.value)} style={{ width: '50%', padding: '6px 8px', fontSize: '12px' }} type="number" />
+                <input placeholder={isAr ? 'إلى' : 'Max'} value={priceMax} onChange={e => setPriceMax(e.target.value)} style={{ width: '50%', padding: '6px 8px', fontSize: '12px' }} type="number" />
+              </div>
+            )}
           </div>
         </div>
 
         {/* listings */}
         <div>
-          {/* Search + count */}
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', alignItems: 'center' }}>
+          {/* Search + count + sort */}
+          <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder={isAr ? 'بحث في العروض...' : 'Search listings...'}
-              style={{ flex: 1, padding: '9px 14px', fontSize: '13px' }}
+              style={{ flex: 1, minWidth: '160px', padding: '9px 14px', fontSize: '13px' }}
             />
             <span style={{ fontSize: '12px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
               {filtered.length} {isAr ? 'عرض' : 'listings'}
             </span>
+            <div style={{ position: 'relative' }}>
+              <button className="dropdown-trigger" onClick={() => setSortOpen(o => !o)}>
+                {isAr ? 'ترتيب:' : 'Sort:'} {activeSortLabel}
+                <span style={{ fontSize: '9px', transform: sortOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>▾</span>
+              </button>
+              {sortOpen && (
+                <div className="card" style={{ position: 'absolute', insetInlineEnd: 0, top: 'calc(100% + 6px)', zIndex: 50, padding: '6px', minWidth: '190px' }}>
+                  {sortOptions.map(opt => (
+                    <button key={opt.val} onClick={() => { setSortBy(opt.val); setSortOpen(false) }} style={{
+                      display: 'block', width: '100%', textAlign: isAr ? 'right' : 'left', background: sortBy === opt.val ? 'var(--accent-soft)' : 'none',
+                      border: 'none', color: sortBy === opt.val ? 'var(--accent)' : 'var(--text-secondary)', fontSize: '12px', fontWeight: sortBy === opt.val ? '700' : '500',
+                      padding: '8px 10px', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontFamily: 'inherit',
+                    }}>{opt.label}</button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* ACTIVE FILTER CHIP */}
           {selectedGameObj && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
               <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{isAr ? 'مُفلتر حسب:' : 'Filtered by:'}</span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'var(--accent-soft)', border: '1px solid var(--accent-border)', borderRadius: '100px', padding: '4px 6px 4px 12px', fontSize: '12px', fontWeight: '700', color: 'var(--accent)' }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'var(--accent-soft)', border: '1px solid var(--accent-border)', borderRadius: 'var(--radius-pill)', padding: '4px 6px 4px 12px', fontSize: '12px', fontWeight: '700', color: 'var(--accent)' }}>
                 {isAr ? selectedGameObj.nameAr : selectedGameObj.name}
                 <button onClick={() => setSelectedGame('all')} style={{ background: 'rgba(201,168,76,0.2)', border: 'none', borderRadius: '50%', width: '18px', height: '18px', color: 'var(--accent)', cursor: 'pointer', fontSize: '11px', lineHeight: 1 }}>✕</button>
               </span>
@@ -172,60 +224,12 @@ export default function listings() {
               <div style={{ fontSize: '14px' }}>{isAr ? 'لا توجد نتائج' : 'No listings found'}</div>
             </div>
           ) : (
-            <RevealGroup style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {filtered.map(l => {
-                const badge = getBadge(l.badge_key)
-                const delivery = l.delivery_key === 'instant' ? h.instant : h.minutes
-                return (
-                  <RevealItem key={l.id}>
-                  <div className="card" style={{
-                    padding: '14px 18px', display: 'flex', alignItems: 'center',
-                    justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap',
-                    cursor: 'pointer', transition: 'border-color 0.15s',
-                  }}
-                    onClick={() => navigate(`/listing/${l.id}`)}
-                    onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--accent-border)'}
-                    onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: '160px' }}>
-                      <div style={{ width: '38px', height: '38px', borderRadius: 'var(--radius-md)', overflow: 'hidden', flexShrink: 0 }}>
-                        {l.images?.[0] ? (
-                          <img src={l.images[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        ) : (
-                          <GameThumb game={l.game} style={{ width: '100%', height: '100%' }} emojiSize="16px" />
-                        )}
-                      </div>
-                      <div>
-                        <div style={{ fontWeight: '700', fontSize: '13px' }}>{isAr ? l.type_ar : l.type_en}</div>
-                        <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{l.game}</div>
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '7px', flex: 1, minWidth: '150px' }}>
-                      <div style={{ width: '30px', height: '30px', background: 'var(--accent-soft)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', color: '#a78bfa', fontWeight: '700' }}>
-                        {(isAr ? l.seller : l.seller_en)[0]}
-                      </div>
-                      <div>
-                        <div style={{ fontSize: '12px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
-                          {isAr ? l.seller : l.seller_en}
-                          {l.country && <span style={{ fontSize: '10px', fontWeight: '600', color: 'var(--text-muted)' }}><CountryBadge code={l.country} isAr={isAr} /></span>}
-                        </div>
-                        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>⭐ {l.rating} · {l.sales.toLocaleString()} {h.deals}</div>
-                      </div>
-                      {badge && <span className={`badge ${l.badge_key === 'vip' ? 'badge-purple' : 'badge-green'}`}>{badge}</span>}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <div>
-                        <div style={{ fontSize: '17px', fontWeight: '800', color: '#fff' }}>${l.price}</div>
-                        <div style={{ fontSize: '10px', color: 'var(--green)' }}>⚡ {delivery}</div>
-                      </div>
-                      <button className="btn-primary" style={{ padding: '7px 14px', fontSize: '12px', whiteSpace: 'nowrap' }}
-                        onClick={e => { e.stopPropagation(); addItem({ ...l, name: isAr ? l.type_ar : l.type_en }) }}
-                      >{h.buyNow}</button>
-                    </div>
-                  </div>
-                  </RevealItem>
-                )
-              })}
+            <RevealGroup style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '14px' }}>
+              {filtered.map(l => (
+                <RevealItem key={l.id}>
+                  <ListingCard listing={l} />
+                </RevealItem>
+              ))}
             </RevealGroup>
           )}
         </div>
@@ -233,6 +237,3 @@ export default function listings() {
     </div>
   )
 }
-
-
-

@@ -138,6 +138,7 @@ export default function ListingDetail() {
               <div>
                 <div style={{ fontWeight: '700', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                   {isAr ? listing.seller : listing.seller_en}
+                  {listing.badge_key && <span className="verified-check">✓</span>}
                   {listing.country && <span style={{ fontSize: '11px', fontWeight: '600', color: 'var(--text-muted)' }}><CountryBadge code={listing.country} isAr={isAr} /></span>}
                 </div>
                 <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>⭐ {listing.rating} · {listing.sales.toLocaleString()} {tl.sales}</div>

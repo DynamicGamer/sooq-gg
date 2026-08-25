@@ -4,9 +4,9 @@ import { motion } from 'framer-motion'
 import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
 import { GAMES, GENRES, fetchListings, gameImageUrl } from '../lib/supabase'
-import CountryBadge from '../components/CountryBadge'
 import Reveal, { RevealGroup, RevealItem } from '../components/Reveal'
 import GameThumb from '../components/GameThumb'
+import ListingCard from '../components/ListingCard'
 
 export default function Home() {
   const { t, isAr } = useLang()
@@ -31,8 +31,6 @@ export default function Home() {
     const matchesGenre = activeGenres.length === 0 || activeGenres.includes(g.genre)
     return matchesSearch && matchesGenre
   }), [search, activeGenres])
-
-  const getBadge = (key) => key === 'trusted' ? t.trusted : key === 'vip' ? t.vipSeller : null
 
   return (
     <div style={{ background: '#0f0f0f', minHeight: '100vh', direction: isAr ? 'rtl' : 'ltr' }}>
@@ -165,61 +163,14 @@ export default function Home() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
             <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#ffffff', fontFamily: 'var(--font-display)', margin: 0 }}>{isAr ? '⚡ أفضل العروض الآن' : '⚡ BEST DEALS RIGHT NOW'}</h2>
           </div>
-          <RevealGroup style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {listings.map(l => {
-              const badge = getBadge(l.badge_key)
-              const delivery = l.delivery_key === 'instant' ? (isAr ? 'فوري' : 'Instant') : (isAr ? 'دقائق' : 'Minutes')
-              const game = GAMES.find(g => g.name === l.game)
-              return (
-                <RevealItem key={l.id}>
-                <div style={{ background: 'linear-gradient(145deg, #141009, #1c1610)', border: '1px solid rgba(201,168,76,0.1)', borderRadius: '14px', padding: '18px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap', cursor: 'pointer', transition: 'all 0.2s' }}
-                  onClick={() => navigate(`/listing/${l.id}`)}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.35)'; e.currentTarget.style.transform = 'translateX(3px)' }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.1)'; e.currentTarget.style.transform = 'translateX(0)' }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1, minWidth: '180px' }}>
-                    <div style={{ width: '52px', height: '52px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(201,168,76,0.2)', flexShrink: 0 }}>
-                      {l.images?.[0] ? (
-                        <img src={l.images[0]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      ) : (
-                        <GameThumb game={l.game} style={{ width: '100%', height: '100%' }} emojiSize="20px" />
-                      )}
-                    </div>
-                    <div>
-                      <div style={{ fontWeight: '700', fontSize: '16px', color: '#ffffff', marginBottom: '3px', fontFamily: 'var(--font-display)' }}>{isAr ? l.type_ar : l.type_en}</div>
-                      <div style={{ fontSize: '12px', color: '#9a8570' }}>{l.game}</div>
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: '160px' }}>
-                    <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg, #c9a84c, #a07830)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', color: '#0f0f0f', fontWeight: '800', flexShrink: 0 }}>
-                      {(isAr ? l.seller : l.seller_en)?.[0] || '?'}
-                    </div>
-                    <div>
-                      <div style={{ fontSize: '14px', color: '#ffffff', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                        {isAr ? l.seller : l.seller_en}
-                        {l.country && <span style={{ fontSize: '11px', fontWeight: '600', color: '#9a8570' }}><CountryBadge code={l.country} isAr={isAr} /></span>}
-                      </div>
-                      <div style={{ fontSize: '11px', color: '#9a8570' }}>⭐ {l.rating} · {l.sales?.toLocaleString()} {isAr ? 'صفقة' : 'deals'}</div>
-                    </div>
-                    {badge && <div style={{ background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.3)', borderRadius: '5px', fontSize: '10px', color: '#c9a84c', padding: '2px 8px', fontWeight: '700' }}>{badge}</div>}
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <div>
-                      <div style={{ fontSize: '24px', fontWeight: '800', color: '#ffffff', lineHeight: '1', fontFamily: 'var(--font-display)' }}>${l.price}</div>
-                      <div style={{ fontSize: '11px', color: '#10b981', marginTop: '3px', fontWeight: '600' }}>⚡ {delivery}</div>
-                    </div>
-                    <button style={{ background: 'linear-gradient(135deg, #c9a84c, #a07830)', border: 'none', color: '#0f0f0f', padding: '11px 20px', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: '800', whiteSpace: 'nowrap', fontFamily: 'inherit', boxShadow: '0 4px 12px rgba(201,168,76,0.35)', transition: 'all 0.2s' }}
-                      onClick={e => { e.stopPropagation(); navigate('/listing/' + l.id) }}
-                      onMouseEnter={e => { e.currentTarget.style.opacity = '0.9' }}
-                      onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
-                    >{isAr ? 'شراء الآن' : 'Buy Now'}</button>
-                  </div>
-                </div>
-                </RevealItem>
-              )
-            })}
+          <RevealGroup style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '14px' }}>
+            {listings.slice(0, 8).map(l => (
+              <RevealItem key={l.id}>
+                <ListingCard listing={l} />
+              </RevealItem>
+            ))}
             {listings.length === 0 && (
-              <div style={{ background: 'linear-gradient(145deg, #141009, #1c1610)', border: '1px solid rgba(201,168,76,0.1)', borderRadius: '14px', padding: '48px', textAlign: 'center', color: '#9a8570' }}>
+              <div className="card" style={{ gridColumn: '1 / -1', padding: '48px', textAlign: 'center', color: '#9a8570' }}>
                 {isAr ? 'لا توجد عروض حالياً' : 'No listings yet — be the first seller!'}
               </div>
             )}

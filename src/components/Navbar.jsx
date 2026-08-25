@@ -16,7 +16,14 @@ export default function Navbar() {
   const [openCat, setOpenCat] = useState(null)
   const [menuSearch, setMenuSearch] = useState('')
   const [avatarUrl, setAvatarUrl] = useState(null)
+  const [navSearch, setNavSearch] = useState('')
+  const [trustBarOpen, setTrustBarOpen] = useState(true)
   const closeTimer = useRef(null)
+
+  const submitNavSearch = () => {
+    if (!navSearch.trim()) return
+    navigate(`/listings/all?q=${encodeURIComponent(navSearch.trim())}`)
+  }
 
   const openMenu = (c) => { clearTimeout(closeTimer.current); setOpenCat(c); setMenuSearch('') }
   const scheduleClose = () => { closeTimer.current = setTimeout(() => setOpenCat(null), 250) }
@@ -40,9 +47,18 @@ export default function Navbar() {
   const handleLogout = async () => { await signOut(); navigate('/') }
 
   return (
-    <nav style={{ background: 'rgba(12,10,8,0.97)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(201,168,76,0.12)', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '62px', position: 'sticky', top: 0, zIndex: 100, direction: isAr ? 'rtl' : 'ltr' }}>
+    <div style={{ position: 'sticky', top: 0, zIndex: 100 }}>
+      {trustBarOpen && (
+        <div style={{ background: 'linear-gradient(90deg, #1a1205, #241a0c, #1a1205)', borderBottom: '1px solid rgba(201,168,76,0.15)', padding: '7px 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', direction: isAr ? 'rtl' : 'ltr' }}>
+          <span style={{ fontSize: '11px', color: '#e8c874', fontWeight: '600', textAlign: 'center' }}>
+            🔒 {isAr ? 'حماية كاملة بنظام الضمان · الدفع عبر CliQ والعملات الرقمية' : 'Escrow-protected buying & selling · CliQ & crypto accepted'}
+          </span>
+          <button onClick={() => setTrustBarOpen(false)} style={{ background: 'none', border: 'none', color: '#9a8570', fontSize: '13px', cursor: 'pointer', lineHeight: 1, padding: '0 2px' }}>✕</button>
+        </div>
+      )}
+    <nav style={{ background: 'rgba(12,10,8,0.97)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(201,168,76,0.12)', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '62px', gap: '20px', direction: isAr ? 'rtl' : 'ltr' }}>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '24px', minWidth: 0 }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
           <img src="/logo.svg" alt="SooqGG" style={{ width: '36px', height: '36px', borderRadius: '8px' }} />
           <span style={{ fontSize: '20px', fontWeight: '900', color: '#ffffff', letterSpacing: '-0.5px' }}>
@@ -63,6 +79,7 @@ export default function Navbar() {
                 fontSize: '13px', fontWeight: '600', textDecoration: 'none', transition: 'all 0.15s',
               }}>
                 {t.nav[c]}
+                <span style={{ fontSize: '9px', marginInlineStart: '4px', opacity: 0.7, transform: openCat === c ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s', display: 'inline-block' }}>▾</span>
               </Link>
 
               {openCat === c && (
@@ -128,6 +145,19 @@ export default function Navbar() {
         </div>
       </div>
 
+      <div className="hide-mobile" style={{ flex: 1, maxWidth: '340px', minWidth: '120px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.18)', borderRadius: 'var(--radius-md)', padding: '0 4px 0 12px' }}>
+          <span style={{ fontSize: '13px', opacity: 0.5 }}>🔍</span>
+          <input
+            value={navSearch}
+            onChange={e => setNavSearch(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && submitNavSearch()}
+            placeholder={isAr ? 'ابحث...' : 'Search...'}
+            style={{ flex: 1, background: 'transparent', border: 'none', padding: '7px 8px', fontSize: '12px' }}
+          />
+        </div>
+      </div>
+
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         <button onClick={toggle} style={{ background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.2)', color: '#c9a84c', padding: '6px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>
           🌐 {t.langToggle}
@@ -169,5 +199,6 @@ export default function Navbar() {
         )}
       </div>
     </nav>
+    </div>
   )
 }

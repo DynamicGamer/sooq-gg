@@ -53,8 +53,8 @@ export default function Dashboard() {
   // orders_with_listings has no seller column to filter on server-side, so scope it
   // client-side to orders whose purchased item(s) belong to one of this seller's own
   // listings — otherwise every seller sees every order placed on the whole site.
-  const myListingIds = new Set(listings.map(l => l.id))
-  const orders = allOrders.filter(o => Array.isArray(o.items) && o.items.some(i => myListingIds.has(i.id)))
+  const myListingIds = new Set(listings.map(l => l.id).filter(Boolean))
+  const orders = allOrders.filter(o => Array.isArray(o.items) && o.items.some(i => i.id && myListingIds.has(i.id)))
 
   if (!user) return <Navigate to="/auth" />
 

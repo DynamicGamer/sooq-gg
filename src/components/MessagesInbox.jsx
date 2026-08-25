@@ -1,42 +1,36 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import Chat from './Chat'
 
 export default function MessagesInbox({ isAr, initialConversation }) {
-  const [conversations, setConversations] = useState([])
-  const [activeKey, setActiveKey] = useState(null)
+  // Dashboard (the parent) recreates the initialConversation object on every one of its
+  // own re-renders (it has three separate async effects that each cause one shortly
+  // after mount), so relying on it as an effect dependency meant this ran repeatedly and
+  // raced against the conversation fetch below. Capture it exactly once in a ref instead
+  // — deep-linked from a listing's "Message Seller" button, shown even with no message
+  // history yet.
+  const pendingRef = useRef(initialConversation ? {
+    listing_id: initialConversation.listingId,
+    seller_id: initialConversation.sellerId,
+    seller: initialConversation.sellerName,
+    seller_en: initialConversation.sellerName,
+    seller_country: initialConversation.sellerCountry,
+    seller_rating: initialConversation.sellerRating,
+    content: isAr ? 'لا توجد رسائل بعد' : 'No messages yet',
+    _pending: true,
+  } : null)
+
+  const [conversations, setConversations] = useState(() => pendingRef.current ? [pendingRef.current] : [])
+  const [activeKey, setActiveKey] = useState(() => pendingRef.current ? String(pendingRef.current.listing_id) : null)
   const [loading, setLoading] = useState(true)
-  const [userId, setUserId] = useState(null)
 
   useEffect(() => {
     fetchConversations()
   }, [])
 
-  // Deep-linked from a listing's "Message Seller" button — show it even if no messages
-  // exist yet (a brand new conversation with no history).
-  useEffect(() => {
-    if (!initialConversation) return
-    const key = String(initialConversation.listingId)
-    setConversations(prev => {
-      if (prev.some(c => String(c.listing_id) === key)) return prev
-      return [{
-        listing_id: initialConversation.listingId,
-        seller_id: initialConversation.sellerId,
-        seller: initialConversation.sellerName,
-        seller_en: initialConversation.sellerName,
-        seller_country: initialConversation.sellerCountry,
-        seller_rating: initialConversation.sellerRating,
-        content: isAr ? 'لا توجد رسائل بعد' : 'No messages yet',
-        _pending: true,
-      }, ...prev]
-    })
-    setActiveKey(key)
-  }, [initialConversation])
-
   const fetchConversations = async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setLoading(false); return }
-    setUserId(user.id)
 
     const { data } = await supabase
       .from('messages_with_listings')
@@ -44,11 +38,9 @@ export default function MessagesInbox({ isAr, initialConversation }) {
       .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
       .order('created_at', { ascending: false })
 
-    if (!data) { setLoading(false); return }
-
     const seen = new Set()
     const convos = []
-    for (const msg of data) {
+    for (const msg of (data || [])) {
       const key = msg.listing_id
       if (!seen.has(key)) {
         seen.add(key)
@@ -56,15 +48,10 @@ export default function MessagesInbox({ isAr, initialConversation }) {
         convos.push({ ...msg, seller_id: otherId })
       }
     }
-    // This runs async alongside the initialConversation effect below, which may have
-    // already injected a synthetic "pending" conversation (deep-linked from a listing's
-    // "Message Seller" button, before any real message exists). A plain overwrite here
-    // would wipe that out from under the user right after it appeared — keep any pending
-    // entry that isn't yet represented in the real fetched results.
-    setConversations(prev => {
-      const stillPending = prev.filter(c => c._pending && !convos.some(x => String(x.listing_id) === String(c.listing_id)))
-      return [...stillPending, ...convos]
-    })
+
+    const pending = pendingRef.current
+    const stillPending = pending && !convos.some(x => String(x.listing_id) === String(pending.listing_id)) ? [pending] : []
+    setConversations([...stillPending, ...convos])
     setLoading(false)
   }
 

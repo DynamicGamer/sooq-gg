@@ -27,8 +27,19 @@ export default function GameThumb({ game: gameProp, style, emojiSize = '32px', o
       background: `linear-gradient(145deg, ${game?.color || '#333'}55, ${game?.color || '#333'}22)`,
       ...style,
     }}>
+      {showPhoto && fit === 'contain' && (
+        // Blurred, scaled-up copy fills the letterbox space instead of leaving flat bars
+        // (same trick Spotify/Apple Music use for mismatched cover art aspect ratios).
+        <img src={src} alt="" aria-hidden="true" style={{
+          position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
+          filter: 'blur(14px) brightness(0.55)', transform: 'scale(1.2)',
+        }} />
+      )}
       {showPhoto && (
-        <img src={src} alt={game?.name} style={{ width: '100%', height: '100%', objectFit: fit, objectPosition: position }} onError={() => setFailed(true)} />
+        <img src={src} alt={game?.name} style={{
+          position: fit === 'contain' ? 'relative' : 'static',
+          width: '100%', height: '100%', objectFit: fit, objectPosition: position,
+        }} onError={() => setFailed(true)} />
       )}
       {!showPhoto && <span style={{ fontSize: emojiSize, lineHeight: 1 }}>{game?.img || '🎮'}</span>}
       {children}

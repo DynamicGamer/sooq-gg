@@ -140,7 +140,7 @@ export default function Home() {
                     onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.4)'; e.currentTarget.style.boxShadow = '0 16px 32px rgba(0,0,0,0.5)' }}
                     onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.1)'; e.currentTarget.style.boxShadow = 'none' }}
                   >
-                    <GameThumb game={game} style={{ height: '120px' }} emojiSize="40px">
+                    <GameThumb game={game} style={{ height: '120px' }} emojiSize="40px" objectPosition="center top">
                       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(20,16,9,0.95) 0%, transparent 60%)' }} />
                       {game.hot && <div style={{ position: 'absolute', top: '8px', left: '8px', background: 'linear-gradient(135deg, #c9a84c, #a07830)', borderRadius: '5px', fontSize: '9px', color: '#0f0f0f', padding: '2px 8px', fontWeight: '800' }}>HOT</div>}
                     </GameThumb>

@@ -46,7 +46,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchListings().then(data => {
-      setListings(data.filter(l => l.seller_en === username).map(l => ({ ...l, typeEn: l.type_en, typeAr: l.type_ar, earnings: '0.00', status: 'active' })))
+      setListings(data.filter(l => l.seller_en === username).map(l => ({ ...l, typeEn: l.type_en, typeAr: l.type_ar, status: 'active' })))
     })
   }, [])
 
@@ -63,6 +63,9 @@ export default function Dashboard() {
   const submitWithdraw = async () => {
     if (!withdrawAmount || parseFloat(withdrawAmount) <= 0) {
       return alert(isAr ? 'أدخل مبلغاً صحيحاً' : 'Enter a valid amount')
+    }
+    if (parseFloat(withdrawAmount) > availableBalance) {
+      return alert(isAr ? 'المبلغ المطلوب أكبر من رصيدك المتاح' : 'Requested amount is more than your available balance')
     }
     if (!withdrawDestination.trim()) {
       return alert(isAr ? 'أدخل وجهة الدفع (Alias أو عنوان المحفظة)' : 'Enter a payout destination (CliQ alias or wallet address)')
@@ -100,7 +103,16 @@ export default function Dashboard() {
 
   if (!user) return <Navigate to="/auth" />
 
-  const totalEarnings = listings.reduce((s, l) => s + parseFloat(l.earnings || 0), 0).toFixed(2)
+  // Sellers keep 100% of their listed price — the platform's fee is the 7% already
+  // charged to the buyer on top at checkout, not a cut taken from the seller's side.
+  // Earnings only count once an order is actually released to the seller by admin.
+  const totalEarnings = orders
+    .filter(o => o.status === 'released')
+    .reduce((sum, o) => sum + (Array.isArray(o.items)
+      ? o.items.filter(i => i.id && myListingIds.has(i.id)).reduce((s, i) => s + parseFloat(i.price) * i.qty, 0)
+      : 0), 0)
+  const totalPaidOut = withdrawRequests.filter(w => w.status === 'paid').reduce((s, w) => s + parseFloat(w.amount), 0)
+  const availableBalance = Math.max(0, totalEarnings - totalPaidOut)
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
   const handleAddListing = async () => {
@@ -158,10 +170,10 @@ export default function Dashboard() {
   }
 
   const statsData = [
-    { label: td.stats[0], value: `$${totalEarnings}`, icon: '💰', color: '#c9a84c' },
+    { label: td.stats[0], value: `$${totalEarnings.toFixed(2)}`, icon: '💰', color: '#c9a84c' },
     { label: td.stats[1], value: orders.filter(o => o.status === 'pending').length, icon: '📦', color: '#3b82f6' },
     { label: td.stats[2], value: '4.9 ⭐', icon: '⭐', color: '#a78bfa' },
-    { label: td.stats[3], value: `$${(totalEarnings * 0.9).toFixed(2)}`, icon: '💳', color: '#10b981' },
+    { label: td.stats[3], value: `$${availableBalance.toFixed(2)}`, icon: '💳', color: '#10b981' },
   ]
 
   const statusColor = { active: 'badge-green', pending: 'badge-gold', completed: 'badge-purple' }
@@ -301,7 +313,13 @@ export default function Dashboard() {
               {isAr ? 'لا توجد عروض بعد' : 'No listings yet'}
             </div>
           )}
-          {listings.map(l => (
+          {listings.map(l => {
+            const listingEarnings = orders
+              .filter(o => o.status === 'released')
+              .reduce((sum, o) => sum + (Array.isArray(o.items)
+                ? o.items.filter(i => i.id === l.id).reduce((s, i) => s + parseFloat(i.price) * i.qty, 0)
+                : 0), 0)
+            return (
             <RevealItem key={l.id}>
               <div className="card" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -329,7 +347,7 @@ export default function Dashboard() {
                     <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{t.home.deals}</div>
                   </div>
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontWeight: '700', fontSize: '14px', color: 'var(--green)' }}>${l.earnings}</div>
+                    <div style={{ fontWeight: '700', fontSize: '14px', color: 'var(--green)' }}>${listingEarnings.toFixed(2)}</div>
                     <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{td.earnings}</div>
                   </div>
                   <span className={`badge ${statusColor[l.status] || 'badge-purple'}`}>{td.status?.[l.status] || l.status}</span>
@@ -340,7 +358,8 @@ export default function Dashboard() {
                 </div>
               </div>
             </RevealItem>
-          ))}
+            )
+          })}
         </RevealGroup>
       )}
 
@@ -376,11 +395,13 @@ export default function Dashboard() {
         <>
           <Reveal className="card" style={{ padding: '32px', textAlign: 'center', marginBottom: '16px' }}>
             <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>{td.earnings}</div>
-            <div className="text-glow" style={{ fontSize: '44px', fontWeight: '800', color: 'var(--green)', marginBottom: '20px', fontFamily: 'var(--font-display)' }}>${totalEarnings}</div>
+            <div className="text-glow" style={{ fontSize: '44px', fontWeight: '800', color: 'var(--green)', marginBottom: '20px', fontFamily: 'var(--font-display)' }}>${availableBalance.toFixed(2)}</div>
             <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '20px' }}>
-              {isAr ? 'الرصيد المتاح للسحب (بعد عمولة 10%)' : 'Available balance for withdrawal (after 10% commission)'}
+              {isAr
+                ? `الرصيد المتاح للسحب — إجمالي الأرباح من الطلبات المُحرَّرة $${totalEarnings.toFixed(2)}${totalPaidOut > 0 ? ` (تم سحب $${totalPaidOut.toFixed(2)})` : ''}`
+                : `Available balance for withdrawal — total earned from released orders is $${totalEarnings.toFixed(2)}${totalPaidOut > 0 ? ` ($${totalPaidOut.toFixed(2)} already withdrawn)` : ''}`}
             </p>
-            <button className="btn-primary" style={{ padding: '10px 28px' }} onClick={() => setWithdrawOpen(o => !o)}>{td.withdraw}</button>
+            <button className="btn-primary" style={{ padding: '10px 28px' }} onClick={() => setWithdrawOpen(o => !o)} disabled={availableBalance <= 0}>{td.withdraw}</button>
 
             {withdrawOpen && (
               <div style={{ textAlign: 'start', maxWidth: '360px', margin: '24px auto 0', paddingTop: '20px', borderTop: '1px solid var(--border)' }}>

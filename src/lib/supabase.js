@@ -48,7 +48,7 @@ export const GAMES = [
   { id: 26, name: 'Rainbow Six Siege',    nameAr: 'رينبو سيكس سييج',    tagEn: 'Account',         tagAr: 'حساب',           color: '#1f2937', img: '🎯', hot: false, genre: 'shooter', slug: 'r6siege' },
   { id: 27, name: 'Call of Duty: Warzone', nameAr: 'كول أوف ديوتي: وورزون', tagEn: 'CP Top-Up',    tagAr: 'CP شحن',         color: '#4b5563', img: '🪖', hot: false, genre: 'shooter', slug: 'codwarzone' },
   { id: 28, name: 'Xbox Game Pass',       nameAr: 'إكس بوكس جيم باس',   tagEn: 'Membership',      tagAr: 'اشتراك',         color: '#107c10', img: '🎮', hot: false, genre: 'platform', slug: 'xboxgamepass' },
-  { id: 29, name: 'Google Play Gift Card', nameAr: 'بطاقة جوجل بلاي',   tagEn: 'Gift Card',       tagAr: 'بطاقة هدية',     color: '#4285f4', img: '▶️', hot: false, genre: 'platform', slug: 'googleplay' },
+  { id: 29, name: 'Gift Cards',           nameAr: 'بطاقات هدايا',       tagEn: 'All Brands',      tagAr: 'كل الأنواع',     color: '#c9a84c', img: '🎁', hot: false, genre: 'platform', slug: 'giftcards' },
   { id: 30, name: 'Discord Nitro',        nameAr: 'ديسكورد نيترو',      tagEn: 'Subscription',    tagAr: 'اشتراك',         color: '#5865f2', img: '💬', hot: false, genre: 'platform', slug: 'discordnitro' },
 ]
 

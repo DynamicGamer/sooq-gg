@@ -27,7 +27,7 @@ export default function Dashboard() {
 
   const MAX_IMAGES = 5
   const addImageFiles = (files) => {
-    setImageFiles(prev => [...prev, ...Array.from(files)].slice(0, MAX_IMAGES))
+    setImageFiles(prev => [...prev, ...files].slice(0, MAX_IMAGES))
   }
   const removeImageFile = (idx) => setImageFiles(prev => prev.filter((_, i) => i !== idx))
 
@@ -207,7 +207,11 @@ export default function Dashboard() {
               {imageFiles.length < MAX_IMAGES && (
                 <label style={{ width: '64px', height: '64px', border: '1px dashed var(--border-hover)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '22px' }}>
                   +
-                  <input type="file" accept="image/*" multiple style={{ display: 'none' }} onChange={e => { addImageFiles(e.target.files); e.target.value = '' }} />
+                  <input type="file" accept="image/*" multiple style={{ display: 'none' }} onChange={e => {
+                    const selected = Array.from(e.target.files || [])
+                    e.target.value = ''
+                    if (selected.length) addImageFiles(selected)
+                  }} />
                 </label>
               )}
             </div>

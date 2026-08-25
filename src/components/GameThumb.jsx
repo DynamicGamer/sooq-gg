@@ -4,7 +4,7 @@ import { GAMES, gameImageUrl } from '../lib/supabase'
 // Some source images are extra-wide banners or wordmarks that lose readable text when
 // force-cropped to fill a squarer card — show the whole image (letterboxed by the
 // gradient background) instead of cropping them.
-const CONTAIN_SLUGS = new Set(['roblox', 'stealbrainrot', 'honorofkings', 'wow', 'overwatch2'])
+const CONTAIN_SLUGS = new Set(['roblox', 'honorofkings', 'wow', 'overwatch2'])
 
 // Per-slug crop anchor overrides for images whose subject isn't centered (e.g. a logo
 // mark sitting in the lower half of a square icon).

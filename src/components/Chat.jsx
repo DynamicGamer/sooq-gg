@@ -53,6 +53,11 @@ export default function Chat({ listingId, sellerId, sellerName, sellerRating, se
 
   const sendMessage = async () => {
     if (!input.trim() || !user) return
+    if (!sellerId) {
+      return alert(isAr
+        ? 'تعذر إرسال الرسالة — هذا البائع ليس لديه معرّف حساب صالح (على الأرجح عرض قديم من قبل هذا التحديث).'
+        : "Can't send — this seller has no valid account ID (likely an older listing from before this fix).")
+    }
     const msg = {
       sender_id: user.id,
       receiver_id: sellerId,
@@ -60,7 +65,11 @@ export default function Chat({ listingId, sellerId, sellerName, sellerRating, se
       content: input.trim(),
     }
     setInput('')
-    await supabase.from('messages').insert([msg])
+    const { error } = await supabase.from('messages').insert([msg])
+    if (error) {
+      setInput(msg.content)
+      return alert((isAr ? 'فشل إرسال الرسالة: ' : 'Failed to send message: ') + error.message)
+    }
     fetchMessages()
   }
 

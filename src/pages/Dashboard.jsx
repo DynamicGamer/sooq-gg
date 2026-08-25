@@ -86,6 +86,7 @@ export default function Dashboard() {
       price: form.price,
       seller: username,
       seller_en: username,
+      seller_id: user.id,
       rating: 5.0,
       sales: 0,
       badge_key: null,

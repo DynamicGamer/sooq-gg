@@ -5,22 +5,8 @@ import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 import { GAMES, fetchListings, supabase } from '../lib/supabase'
 import CountryBadge from '../components/CountryBadge'
+import GameThumb from '../components/GameThumb'
 import Reveal from '../components/Reveal'
-
-const GAME_IMAGES = {
-  'PUBG Mobile': '/games/pubg.jpg',
-  'Free Fire': '/games/freefire.jpg',
-  'Fortnite': '/games/fortnite.jpg',
-  'Clash of Clans': '/games/coc.jpg',
-  'Mobile Legends': '/games/mlbb.jpg',
-  'Valorant': '/games/valorant.jpg',
-  'FIFA Mobile': '/games/fifa.jpg',
-  'Genshin Impact': '/games/genshin.jpg',
-  'Call of Duty Mobile': '/games/codm.jpg',
-  'League of Legends': '/games/lol.jpg',
-  'Steam Wallet': '/games/steam.jpg',
-  'PlayStation': '/games/psn.jpg',
-}
 
 export default function ListingDetail() {
   const { id } = useParams()
@@ -71,9 +57,7 @@ export default function ListingDetail() {
         <Reveal>
           <div className="card" style={{ padding: '24px', marginBottom: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '16px' }}>
-              <div style={{ width: '56px', height: '56px', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px' }}>
-                <img src={GAME_IMAGES[listing.game]} alt={listing.game} style={{ width: '56px', height: '56px', objectFit: 'cover', borderRadius: 'var(--radius-lg)' }} onError={e => { e.target.style.display='none' }} />
-              </div>
+              <GameThumb game={listing.game} style={{ width: '56px', height: '56px', borderRadius: 'var(--radius-lg)', flexShrink: 0 }} emojiSize="24px" />
               <div>
                 <h1 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '4px' }}>
                   {isAr ? listing.type_ar : listing.type_en}

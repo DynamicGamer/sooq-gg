@@ -4,14 +4,9 @@ import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 import { supabase, GAMES } from '../lib/supabase'
+import GameThumb from './GameThumb'
 
 const CATS = ['topups','accounts','currency','items','boosting','giftcards']
-
-const GAME_ICON_SLUG = {
-  'PUBG Mobile': 'pubg', 'Free Fire': 'freefire', 'Fortnite': 'fortnite', 'Clash of Clans': 'coc',
-  'Mobile Legends': 'mlbb', 'Valorant': 'valorant', 'FIFA Mobile': 'fifa', 'Genshin Impact': 'genshin',
-  'Call of Duty Mobile': 'codm', 'League of Legends': 'lol', 'Steam Wallet': 'steam', 'PlayStation': 'psn',
-}
 
 export default function Navbar() {
   const { t, toggle, isAr } = useLang()
@@ -93,7 +88,7 @@ export default function Navbar() {
                               onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,168,76,0.08)'; e.currentTarget.style.color = '#c9a84c' }}
                               onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#d4c5a9' }}
                             >
-                              <img src={`/games/${GAME_ICON_SLUG[game.name]}.jpg`} alt={game.name} style={{ width: '24px', height: '24px', borderRadius: '5px', objectFit: 'cover', flexShrink: 0 }} onError={e => e.target.style.display = 'none'} />
+                              <GameThumb game={game} style={{ width: '24px', height: '24px', borderRadius: '5px', flexShrink: 0 }} emojiSize="13px" />
                               <div style={{ fontSize: '12px', fontWeight: '600', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{isAr ? game.nameAr : game.name}</div>
                             </Link>
                           ))}
@@ -112,7 +107,7 @@ export default function Navbar() {
                             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,168,76,0.08)'; e.currentTarget.style.color = '#c9a84c' }}
                             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#d4c5a9' }}
                           >
-                            <img src={`/games/${GAME_ICON_SLUG[game.name]}.jpg`} alt={game.name} style={{ width: '26px', height: '26px', borderRadius: '6px', objectFit: 'cover', flexShrink: 0 }} onError={e => e.target.style.display = 'none'} />
+                            <GameThumb game={game} style={{ width: '26px', height: '26px', borderRadius: '6px', flexShrink: 0 }} emojiSize="14px" />
                             <div style={{ fontSize: '13px', fontWeight: '600' }}>{isAr ? game.nameAr : game.name}</div>
                           </Link>
                         ))}

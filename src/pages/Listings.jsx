@@ -4,6 +4,7 @@ import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
 import { GAMES, fetchListings } from '../lib/supabase'
 import CountryBadge from '../components/CountryBadge'
+import GameThumb from '../components/GameThumb'
 import Reveal, { RevealGroup, RevealItem } from '../components/Reveal'
 
 export default function listings() {
@@ -187,8 +188,12 @@ export default function listings() {
                     onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: '160px' }}>
-                      <div style={{ width: '38px', height: '38px', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-md)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px' }}>
-                        {l.images?.[0] ? <img src={l.images[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (GAMES.find(g => g.name === l.game)?.img || '🎮')}
+                      <div style={{ width: '38px', height: '38px', borderRadius: 'var(--radius-md)', overflow: 'hidden', flexShrink: 0 }}>
+                        {l.images?.[0] ? (
+                          <img src={l.images[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        ) : (
+                          <GameThumb game={l.game} style={{ width: '100%', height: '100%' }} emojiSize="16px" />
+                        )}
                       </div>
                       <div>
                         <div style={{ fontWeight: '700', fontSize: '13px' }}>{isAr ? l.type_ar : l.type_en}</div>

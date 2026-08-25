@@ -3,27 +3,11 @@ import { Link, Navigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useLang } from '../context/LangContext'
 import { useAuth } from '../context/AuthContext'
-import { supabase, fetchListings } from '../lib/supabase'
+import { supabase, fetchListings, GAMES } from '../lib/supabase'
 import MessagesInbox from '../components/MessagesInbox'
 import Reveal, { RevealGroup, RevealItem } from '../components/Reveal'
 import CountryBadge from '../components/CountryBadge'
-
-const GAME_IMAGES = {
-  'PUBG Mobile': '/games/pubg.jpg',
-  'Free Fire': '/games/freefire.jpg',
-  'Fortnite': '/games/fortnite.jpg',
-  'Clash of Clans': '/games/coc.jpg',
-  'Mobile Legends': '/games/mlbb.jpg',
-  'Valorant': '/games/valorant.jpg',
-  'FIFA Mobile': '/games/fifa.jpg',
-  'Genshin Impact': '/games/genshin.jpg',
-  'Call of Duty Mobile': '/games/codm.jpg',
-  'League of Legends': '/games/lol.jpg',
-  'Steam Wallet': '/games/steam.jpg',
-  'PlayStation': '/games/psn.jpg',
-}
-
-const GAMES_LIST = ['PUBG Mobile','Free Fire','Fortnite','Clash of Clans','Mobile Legends','Valorant','FIFA Mobile','Genshin Impact','Call of Duty Mobile','League of Legends','Steam Wallet','PlayStation']
+import GameThumb from '../components/GameThumb'
 
 export default function Dashboard() {
   const { t, isAr } = useLang()
@@ -181,7 +165,7 @@ export default function Dashboard() {
               <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '5px' }}>{td.game}</label>
               <select value={form.game} onChange={e => set('game', e.target.value)} style={{ width: '100%', padding: '8px 10px', fontSize: '12px' }}>
                 <option value="">Select Game</option>
-                {GAMES_LIST.map(g => <option key={g} value={g}>{g}</option>)}
+                {GAMES.map(g => <option key={g.id} value={g.name}>{isAr ? g.nameAr : g.name}</option>)}
               </select>
             </div>
             <div>
@@ -260,7 +244,11 @@ export default function Dashboard() {
               <div className="card" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <div style={{ width: '42px', height: '42px', borderRadius: 'var(--radius-md)', overflow: 'hidden', flexShrink: 0, border: '1px solid rgba(201,168,76,0.2)' }}>
-                    <img src={l.images?.[0] || GAME_IMAGES[l.game]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display='none' }} />
+                    {l.images?.[0] ? (
+                      <img src={l.images[0]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <GameThumb game={l.game} style={{ width: '100%', height: '100%' }} emojiSize="17px" />
+                    )}
                   </div>
                   <div>
                     <div style={{ fontWeight: '700', fontSize: '13px', fontFamily: 'var(--font-display)' }}>{isAr ? l.typeAr : l.typeEn}</div>

@@ -3,24 +3,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useLang } from '../context/LangContext'
 import { useCart } from '../context/CartContext'
-import { GAMES, GENRES, fetchListings, fetchLiveStats } from '../lib/supabase'
+import { GAMES, GENRES, fetchListings, gameImageUrl } from '../lib/supabase'
 import CountryBadge from '../components/CountryBadge'
 import Reveal, { RevealGroup, RevealItem } from '../components/Reveal'
-
-const GAME_IMAGES = {
-  'PUBG Mobile':         '/games/pubg.jpg',
-  'Free Fire':           '/games/freefire.jpg',
-  'Fortnite':            '/games/fortnite.jpg',
-  'Clash of Clans':      '/games/coc.jpg',
-  'Mobile Legends':      '/games/mlbb.jpg',
-  'Valorant':            '/games/valorant.jpg',
-  'FIFA Mobile':         '/games/fifa.jpg',
-  'Genshin Impact':      '/games/genshin.jpg',
-  'Call of Duty Mobile': '/games/codm.jpg',
-  'League of Legends':   '/games/lol.jpg',
-  'Steam Wallet':        '/games/steam.jpg',
-  'PlayStation':         '/games/psn.jpg',
-}
+import GameThumb from '../components/GameThumb'
 
 export default function Home() {
   const { t, isAr } = useLang()
@@ -29,11 +15,9 @@ export default function Home() {
   const [search, setSearch] = useState('')
   const [listings, setListings] = useState([])
   const [activeGenres, setActiveGenres] = useState([])
-  const [liveStats, setLiveStats] = useState({ trades: 0, volume: 0, activeListings: 0 })
 
   useEffect(() => {
     fetchListings().then(data => setListings(data))
-    fetchLiveStats().then(setLiveStats)
   }, [])
 
   const toggleGenre = (id) => {
@@ -89,23 +73,6 @@ export default function Home() {
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}><div style={{ width: "42px", height: "42px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.25)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", color: "#c9a84c", fontWeight: "800", fontSize: "16px" }}>⚡</div><div><div style={{ fontSize: "14px", fontWeight: "700", color: "#fff" }}>{isAr ? 'تسليم فوري' : 'Instant Delivery'}</div><div style={{ fontSize: "12px", color: "#9a8570" }}>{isAr ? 'أغلب الطلبات في دقائق' : 'Most orders in minutes'}</div></div></div>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}><div style={{ width: "42px", height: "42px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.25)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", color: "#c9a84c", fontWeight: "800", fontSize: "16px" }}>💎</div><div><div style={{ fontSize: "14px", fontWeight: "700", color: "#fff" }}>{isAr ? 'بائعون موثقون' : 'Verified Sellers'}</div><div style={{ fontSize: "12px", color: "#9a8570" }}>Every seller is verified by us</div></div></div>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}><div style={{ width: "42px", height: "42px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.25)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", color: "#c9a84c", fontWeight: "800", fontSize: "16px" }}>🔒</div><div><div style={{ fontSize: "14px", fontWeight: "700", color: "#fff" }}>{isAr ? 'دفع آمن' : 'Secure Payments'}</div><div style={{ fontSize: "12px", color: "#9a8570" }}>{isAr ? 'CliQ وكريبتو مع نظام الضمان' : 'CliQ & crypto escrow keep funds safe'}</div></div></div>
-      </Reveal>
-
-      {/* LIVE STATS */}
-      <Reveal style={{ padding: '20px 24px', display: 'flex', justifyContent: 'center', gap: '48px', flexWrap: 'wrap', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>
-        {[
-          { label: isAr ? 'صفقة مكتملة' : 'Trades Completed', value: liveStats.trades.toLocaleString() },
-          { label: isAr ? 'حجم التداول' : 'Trade Volume', value: `$${liveStats.volume.toLocaleString(undefined, { maximumFractionDigits: 0 })}` },
-          { label: isAr ? 'عرض نشط' : 'Active Listings', value: liveStats.activeListings.toLocaleString() },
-        ].map(s => (
-          <div key={s.label} style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '22px', fontWeight: '800', color: '#ffffff', fontFamily: 'var(--font-display)' }}>{s.value}</div>
-            <div style={{ fontSize: '11px', color: '#9a8570', display: 'flex', alignItems: 'center', gap: '5px', justifyContent: 'center', marginTop: '2px' }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', display: 'inline-block', boxShadow: '0 0 6px #10b981' }} />
-              {s.label}
-            </div>
-          </div>
-        ))}
       </Reveal>
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
@@ -173,11 +140,10 @@ export default function Home() {
                     onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.4)'; e.currentTarget.style.boxShadow = '0 16px 32px rgba(0,0,0,0.5)' }}
                     onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.1)'; e.currentTarget.style.boxShadow = 'none' }}
                   >
-                    <div style={{ height: '120px', position: 'relative', overflow: 'hidden', background: `linear-gradient(145deg, ${game.color}55, ${game.color}22)` }}>
-                      <img src={GAME_IMAGES[game.name]} alt={game.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }} onError={e => { e.target.style.display = 'none' }} />
+                    <GameThumb game={game} style={{ height: '120px' }} emojiSize="40px">
                       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(20,16,9,0.95) 0%, transparent 60%)' }} />
                       {game.hot && <div style={{ position: 'absolute', top: '8px', left: '8px', background: 'linear-gradient(135deg, #c9a84c, #a07830)', borderRadius: '5px', fontSize: '9px', color: '#0f0f0f', padding: '2px 8px', fontWeight: '800' }}>HOT</div>}
-                    </div>
+                    </GameThumb>
                     <div style={{ padding: '12px 14px 14px' }}>
                       <div style={{ fontSize: '14px', fontWeight: '700', color: '#ffffff', marginBottom: '8px', fontFamily: 'var(--font-display)' }}>{isAr ? game.nameAr : game.name}</div>
                       <div style={{ fontSize: '11px', color: '#c9a84c', background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '5px', padding: '2px 8px', fontWeight: '600', display: 'inline-block' }}>{isAr ? game.tagAr : game.tagEn}</div>
@@ -213,7 +179,11 @@ export default function Home() {
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1, minWidth: '180px' }}>
                     <div style={{ width: '52px', height: '52px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(201,168,76,0.2)', flexShrink: 0 }}>
-                      <img src={l.images?.[0] || GAME_IMAGES[l.game]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none' }} />
+                      {l.images?.[0] ? (
+                        <img src={l.images[0]} alt={l.game} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        <GameThumb game={l.game} style={{ width: '100%', height: '100%' }} emojiSize="20px" />
+                      )}
                     </div>
                     <div>
                       <div style={{ fontWeight: '700', fontSize: '16px', color: '#ffffff', marginBottom: '3px', fontFamily: 'var(--font-display)' }}>{isAr ? l.type_ar : l.type_en}</div>

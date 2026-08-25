@@ -33,7 +33,9 @@ export default function App() {
               <Route path="/checkout"           element={<Checkout />} />
               <Route path="/orders"             element={<Orders />} />
               <Route path="/dashboard"          element={<Dashboard />} />
-              <Route path="/profile" element={<Profile />} />`n              <Route path="/privacy" element={<Privacy />} />`n              <Route path="/terms" element={<Terms />} />
+              <Route path="/profile"             element={<Profile />} />
+              <Route path="/privacy"             element={<Privacy />} />
+              <Route path="/terms"               element={<Terms />} />
               <Route path="/admin"              element={<Admin />} />
             </Routes>
           </main>

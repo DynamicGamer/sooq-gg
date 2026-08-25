@@ -6,7 +6,7 @@ import { useCart } from '../context/CartContext'
 import { supabase, GAMES } from '../lib/supabase'
 import GameThumb from './GameThumb'
 
-const CATS = ['topups','accounts','currency','items','boosting','giftcards']
+const CATS = ['topups','accounts','currency','items','boosting']
 
 export default function Navbar() {
   const { t, toggle, isAr } = useLang()

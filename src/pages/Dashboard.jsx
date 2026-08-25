@@ -61,13 +61,20 @@ export default function Dashboard() {
 
     const listingId = `l${Date.now()}`
     const imageUrls = []
+    let uploadErrorMsg = null
     for (let i = 0; i < imageFiles.length; i++) {
       const file = imageFiles[i]
       const path = `${user.id}/${listingId}-${i}-${file.name}`
       const { error: uploadErr } = await supabase.storage.from('listing-images').upload(path, file)
-      if (!uploadErr) {
+      if (uploadErr) {
+        uploadErrorMsg = uploadErr.message
+      } else {
         imageUrls.push(supabase.storage.from('listing-images').getPublicUrl(path).data.publicUrl)
       }
+    }
+    if (uploadErrorMsg) {
+      setSavingListing(false)
+      return alert((isAr ? 'فشل رفع الصور: ' : 'Failed to upload photos: ') + uploadErrorMsg)
     }
 
     const newListing = {

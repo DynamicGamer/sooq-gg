@@ -66,7 +66,9 @@ export default function Orders() {
       comment: reviewComment.trim() || null,
     })
     setSubmittingReview(false)
-    if (!error) {
+    if (error) {
+      alert((isAr ? 'فشل إرسال التقييم: ' : 'Failed to submit review: ') + error.message)
+    } else {
       setReviewedOrderIds(prev => new Set([...prev, order.id]))
       setReviewingOrderId(null)
     }

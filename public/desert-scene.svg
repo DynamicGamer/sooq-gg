@@ -1,0 +1,31 @@
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0b0906" />
+      <stop offset="55%" stop-color="#150f08" />
+      <stop offset="100%" stop-color="#26190c" />
+    </linearGradient>
+    <radialGradient id="sun" cx="50%" cy="100%" r="60%">
+      <stop offset="0%" stop-color="#e8c874" stop-opacity="0.55" />
+      <stop offset="45%" stop-color="#c9a84c" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#c9a84c" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect x="0" y="0" width="1600" height="900" fill="url(#sky)" />
+
+  <circle cx="800" cy="560" r="420" fill="url(#sun)" />
+  <circle cx="800" cy="520" r="90" fill="#e8c874" opacity="0.18" />
+  <circle cx="800" cy="520" r="60" fill="#f0d68f" opacity="0.28" />
+
+  <path d="M0,520 C220,450 380,500 560,460 C760,415 900,470 1080,430 C1260,390 1420,440 1600,410 L1600,900 L0,900 Z" fill="#241a0d" />
+  <path d="M0,520 C220,450 380,500 560,460 C760,415 900,470 1080,430 C1260,390 1420,440 1600,410" fill="none" stroke="#c9a84c" stroke-opacity="0.18" stroke-width="2" />
+
+  <path d="M0,630 C260,580 460,615 660,580 C860,545 1020,600 1220,565 C1380,538 1500,575 1600,555 L1600,900 L0,900 Z" fill="#332512" />
+  <path d="M0,630 C260,580 460,615 660,580 C860,545 1020,600 1220,565 C1380,538 1500,575 1600,555" fill="none" stroke="#c9a84c" stroke-opacity="0.22" stroke-width="2" />
+
+  <path d="M0,730 C300,690 520,715 740,690 C940,668 1120,705 1320,682 C1440,668 1540,695 1600,684 L1600,900 L0,900 Z" fill="#463216" />
+  <path d="M0,730 C300,690 520,715 740,690 C940,668 1120,705 1320,682 C1440,668 1540,695 1600,684" fill="none" stroke="#c9a84c" stroke-opacity="0.28" stroke-width="2" />
+
+  <path d="M0,820 C280,795 560,810 840,795 C1080,782 1340,800 1600,788 L1600,900 L0,900 Z" fill="#5a4119" />
+</svg>

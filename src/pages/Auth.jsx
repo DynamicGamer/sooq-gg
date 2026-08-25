@@ -172,9 +172,9 @@ export default function Auth() {
 
   return (
     <div style={{ position: 'relative', overflow: 'hidden', minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url(/desert.jpg) center/cover no-repeat' }} />
-      <div style={{ position: 'absolute', top: '-100px', left: '50%', transform: 'translateX(-50%)', width: '800px', height: '400px', background: 'radial-gradient(ellipse, rgba(201,168,76,0.15) 0%, transparent 70%)', pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '200px', background: 'linear-gradient(to top, rgba(201,168,76,0.08) 0%, transparent 100%)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', inset: 0, background: '#0f0f0f' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'url(/desert-scene.svg) bottom/cover no-repeat' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(15,15,15,0.55) 0%, rgba(15,15,15,0) 35%, rgba(15,15,15,0.35) 100%)', pointerEvents: 'none' }} />
 
       <Reveal style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '420px' }}>
 

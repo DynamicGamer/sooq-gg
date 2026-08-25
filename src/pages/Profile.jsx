@@ -25,7 +25,7 @@ export default function Profile() {
     setAvatarUrl(url)
     setCountry(user.user_metadata?.country || '')
     fetchListings().then(data => setListings(data.filter(l => l.seller_en === username)))
-    supabase.from('orders_with_listings').select('*').then(({ data }) => { if (data) setOrders(data) })
+    supabase.from('escrow_orders').select('id').eq('buyer_id', user.id).then(({ data }) => { if (data) setOrders(data) })
   }, [user])
 
   const saveCountry = async (code) => {

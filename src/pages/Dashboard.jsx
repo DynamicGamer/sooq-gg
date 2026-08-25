@@ -18,7 +18,7 @@ export default function Dashboard() {
 
   const [tab, setTab] = useState(searchParams.get('tab') === 'messages' ? 'messages' : 'listings')
   const [listings, setListings] = useState([])
-  const [orders, setOrders] = useState([])
+  const [allOrders, setAllOrders] = useState([])
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState({ game: '', category: 'topups', titleAr: '', titleEn: '', price: '', desc: '' })
@@ -46,9 +46,15 @@ export default function Dashboard() {
 
   useEffect(() => {
     supabase.from('orders_with_listings').select('*').then(({ data }) => {
-      if (data) setOrders(data)
+      if (data) setAllOrders(data)
     })
   }, [])
+
+  // orders_with_listings has no seller column to filter on server-side, so scope it
+  // client-side to orders whose purchased item(s) belong to one of this seller's own
+  // listings — otherwise every seller sees every order placed on the whole site.
+  const myListingIds = new Set(listings.map(l => l.id))
+  const orders = allOrders.filter(o => Array.isArray(o.items) && o.items.some(i => myListingIds.has(i.id)))
 
   if (!user) return <Navigate to="/auth" />
 
@@ -83,6 +89,8 @@ export default function Dashboard() {
       game: form.game,
       type_en: form.titleEn || form.titleAr,
       type_ar: form.titleAr || form.titleEn,
+      desc_en: form.desc,
+      desc_ar: form.desc,
       price: form.price,
       seller: username,
       seller_en: username,

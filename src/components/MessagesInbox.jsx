@@ -56,7 +56,15 @@ export default function MessagesInbox({ isAr, initialConversation }) {
         convos.push({ ...msg, seller_id: otherId })
       }
     }
-    setConversations(convos)
+    // This runs async alongside the initialConversation effect below, which may have
+    // already injected a synthetic "pending" conversation (deep-linked from a listing's
+    // "Message Seller" button, before any real message exists). A plain overwrite here
+    // would wipe that out from under the user right after it appeared — keep any pending
+    // entry that isn't yet represented in the real fetched results.
+    setConversations(prev => {
+      const stillPending = prev.filter(c => c._pending && !convos.some(x => String(x.listing_id) === String(c.listing_id)))
+      return [...stillPending, ...convos]
+    })
     setLoading(false)
   }
 
